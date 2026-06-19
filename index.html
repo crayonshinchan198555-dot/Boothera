@@ -8,6 +8,7 @@
 </head>
 
 <body>
+<!-- animation -->
 <div id="splash-screen">
         
         <img class="bamboo-bg" src="./images/bamboo.png" alt="Bamboo Background">
@@ -28,6 +29,7 @@
         </div>
 </div>
 
+<!-- login page -->
 <div class="container">
 
     <h1 class="title">Welcome To Boothera!</h1>
@@ -37,7 +39,7 @@
         <h2>SIGN IN</h2>
         <p>E-mail</p>
 
-        <input type="email" placeholder="Email">
+        <input type="email" id="login-email" placeholder="Email">
         
         <div class="password-box">
             <p>Password</p>
@@ -48,7 +50,7 @@
         </div>
         </div>
 
-        <p class="forgot">Forgot password?</p>
+        <p class="forgot" onclick="openForgotModal()">Forgot password?</p>
 
         <div class="terms-box">
             <input type="checkbox" id="terms">
@@ -63,6 +65,28 @@
 
     </div>
 
+</div>
+
+<!-- forgot password -->
+<div class="modal" id="forgotModal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeForgotModal()">&times;</span>
+        <h3>Reset Password</h3>
+        
+        <p>Your Email</p>
+        <input type="email" id="reset-email" placeholder="Enter your email">
+        
+        <p>Verification Code</p>
+        <div class="code-box">
+            <input type="text" id="reset-code" placeholder="6-digit code">
+            <button class="send-btn" id="sendBtn" onclick="sendCode()">Get Code</button>
+        </div>
+
+        <p>New Password</p>
+        <input type="password" id="new-password" placeholder="Enter new password">
+        
+        <button class="btn reset-submit-btn" onclick="submitNewPassword()">Reset Password</button>
+    </div>
 </div>
 
 <script src="script.js"></script>
