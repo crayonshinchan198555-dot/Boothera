@@ -215,7 +215,8 @@ body, html {
 }
 
 .form-box input[type="email"],
-.password-input input[type="password"] {
+.password-input input[type="password"],
+.password-input input[type="text"] {
     width: 100%;
     padding: 14px 15px;
     border: none;
