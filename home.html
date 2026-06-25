@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boothera - Admin Dashboard</title>
+    <link rel="stylesheet" href="home.css">
+</head>
+<body>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo-section">
+                <div class="logo-container">
+                    <svg class="logo-mountain" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="20,50 40,20 60,50" fill="#4F6D7A"/>
+                        <polygon points="45,50 60,28 75,50" fill="#7C94A1"/>
+                    </svg>
+                    <span class="brand-text">BOOTHERA</span>
+                </div>
+                <p class="subtitle">Booth System</p>
+            </div>
+            
+            <nav class="menu">
+                <a href="#" class="menu-item active" id="menu-events" onclick="switchTab('events')">
+                    <span class="icon">🎟️</span> Events
+                </a>
+                <a href="#" class="menu-item" id="menu-application" onclick="switchTab('application')">
+                    <span class="icon">📝</span> Application
+                </a>
+                <a href="#" class="menu-item" id="menu-add-event" onclick="switchTab('add-event')">
+                    <span class="icon">➕</span> Add Event
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <h1 id="page-title">Events Management</h1>
+                
+                <div class="top-right-actions">
+                    <div class="search-filter-box">
+                        <input type="text" id="global-search" placeholder="Search events..." oninput="handleSearch()">
+                        <select id="global-filter" onchange="handleFilterChange()">
+                            <option value="all">All Status</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="pending">Pending</option>
+                            <option value="denied">Denied</option>
+                        </select>
+                    </div>
+                    
+                    <div class="user-profile">
+                        <span>Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <section class="content-body">
+                
+                <div id="tab-events" class="tab-panel active">
+                    <div class="card-grid" id="events-grid">
+                        <div class="booth-card clickable-card" 
+                             onclick="viewEventDetails(this)"
+                             data-title="Paws and Heart Pet Lovers Carnival"
+                             data-venue="Sunway Lagoon, Malaysia"
+                             data-date="20 June 2026 (Saturday)"
+                             data-time="10:00 AM – 7:00 PM"
+                             data-desc="A fun event for pet lovers to enjoy activities."
+                             data-price="RM150/day"
+                             data-booths="14"
+                             data-status="active">
+                            <h3>Paws and Heart Pet Lovers Carnival</h3>
+                            <p class="booth-info">📅 Date: 20 June 2026</p>
+                            <p class="booth-info">🎪 Total Booths: 14</p>
+                            <p class="event-status-text">💡 Status: Active</p> 
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-event-details" class="tab-panel">
+                    <button class="btn-back" onclick="switchTab('events')">⬅️ Back to Events</button>
+                    
+                    <div class="detail-container">
+                        <div class="detail-info-section">
+                            <h2 id="detail-title">Event Title</h2>
+                            
+                            <div class="info-group">
+                                <label>Venue</label>
+                                <p id="detail-venue">Location</p>
+                            </div>
+                            <div class="info-group">
+                                <label>Date</label>
+                                <p id="detail-date">Date</p>
+                            </div>
+                            <div class="info-group">
+                                <label>Time</label>
+                                <p id="detail-time">Time</p>
+                            </div>
+                            <div class="info-group">
+                                <label>Description</label>
+                                <p id="detail-desc">Details...</p>
+                            </div>
+                            <div class="info-group">
+                                <label>Rental Price</label>
+                                <p class="price-tag" id="detail-price">RM0/day</p>
+                            </div>
+                            <div class="info-group">
+                                <label>Total Booths Available</label>
+                                <p id="detail-booths">0</p> 
+                            </div>
+                            
+                            <div class="info-group" style="margin-top: 25px;">
+                                <label>Booth Layout Map</label>
+                                <div id="detail-layout-container">
+                                    <p style="color: #9BB0C1; font-size: 14px;">Loading layout...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="detail-booth-section">
+                            <h3>Manage Event</h3>
+                            <div class="admin-manage-actions" style="margin-top: 20px; flex-direction: column;">
+                                <button class="btn-edit" onclick="editEvent()">Edit Event</button>
+                                <button class="btn-delete" onclick="deleteEvent()">Delete Event</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-application" class="tab-panel">
+                    <div class="card-grid">
+                        <div class="booth-card" data-status="pending">
+                            <div class="status-badge pending">Pending</div>
+                            <h3>Tech Expo 2026</h3>
+                            <p class="booth-info">👤 Applicant: Vendor A</p>
+                            <p class="booth-info">📍 Booth: A-12 (Premium)</p>
+                            <p class="booth-info">⏱️ Date: July 15, 2026</p>
+                            <div class="admin-actions">
+                                <button class="btn-approve" onclick="actionApprove(this)">Approve</button>
+                                <button class="btn-deny" onclick="actionDeny(this)">Deny</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-add-event" class="tab-panel">
+                    <div class="add-event-container">
+                        <h3>➕ Create New Event</h3>
+                        <form id="add-event-form">
+                            <div class="form-group">
+                                <label>Event Title</label>
+                                <input type="text" id="add-input-title" required placeholder="e.g. Summer Festival">
+                            </div>
+                            <div class="form-group">
+                                <label>Venue</label>
+                                <input type="text" id="add-input-venue" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Date</label>
+                                <input type="text" id="add-input-date" required placeholder="e.g. 10 Aug 2026">
+                            </div>
+                            <div class="form-group">
+                                <label>Time</label>
+                                <input type="text" id="add-input-time" required placeholder="e.g. 10:00 AM - 5:00 PM">
+                            </div>
+                            <div class="form-group">
+                                <label>Rental Price</label>
+                                <input type="text" id="add-input-price" required placeholder="e.g. RM200/day">
+                            </div>
+                            <div class="form-group">
+                                <label>Total Booths Available</label>
+                                <input type="number" id="add-input-booths" required min="1" placeholder="e.g. 50">
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label>Description</label>
+                                <textarea id="add-input-desc" rows="3" required placeholder="Event details..."></textarea>
+                            </div>
+                            
+                            <div class="form-group" style="grid-column: 1 / -1; padding-top: 10px;">
+                                <label>Upload Booth Layout Map (Optional Image)</label>
+                                <input type="file" id="add-input-layout" accept="image/*" style="border: none; padding: 10px 0;">
+                                <div id="layout-preview-container" style="display: none; margin-top: 10px;">
+                                    <img id="layout-preview" src="" alt="Preview" style="max-width: 100%; max-height: 200px; border-radius: 8px;">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group" style="grid-column: 1 / -1; margin-top: 10px;">
+                                <button type="submit" class="btn-submit-event">🚀 Publish Event</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="edit-modal" class="modal-overlay">
+                    <div class="modal-content-box">
+                        <div class="modal-header">
+                            <h3>✏️ Edit Event Details</h3>
+                            <span class="close-modal-btn" onclick="closeEditModal()">&times;</span>
+                        </div>
+                        <form id="edit-event-form" onsubmit="saveEventChanges(event)">
+                            <div class="form-group">
+                                <label>Event Title</label>
+                                <input type="text" id="edit-input-title" required readonly style="background: #f1f5f9; color: #64748b;">
+                            </div>
+                            <div class="form-group">
+                                <label>Venue</label>
+                                <input type="text" id="edit-input-venue" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Date</label>
+                                <input type="text" id="edit-input-date" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Time</label>
+                                <input type="text" id="edit-input-time" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Rental Price</label>
+                                <input type="text" id="edit-input-price" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Total Booths Available</label>
+                                <input type="number" id="edit-input-booths" required min="1">
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label>Description</label>
+                                <textarea id="edit-input-desc" rows="3" required></textarea>
+                            </div>
+                            <div class="modal-footer-actions">
+                                <button type="button" class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+                                <button type="submit" class="btn-save-submit">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+    </div>
+
+    <script src="home.js"></script>
+</body>
+</html>

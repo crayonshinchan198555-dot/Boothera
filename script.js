@@ -33,21 +33,46 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**Login interactions**/
+// 1. 登录逻辑（已修正跳转）
 function login() {
     const email = document.getElementById('login-email').value.trim();
     const pass = document.getElementById('password').value;
     const terms = document.getElementById('terms').checked;
+
+    // 💡 帮你在这里加上了非空拦截：必须两项都填才能继续登录
+    if (!email || !pass) {
+        alert("❌ Please enter both email and password!");
+        return;
+    }
 
     if (!terms) {
         alert("Please agree to the Terms & Conditions.");
         return;
     }
 
-    // 从本地存储读取密码
+    const defaultEmail = "admin@boothera.com";
+    const defaultPassword = "password123";
+
+    // 第一步：优先检查是不是默认的测试账号
+    if (email === defaultEmail && pass === defaultPassword) {
+        // 登录成功时，存入这个标记，这样 home.html 才会允许进去！
+        localStorage.setItem("isLoggedIn", "true");
+        alert("🎉 Login Successful! (Logged in as Default Admin)");
+        
+        // 🎯 修正：登录成功应该去主页，暂时可以先写 dashboard.html 或 home.html (如果没有这个文件，它会显示找不到，但逻辑是对的)
+        window.location.href = "home.html"; 
+        return; 
+    }
+
+    // 第二步：普通用户检查流程
     const savedPassword = localStorage.getItem('user_' + email);
 
     if (savedPassword && savedPassword === pass) {
+        localStorage.setItem("isLoggedIn", "true");
         alert("🎉 Login Successful!");
+        
+        // 🎯 修正：普通用户登录成功也去主页
+        window.location.href = "home.html"; 
     } else {
         alert("❌ Invalid email or password!");
     }
@@ -74,7 +99,6 @@ function closeForgotModal() {
     if (modal) modal.style.display = 'none';
 }
 
-// 获取验证码按钮动作
 // 获取验证码按钮动作
 function sendCode() {
     // ⚠️ 先获取用户填写的 Email
