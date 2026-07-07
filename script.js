@@ -53,26 +53,34 @@ function login() {
     const defaultEmail = "admin@boothera.com";
     const defaultPassword = "password123";
 
-    // 第一步：优先检查是不是默认的测试账号
+    const userEmail = "user@boothera.com";
+    const userPassword = "password123";
+
+    // 1. 检查 Admin
     if (email === defaultEmail && pass === defaultPassword) {
-        // 登录成功时，存入这个标记，这样 home.html 才会允许进去！
         localStorage.setItem("isLoggedIn", "true");
-        alert("🎉 Login Successful! (Logged in as Default Admin)");
-        
-        // 🎯 修正：登录成功应该去主页，暂时可以先写 dashboard.html 或 home.html (如果没有这个文件，它会显示找不到，但逻辑是对的)
+        localStorage.setItem("userRole", "admin"); // 标记角色
+        alert("🎉 Login Successful! (Admin)");
         window.location.href = "home.html"; 
-        return; 
+        return;
     }
 
-    // 第二步：普通用户检查流程
-    const savedPassword = localStorage.getItem('user_' + email);
+    // 2. 检查 User
+    if (email === userEmail && pass === userPassword) {
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("userRole", "user"); // 标记角色
+        alert("🎉 Login Successful! (User)");
+        window.location.href = "user_pages/user.html"; 
+        return;
+    }
 
+    // 3. 检查存储的账号
+    const savedPassword = localStorage.getItem('user_' + email);
     if (savedPassword && savedPassword === pass) {
         localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("userRole", "user"); // 普通注册用户默认为 user
         alert("🎉 Login Successful!");
-        
-        // 🎯 修正：普通用户登录成功也去主页
-        window.location.href = "home.html"; 
+        window.location.href = "user.html";
     } else {
         alert("❌ Invalid email or password!");
     }

@@ -4,45 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boothera - Admin Dashboard</title>
+    <!-- 引入外部样式表 -->
     <link rel="stylesheet" href="home.css">
 </head>
 <body>
 
     <div class="container">
+        <!-- ========================================== -->
+        <!-- 左侧导航栏 (Sidebar)                        -->
+        <!-- ========================================== -->
         <aside class="sidebar">
+            <!-- 标志区域 (Logo Section) -->
             <div class="logo-section">
                 <div class="logo-container">
+                    <!-- SVG 山峰标志 -->
                     <svg class="logo-mountain" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
                         <polygon points="20,50 40,20 60,50" fill="#4F6D7A"/>
                         <polygon points="45,50 60,28 75,50" fill="#7C94A1"/>
                     </svg>
+                    <!-- 品牌文本 -->
                     <span class="brand-text">BOOTHERA</span>
                 </div>
                 <p class="subtitle">Booth System</p>
             </div>
             
+            <!-- 菜单导航区 (Navigation Menu) -->
             <nav class="menu">
+                <!-- 活动管理菜单 -->
                 <a href="#" class="menu-item active" id="menu-events" onclick="switchTab('events')">
                     <span class="icon">🎟️</span> Events
                 </a>
+                <!-- 申请审批菜单 -->
                 <a href="#" class="menu-item" id="menu-application" onclick="switchTab('application')">
                     <span class="icon">📝</span> Application
                 </a>
+                <!-- 添增活动菜单 -->
                 <a href="#" class="menu-item" id="menu-add-event" onclick="switchTab('add-event')">
                     <span class="icon">➕</span> Add Event
                 </a>
+                
+                <!-- 【新增加的功能】: 用户留言接收菜单 -->
+                <a href="#" class="menu-item" id="menu-messages" onclick="switchTab('messages')">
+                    <span class="icon">✉️</span> Messages
+                </a>
             </nav>
 
+            <!-- 侧边栏底部：登出按钮 -->
             <div class="sidebar-footer">
                 <button class="logout-btn" onclick="logout()">Logout</button>
             </div>
         </aside>
 
+        <!-- ========================================== -->
+        <!-- 右侧主体内容区 (Main Content)               -->
+        <!-- ========================================== -->
         <main class="main-content">
+            <!-- 顶部状态工具栏 -->
             <header class="top-bar">
                 <h1 id="page-title">Events Management</h1>
                 
                 <div class="top-right-actions">
+                    <!-- 搜索与状态过滤框 -->
                     <div class="search-filter-box">
                         <input type="text" id="global-search" placeholder="Search events..." oninput="handleSearch()">
                         <select id="global-filter" onchange="handleFilterChange()">
@@ -53,16 +75,22 @@
                         </select>
                     </div>
                     
+                    <!-- 当前登录角色信息 -->
                     <div class="user-profile">
                         <span>Admin</span>
                     </div>
                 </div>
             </header>
 
+            <!-- 页面内容主体包裹容器 -->
             <section class="content-body">
                 
+                <!-- ------------------------------------------ -->
+                <!-- 选项卡 1：活动管理面板 (Events Management)   -->
+                <!-- ------------------------------------------ -->
                 <div id="tab-events" class="tab-panel active">
                     <div class="card-grid" id="events-grid">
+                        <!-- 示例活动卡片 -->
                         <div class="booth-card clickable-card" 
                              onclick="viewEventDetails(this)"
                              data-title="Paws and Heart Pet Lovers Carnival"
@@ -81,10 +109,14 @@
                     </div>
                 </div>
 
+                <!-- ------------------------------------------ -->
+                <!-- 选项卡 2：活动详情查看与管理 (Event Details) -->
+                <!-- ------------------------------------------ -->
                 <div id="tab-event-details" class="tab-panel">
                     <button class="btn-back" onclick="switchTab('events')">⬅️ Back to Events</button>
                     
                     <div class="detail-container">
+                        <!-- 详情左侧：基础信息显示 -->
                         <div class="detail-info-section">
                             <h2 id="detail-title">Event Title</h2>
                             
@@ -113,6 +145,7 @@
                                 <p id="detail-booths">0</p> 
                             </div>
                             
+                            <!-- 摊位平面图展示区 -->
                             <div class="info-group" style="margin-top: 25px;">
                                 <label>Booth Layout Map</label>
                                 <div id="detail-layout-container">
@@ -121,6 +154,7 @@
                             </div>
                         </div>
 
+                        <!-- 详情右侧：操作控制台 -->
                         <div class="detail-booth-section">
                             <h3>Manage Event</h3>
                             <div class="admin-manage-actions" style="margin-top: 20px; flex-direction: column;">
@@ -131,14 +165,21 @@
                     </div>
                 </div>
 
+                <!-- ------------------------------------------ -->
+                <!-- 选项卡 3：审核申请面板 (Application Tab)    -->
+                <!-- ------------------------------------------ -->
                 <div id="tab-application" class="tab-panel">
                     <div class="card-grid">
+                        <!-- 待审核的申请卡片 -->
                         <div class="booth-card" data-status="pending">
                             <div class="status-badge pending">Pending</div>
                             <h3>Tech Expo 2026</h3>
                             <p class="booth-info">👤 Applicant: Vendor A</p>
                             <p class="booth-info">📍 Booth: A-12 (Premium)</p>
                             <p class="booth-info">⏱️ Date: July 15, 2026</p>
+                            <p class="booth-info">Product Category: Electronics</p>
+                            <p class="booth-info">Product Name: Smartphones</p>
+                            <!-- 审核动作按钮 -->
                             <div class="admin-actions">
                                 <button class="btn-approve" onclick="actionApprove(this)">Approve</button>
                                 <button class="btn-deny" onclick="actionDeny(this)">Deny</button>
@@ -147,6 +188,9 @@
                     </div>
                 </div>
 
+                <!-- ------------------------------------------ -->
+                <!-- 选项卡 4：发布新活动面板 (Add Event Tab)    -->
+                <!-- ------------------------------------------ -->
                 <div id="tab-add-event" class="tab-panel">
                     <div class="add-event-container">
                         <h3>➕ Create New Event</h3>
@@ -180,6 +224,7 @@
                                 <textarea id="add-input-desc" rows="3" required placeholder="Event details..."></textarea>
                             </div>
                             
+                            <!-- 展位图上传区 -->
                             <div class="form-group" style="grid-column: 1 / -1; padding-top: 10px;">
                                 <label>Upload Booth Layout Map (Optional Image)</label>
                                 <input type="file" id="add-input-layout" accept="image/*" style="border: none; padding: 10px 0;">
@@ -188,6 +233,7 @@
                                 </div>
                             </div>
                             
+                            <!-- 提交发布 -->
                             <div class="form-group" style="grid-column: 1 / -1; margin-top: 10px;">
                                 <button type="submit" class="btn-submit-event">🚀 Publish Event</button>
                             </div>
@@ -195,6 +241,34 @@
                     </div>
                 </div>
 
+                <!-- ------------------------------------------ -->
+                <!-- 【新增加】选项卡 5：用户留言板面板 (Messages Tab) -->
+                <!-- ------------------------------------------ -->
+                <div id="tab-messages" class="tab-panel">
+                    <!-- 消息网格布局容器 -->
+                    <div class="card-grid" id="admin-messages-grid">
+                        
+                        <!-- 预设的模拟用户留言卡片（对应之前 User 端的发信数据展示） -->
+                        <div class="booth-card">
+                            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">
+                                <h3 style="margin: 0; color: #4F6D7A;">📝 Subject: Booth Query</h3>
+                                <span style="font-size: 0.85rem; color: #999;">Just now</span>
+                            </div>
+                            <p class="booth-info"><strong>👤 From User:</strong> Ali (ali@gmail.com)</p>
+                            <p class="booth-info"><strong>🏢 Business:</strong> Uncle Rojak</p>
+                            <div style="background: #f8fafc; padding: 12px; border-radius: 6px; margin-top: 10px; border: 1px solid #e2e8f0;">
+                                <p style="margin: 0; font-size: 0.95rem; line-height: 1.5; color: #334155;">
+                                    Hi Admin, I would like to know if there are any promotional discounts available if I rent Booth 1 and Booth 2 together for the upcoming Pet Lovers Carnival? Thank you!
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- 弹出层：编辑活动模态框 (Edit Event Modal)     -->
+                <!-- ========================================== -->
                 <div id="edit-modal" class="modal-overlay">
                     <div class="modal-content-box">
                         <div class="modal-header">
@@ -242,6 +316,7 @@
         </main>
     </div>
 
+    <!-- 引入外部逻辑脚本 -->
     <script src="home.js"></script>
 </body>
 </html>
