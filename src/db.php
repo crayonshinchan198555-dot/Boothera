@@ -1,24 +1,36 @@
 <?php
-// db.php - 数据库连接核心文件
+// db.php - 智能适配本地与云端的数据库连接文件
 
-// 🚨 关键：在 Docker 容器网络里，Host 要写 MySQL 的服务名 'db'
-$host = "db"; 
-$user = "root";
-$pass = "root";        // 对应你 docker-compose.yml 里的 MYSQL_ROOT_PASSWORD
-$dbname = "boothera";  // 对应你自动创建的数据库名字
+// 1. 优先获取 Railway 提供的 DATABASE_URL
+$dbUrl = getenv('DATABASE_URL');
+
+if ($dbUrl) {
+    // ☁️ 云端模式 (Railway)
+    $url = parse_url($dbUrl);
+    $host = $url["host"];
+    $user = $url["user"];
+    $pass = $url["pass"];
+    $dbname = ltrim($url["path"], '/');
+    $port = isset($url["port"]) ? $url["port"] : 3306;
+} else {
+    // 🏠 本地模式 (Docker)
+    $host = "db";
+    $user = "root";
+    $pass = "root";
+    $dbname = "boothera";
+    $port = 3306;
+}
 
 // 建立连接
-$conn = new mysqli($host, $user, $pass, $dbname);
+$conn = new mysqli($host, $user, $pass, $dbname, $port);
 
-// 检查连接是否成功
+// 检查连接
 if ($conn->connect_error) {
-    // 如果连接失败，输出 JSON 报错信息，方便前端调试
     die(json_encode([
         "status" => "error", 
         "message" => "Database connection failed: " . $conn->connect_error
     ]));
 }
 
-// 设置字符集为 utf8mb4，确保支持中文和各种特殊符号
 $conn->set_charset("utf8mb4");
 ?>
