@@ -1,8 +1,8 @@
 <?php
 // db.php - 智能适配本地与云端的数据库连接文件
 
-// 1. 优先获取 Railway 提供的 DATABASE_URL
-$dbUrl = getenv('DATABASE_URL');
+// 1. 优先获取 Railway 提供的 DB_URL
+$dbUrl = getenv('DB_URL');
 
 if ($dbUrl) {
     // ☁️ 云端模式 (Railway)
