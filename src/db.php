@@ -25,11 +25,10 @@ if ($dbUrl) {
 $conn = new mysqli($host, $user, $pass, $dbname, $port);
 
 // 检查连接
+// 修改 db.php 中的连接检查部分
 if ($conn->connect_error) {
-    die(json_encode([
-        "status" => "error", 
-        "message" => "Database connection failed: " . $conn->connect_error
-    ]));
+    // 报错时直接输出真实连接信息，这样我们就能看到它在连哪台机器
+    die("Connection failed: " . $conn->connect_error . " (Host: " . $host . ", DB: " . $dbname . ")");
 }
 
 $conn->set_charset("utf8mb4");
