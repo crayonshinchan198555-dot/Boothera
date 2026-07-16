@@ -1,0 +1,195 @@
+/* 基础重置 */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    /* 换掉 Impact，使用更现代、舒服的字体 */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    /* 将原本属于手机容器的浅米绿底色直接应用到整个网页背景 */
+    background-color: #e9ebd9; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 20px; /* 上下留出一点呼吸空间 */
+}
+
+/* 注册容器：不再固定手机尺寸，改为全屏响应式 */
+.signup-container {
+    background-color: transparent; /* 移除内层背景，直接使用 body 背景 */
+    width: 100%;
+    /* 使用 max-width 限制大屏幕上的最大阅读宽度，防止表单被拉得太宽变得难看 */
+    max-width: 500px; 
+    padding: 0;
+    box-shadow: none; /* 移除手机盒子的阴影 */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 隐藏手机专用的模拟元素（状态栏和底部黑条） */
+.status-bar, .home-indicator {
+    display: none !important;
+}
+
+/* 标题样式 - 在大屏上显得更自然 */
+.title {
+    font-size: 36px;
+    letter-spacing: 2px;
+    margin-bottom: 35px;
+    color: #000;
+    text-transform: uppercase;
+    font-weight: 500; /* 500 是中等粗细，不会太笨重 */
+}
+
+/* 表单组布局 */
+.form-group {
+    margin-bottom: 22px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 18px; /* 稍微缩小一点字号，更精致 */
+    color: #222;    /* 稍微调成深灰色，减少纯黑色的视觉冲击 */
+    margin-bottom: 8px;
+    font-weight: 500; /* 改为中等粗细，告别死板的特粗体 */
+}
+
+/* 输入框自适应宽度 */
+.form-group input {
+    width: 100%;
+    height: 50px; /* 略微加高，在大屏上视觉效果更好 */
+    padding: 12px 15px;
+    border: none;
+    background-color: #ffffff;
+    font-size: 16px;
+    font-family: 'Cinzel', 'Times New Roman', serif;
+    color: #333;
+    border-radius: 4px; /* 增加轻微的圆角让大屏看起来更精致 */
+}
+
+.form-group input::placeholder {
+    color: #b0b0b0;
+    font-style: italic;
+}
+
+.form-group input:focus {
+    outline: 2px solid #a2a984;
+}
+
+/* 密码眼睛图标定位 */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    color: #000;
+    font-size: 18px;
+}
+
+/* 条款勾选区域 */
+.terms-group {
+    margin: 30px 0;
+    position: relative;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    font-family: 'Cinzel', 'Times New Roman', serif;
+    font-size: 14px;
+}
+
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    height: 20px;
+    width: 20px;
+    border: 1px solid #000;
+    border-radius: 50%;
+    margin-right: 10px;
+    display: inline-block;
+    position: relative;
+    background-color: #fff;
+}
+
+.checkbox-container input:checked ~ .checkmark {
+    background-color: #a2a984;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 7px;
+    top: 3px;
+    width: 5px;
+    height: 10px;
+    border: solid black;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.terms-text a {
+    color: #5b4ff3;
+    text-decoration: none;
+}
+
+/* 注册按钮自适应 */
+.register-btn {
+    width: 100%; /* 在全屏模式下，按钮宽度撑满表单更符合现代设计，你也可以改成 65% */
+    height: 55px;
+    background-color: #a2a984;
+    color: #000;
+    border: none;
+    border-radius: 28px;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    display: block;
+    margin: 15px auto 0 auto;
+    transition: background 0.2s ease;
+}
+
+.register-btn:hover {
+    background-color: #8f9672;
+}
+
+/* 错误验证消息 */
+.error-msg, .error-msg-terms {
+    color: #d9534f;
+    font-size: 13px;
+    font-family: Arial, sans-serif;
+    margin-top: 6px;
+    display: none;
+}
+
+.invalid input {
+    border: 1px solid #d9534f !important;
+}
+
+.invalid .error-msg, .invalid-terms .error-msg-terms {
+    display: block;
+}

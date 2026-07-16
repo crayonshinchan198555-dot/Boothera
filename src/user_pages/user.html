@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boothera User Dashboard</title>
+    <!-- 引入外部样式表 -->
+    <link rel="stylesheet" href="user.css">
+</head>
+
+<body>
+    <!-- 统一的客户端 JavaScript 逻辑块 -->
+    <script>
+        // 发送留言给管理员的函数
+        function sendMessageToAdmin() {
+            const subjectInput = document.getElementById('msg-subject');
+            const contentInput = document.getElementById('msg-content');
+
+            if (!subjectInput || !contentInput) {
+                alert("Error: Cannot find input fields with id msg-subject or msg-content!");
+                return;
+            }
+
+            const subject = subjectInput.value.trim();
+            const content = contentInput.value.trim();
+
+            if (!subject || !content) {
+                alert('Please fill in all fields!');
+                return;
+            }
+
+            // 真正使用 Fetch 发送给后端的 message.php
+            // 💡 提示：如果 user.html 在子文件夹里，记得把 '../message.php' 改成你所需的路径
+            fetch('../message.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `action=send_message&subject=${encodeURIComponent(subject)}&content=${encodeURIComponent(content)}`
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('网页没找到 message.php (404) 或者后端挂了 (500)');
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert(data.message);
+                if (data.success) {
+                    const form = document.getElementById('admin-message-form');
+                    if (form) form.reset();
+                    if (typeof renderUserMessageHistory === 'function') {
+                        renderUserMessageHistory();
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('连接失败！原因可能包括：\n1. 找不到 message.php（请检查路径）\n2. 或者是：' + error.message);
+            });
+        }
+    </script>
+
+    <div class="container">
+        <!-- ========================================== -->
+        <!-- 左侧导航栏 (Sidebar)                        -->
+        <!-- ========================================== -->
+        <div class="sidebar">
+            <!-- 标志区域 (Logo Section) -->
+            <div class="logo-section">
+                <div class="logo-container">
+                    <!-- SVG 山峰标志 -->
+                    <svg class="logo-mountain" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="20,50 40,20 60,50" fill="#4F6D7A" />
+                        <polygon points="45,50 60,28 75,50" fill="#7C94A1" />
+                    </svg>
+                    <!-- 品牌文本 -->
+                    <span class="brand-text">BOOTHERA</span>
+                </div>
+            </div>
+
+            <!-- 菜单选项区 (Menu) -->
+            <div class="menu">
+                <!-- 活动列表选项 -->
+                <a href="#" class="menu-item active" id="menu-events" onclick="switchTab('events')">Events</a>
+                <!-- 我的申请选项 -->
+                <a href="#" class="menu-item" id="menu-my-applications" onclick="switchTab('my-applications')">My Applications</a>
+                <!-- 个人资料选项 -->
+                <a href="#" class="menu-item" id="menu-profile" onclick="switchTab('profile')">Profile</a>
+                <!-- 帮助与支持选项 -->
+                <a href="#" class="menu-item" id="menu-help" onclick="switchTab('help')">Help & Support</a>
+            </div>
+
+            <!-- 侧边栏底部：登出按钮 -->
+            <div class="sidebar-footer">
+                <a href="../index.html" style="text-decoration: none;">
+                    <button class="logout-btn">Logout</button>
+                </a>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 右侧主体内容区 (Main Content)               -->
+        <!-- ========================================== -->
+        <div class="main-content">
+            <!-- 顶部标题栏，会根据切换的页面动态改变文本 -->
+            <div class="top-bar">
+                <h1 id="page-title">Available Events</h1>
+            </div>
+
+            <div class="content-body">
+
+                <!-- ------------------------------------------ -->
+                <!-- 选项卡 1：活动列表面板 (Events Tab)          -->
+                <!-- ------------------------------------------ -->
+                <div id="tab-events" class="tab-panel active">
+                    <!-- 搜索与筛选工具栏 -->
+                    <div class="search-filter-box">
+                        <!-- 关键词输入框 -->
+                        <input type="text" id="event-search" class="search-input" placeholder="Search events..." onkeyup="filterEvents()">
+
+                        <!-- 月份筛选下拉框 -->
+                        <select id="month-filter" class="filter-select" onchange="filterEvents()">
+                            <option value="">All Months</option>
+                            <option value="01">January</option>
+                            <option value="02">February</option>
+                            <option value="03">March</option>
+                            <option value="04">April</option>
+                            <option value="05">May</option>
+                            <option value="06">June</option>
+                            <option value="07">July</option>
+                            <option value="08">August</option>
+                            <option value="09">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                    </div>
+
+                    <!-- 活动卡片网格布局容器 -->
+                    <div class="card-grid" id="event-grid">
+                        
+                    </div>
+                </div>
+
+                <!-- ------------------------------------------ -->
+                <!-- 选项卡 2：活动详情面板 (Event Detail Tab)    -->
+                <!-- ------------------------------------------ -->
+                <div id="tab-event-detail" class="tab-panel">
+                    <!-- 返回活动列表按钮 -->
+                    <button onclick="switchTab('events')" class="btn-back">← Back to Events</button>
+                    <!-- 详情卡片 -->
+                    <div class="booth-card">
+                        <h2 id="d-title">Event Title</h2>
+                        <p><strong>Venue:</strong> <span id="d-venue"></span></p>
+                        <p><strong>Date:</strong> <span id="d-date"></span></p>
+                        <p><strong>Time:</strong> <span id="d-time"></span></p>
+                        <p><strong>Description:</strong> <span id="d-desc"></span></p>
+                        <p><strong>Rental Price:</strong> <span id="d-price" style="font-weight:bold;"></span></p>
+                        <p><strong>Total Booths Available:</strong> <span id="d-booths"></span></p>
+                        <!-- 立即申请按钮，点击前往表单 -->
+                        <button class="btn-submit-event" style="width: 100%; padding: 15px; margin-top:20px;" onclick="openApplyForm()">Apply Now</button>
+                    </div>
+                </div>
+
+                <!-- ------------------------------------------ -->
+                <!-- 选项卡 3：摊位申请表单 (Apply Form Tab)     -->
+                <!-- ------------------------------------------ -->
+                <div id="tab-apply-form" class="tab-panel">
+                    <!-- 返回详情页按钮 -->
+                    <button onclick="switchTab('event-detail')" class="btn-back">← Back to Details</button>
+                    <!-- 表单卡片 -->
+                    <div class="booth-card">
+                        <h2>Apply: <span id="form-event-title"></span></h2>
+                        <form id="application-form" onsubmit="event.preventDefault(); submitApplication();">
+                            <!-- 摊位选择 (单选按钮) -->
+                            <p><strong>Select Booth:</strong></p>
+                            <div id="booth-options-container">
+    <!-- 这里原本写死的 Booth 1, 2, 5 删掉，JS 会自动把数据库里的摊位注入到这里 -->
+                            </div>
+
+                            <!-- 申请人姓名 -->
+                            <p><strong>Applicant Name:</strong></p>
+                            <input type="text" id="applicant-name" class="search-input" style="width:100%;" required>
+
+                            <!-- 产品类别 -->
+                            <p><strong>Products Category:</strong></p>
+                            <input type="text" id="product-category" name="product_category" class="search-input" style="width:100%;" required>
+
+                            <!-- 产品名称 -->
+                            <p><strong>Products Name:</strong></p>
+                            <input type="text" id="product-name" name="product_name" class="search-input" style="width:100%;" required>
+
+                            <!-- 提交申请按钮 -->
+                            <button type="submit" class="btn-submit-event" style="width:100%; margin-top:20px;">Submit</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ------------------------------------------ -->
+                <!-- 选项卡 4：我的申请面板 (My Applications Tab) -->
+                <!-- ------------------------------------------ -->
+                <div id="tab-my-applications" class="tab-panel">
+                    <h2>My Applications</h2>
+                    <!-- 优雅的响应式表格容器 -->
+                    <div class="table-responsive" style="margin-top: 20px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: sans-serif;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid #eee; color: #666; font-size: 14px;">
+                                    <th style="padding: 12px 8px;">App ID</th>
+                                    <th style="padding: 12px 8px;">Event Name</th>
+                                    <th style="padding: 12px 8px;">Booth No.</th>
+                                    <th style="padding: 12px 8px;">Category</th>
+                                    <th style="padding: 12px 8px;">Product Name</th>
+                                    <th style="padding: 12px 8px; text-align: center;">Status</th>
+                                </tr>
+                            </thead>
+                            <!-- 动态填充的表格行容器 -->
+                            <tbody id="my-apps-table-body">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; padding: 30px; color: #999;">Loading applications...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ------------------------------------------ -->
+                <!-- 选项卡 5：个人资料面板 (Profile Tab)         -->
+                <!-- ------------------------------------------ -->
+                <!-- 💡 已修复：移除 "active" 属性防止首屏与 Events 面板发生样式重合 -->
+                <div id="tab-profile" class="tab-panel"> 
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h2>PROFILE</h2>
+                        <!-- 编辑按钮：点击触发 toggleEdit -->
+                        <button id="edit-btn" onclick="toggleEdit()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">✏️</button>
+                    </div>
+                  
+                    <!-- 1. 查看状态的容器 (默认显示) -->
+                    <div id="profile-view">
+                        <h3>Profile Details</h3>
+                        <p><strong>Name:</strong> <span id="view-name">Loading...</span></p>
+                        <p><strong>Phone number:</strong> <span id="view-phone">Loading...</span></p>
+                        <p><strong>E-mail:</strong> <span id="view-email">Loading...</span></p>
+                        <p><strong>Business name:</strong> <span id="view-business">Loading...</span></p>
+                    </div>
+
+                    <!-- 2. 编辑状态的表单 (默认隐藏) -->
+                    <form id="profile-edit-form" style="display: none;" onsubmit="event.preventDefault(); saveProfile();">
+                        <h3>Edit Profile Details</h3>
+                        <p>
+                            <label style="display:block; font-weight:bold;">Name:</label>
+                            <input type="text" id="edit-name" style="padding:5px; width:250px;">
+                        </p>
+                        <p>
+                            <label style="display:block; font-weight:bold;">Phone number:</label>
+                            <input type="text" id="edit-phone" style="padding:5px; width:250px;">
+                        </p>
+                        <p>
+                            <!-- 邮箱作为主键，不让修改 -->
+                            <label style="display:block; font-weight:bold;">E-mail (Cannot change):</label>
+                            <input type="text" id="edit-email" disabled style="padding:5px; width:250px; background:#f0f0f0;">
+                        </p>
+                        <p>
+                            <label style="display:block; font-weight:bold;">Business name:</label>
+                            <input type="text" id="edit-business" style="padding:5px; width:250px;">
+                        </p>
+                        <button type="submit" style="padding: 6px 15px; background: #4F6D7A; color: white; border: none; border-radius: 4px; cursor: pointer;">Save Changes</button>
+                    </form>
+                </div>
+
+                <!-- ------------------------------------------ -->
+                <!-- 选项卡 6：客服与留言面板 (Help Tab)          -->
+                <!-- ------------------------------------------ -->
+                <div id="tab-help" class="tab-panel">
+                    <h2>Help & Support</h2>
+
+                    <!-- 采用双列响应式网格 -->
+                    <div class="card-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1000px;">
+
+                        <!-- 区域 A：机器人 FAQ 自动回复 -->
+                        <div class="booth-card" style="margin: 0;">
+                            <h3>🤖 Robot FAQ</h3>
+                            <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">Click on a question to get an instant answer:</p>
+
+                            <!-- 常见问题快捷点击 -->
+                            <div class="faq-buttons" style="display: flex; flex-direction: column; gap: 10px;">
+                                <button type="button" class="btn-submit-event"
+                                    style="background-color: #f0f4f8; color: #333; border: 1px solid #ccc; padding: 10px; margin: 0; text-align: left;"
+                                    onclick="robotReply('how_to_apply')">❓ How do I apply for a booth?</button>
+                                <button type="button" class="btn-submit-event"
+                                    style="background-color: #f0f4f8; color: #333; border: 1px solid #ccc; padding: 10px; margin: 0; text-align: left;"
+                                    onclick="robotReply('refund_policy')">❓ What is the refund policy?</button>
+                                <button type="button" class="btn-submit-event"
+                                    style="background-color: #f0f4f8; color: #333; border: 1px solid #ccc; padding: 10px; margin: 0; text-align: left;"
+                                    onclick="robotReply('payment')">❓ How to make payment?</button>
+                            </div>
+
+                            <!-- 机器人回复结果展示框 -->
+                            <div id="robot-response-box"
+                                style="margin-top: 20px; padding: 15px; background: #eef7f9; border-left: 4px solid #4F6D7A; border-radius: 4px; display: none;">
+                                <strong>Robot:</strong> <span id="robot-text"></span>
+                            </div>
+                        </div>
+
+                        <!-- 区域 B：给管理员发信息/留言 -->
+                        <div class="booth-card" style="margin: 0;">
+                            <h3>✉️ Message Admin</h3>
+                            <form id="admin-message-form" onsubmit="event.preventDefault(); sendMessageToAdmin();">
+                                <!-- 留言主题 -->
+                                <p><strong>Subject:</strong></p>
+                                <input type="text" id="msg-subject" class="search-input" style="width:100%;" placeholder="e.g., Booth Query" required>
+
+                                <!-- 留言内容 -->
+                                <p><strong>Your Message:</strong></p>
+                                <textarea id="msg-content" class="search-input"
+                                    style="width:100%; height: 100px; font-family: inherit; padding: 10px; box-sizing: border-box;"
+                                    placeholder="Type your message here..." required></textarea>
+
+                                <!-- 提交按钮：已绑定到全局规范的 sendMessageToAdmin() 方法 -->
+                                <button type="submit" class="btn-submit-event" style="width:100%; margin-top:20px;">Send Message</button>
+                            </form>
+                        </div>
+
+                        <!-- 区域 C：历史记录卡片 (💡 已并入网格布局，在 A 和 B 的下方对齐) -->
+                        <div class="booth-card" style="margin: 0; grid-column: span 2; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                            <h3 style="margin-top: 0; color: #4F6D7A; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;">
+                                ✉️ Message History & Replies
+                            </h3>
+                            <!-- 动态填充历史记录的容器 -->
+                            <div id="user-message-history-grid" style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
+                                <p id="no-history-text" style="color: #94a3b8; font-style: italic; font-size: 0.9rem;">
+                                    No message history found.
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- 引入外部逻辑脚本 -->
+    <script src="user.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      # 👇 改变这里：直接映射到当前目录下的 mysql_data 文件夹
+      - ./mysql_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+
+  web:
+    image: php:8.2-apache
+    container_name: my_website
+    restart: always
+    ports:
+      - "8081:80"
+    volumes:
+      - ./src:/var/www/html
+    command: sh -c "docker-php-ext-install mysqli pdo pdo_mysql && apache2-foreground"
+    depends_on:
+      - db
+
+# 👇 注意：文件最底部的 volumes: db_data: 这一块直接删掉，不要了！
