@@ -75,7 +75,7 @@ document.getElementById('signupForm').addEventListener('submit', function(event)
             if (data.success) {
                 alert(data.message);
                 // 假设你的登录页在根目录
-                window.location.href = '/login.php'; 
+                window.location.href = '/index.html'; 
             } else {
                 alert("注册失败: " + data.message);
             }
