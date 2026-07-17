@@ -437,28 +437,27 @@ document.addEventListener("DOMContentLoaded", function() {
  * @param {number} eventId - 活动ID
  */
 function loadBooths(eventId) {
-    // 调试弹窗，确保点击后代码运行
+    // 调试弹窗
     alert("正在尝试加载摊位，ID为: " + eventId);
     
+    // 1. 获取容器
     const container = document.getElementById('booth-container');
-    boothContainer.innerHTML += `
-        <label>
-            <input type="radio" name="booth_id" value="${booth.id}"> ${booth.name}
-        </label><br>
-    `;
-    // 如果页面没找到这个容器，报错
+    
+    // 2. 如果页面没找到这个容器，报错并终止
     if (!container) {
         console.error("未找到 booth-container，请检查 HTML 是否包含 <div id='booth-container'></div>");
         return;
     }
 
-    container.innerHTML = 'Loading...'; // 加载中提示
+    // 3. 显示加载中提示
+    container.innerHTML = 'Loading...'; 
 
-    // 请求后端 API
+    // 4. 请求后端 API
     fetch(`../get_booths.php?event_id=${eventId}`)
         .then(response => response.json())
         .then(result => {
-            container.innerHTML = ''; // 清空加载提示
+            // 清空加载提示
+            container.innerHTML = ''; 
             
             if (result.success && result.data && result.data.length > 0) {
                 result.data.forEach(booth => {
