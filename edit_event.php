@@ -134,7 +134,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_event'])) {
     <?php endif; ?>
 
     <!-- 这里假设你的主页是 home.html 或者 admin_event.php，请根据实际情况修改 href -->
-    <a href="adminpages/home.html" class="btn-back">返回管理列表</a>
+    <a href="adminpages/home.php" class="btn-back">返回管理列表</a>
 </div>
 
 </body>
