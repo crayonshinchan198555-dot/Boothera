@@ -39,7 +39,7 @@ async function login() {
     const pass = document.getElementById('password').value;
 
     try {
-        const response = await fetch('login.php', {
+        const response = await fetch('/login.php', {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pass)}`
