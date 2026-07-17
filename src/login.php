@@ -6,17 +6,21 @@ session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-$h = getenv('DB_HOST');
-$u = getenv('DB_USER');
-$p = getenv('DB_PASS');
-$d = getenv('DB_NAME');
-$port = getenv('DB_PORT') ?: 3306;
+// src/login.php
+$servername = getenv('DB_HOST');
+$username   = getenv('DB_USER');
+$password   = getenv('DB_PASS');
+$dbname     = getenv('DB_NAME');
+$port       = getenv('DB_PORT');
 
-// 测试连接
-$conn = new mysqli($h, $u, $p, $d, $port);
+// 如果是空值，给个默认端口3306
+if (empty($port)) $port = 3306;
+
+$conn = new mysqli($servername, $username, $password, $dbname, $port);
 
 if ($conn->connect_error) {
-    die("<h1>❌ 数据库连接失败!</h1><p>错误原因: " . $conn->connect_error . "</p><p>检查一下 Render 里的变量: Host=$h, User=$u, DB=$d, Port=$port</p>");
+    // 这里显示详细的连接信息，如果再报错，这就告诉你哪里错了
+    die("Connection failed: " . $conn->connect_error . " (Host: $servername)");
 }
 
 // 如果连上了，这里会输出“连接成功”
