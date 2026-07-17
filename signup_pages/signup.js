@@ -66,7 +66,7 @@ document.getElementById('signupForm').addEventListener('submit', function(event)
     if (isFormValid) {
         const formData = new FormData(this); // this 指向 signupForm
 
-        fetch('../signup.php', {
+        fetch('/signup.php', {
             method: 'POST',
             body: formData
         })
@@ -75,7 +75,7 @@ document.getElementById('signupForm').addEventListener('submit', function(event)
             if (data.success) {
                 alert(data.message);
                 // 假设你的登录页在根目录
-                window.location.href = '../login.php'; 
+                window.location.href = '/login.php'; 
             } else {
                 alert("注册失败: " + data.message);
             }
