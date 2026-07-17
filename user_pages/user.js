@@ -3,17 +3,19 @@
  * @param {string} tabId - 要切换到的目标选项卡ID
  */
 function switchTab(tabId) {
-    // 隐藏所有内容面板，并移除其 active 激活类
+    // 隐藏所有面板
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    // 取消所有左侧菜单项的激活状态
+    // 取消所有菜单激活
     document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
     
-    // 显示选中的目标内容面板
-    document.getElementById('tab-' + tabId).classList.add('active');
+    // 如果 tabId 已经包含了 'tab-'，就不再重复拼接
+    const fullId = tabId.startsWith('tab-') ? tabId : ('tab-' + tabId);
     
-    // 激活对应的左侧菜单项
-    const menuEl = document.getElementById('menu-' + tabId);
-    if(menuEl) menuEl.classList.add('active');
+    // 显示选中的目标
+    const target = document.getElementById(fullId);
+    if (target) {
+        target.classList.add('active');
+    }
     
     // 动态更新页面顶部的标题标题 (根据当前 tabId 处理特殊命名)
     if (tabId === 'help') {
