@@ -1,36 +1,13 @@
 <?php
 session_start();
+header("Content-Type: application/json; charset=UTF-8"); // 必须强制声明返回 JSON
 
-// 🚨 调试模式：强制关闭 JSON，直接输出错误信息到屏幕
-// 如果你看到页面上有任何文字，那就是连接失败的原因
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// 数据库连接部分保持不变...
+// 假设 $conn 已正确定义
 
-// src/login.php
-$servername = getenv('DB_HOST');
-$username   = getenv('DB_USER');
-$password   = getenv('DB_PASS');
-$dbname     = getenv('DB_NAME');
-$port       = getenv('DB_PORT');
-
-// 如果是空值，给个默认端口3306
-if (empty($port)) $port = 3306;
-
-$conn = new mysqli($servername, $username, $password, $dbname, $port);
-
-if ($conn->connect_error) {
-    // 这里显示详细的连接信息，如果再报错，这就告诉你哪里错了
-    die("Connection failed: " . $conn->connect_error . " (Host: $servername)");
-}
-
-// 如果连上了，这里会输出“连接成功”
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = isset($_POST['email']) ? trim($_POST['email']) : '';
-    $password = isset($_POST['password']) ? $_POST['password'] : '';
-
-    if (empty($email) || empty($password)) {
-        die("Email and password cannot be empty!");
-    }
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
 
     $email = mysqli_real_escape_string($conn, $email);
     $sql = "SELECT * FROM Users WHERE `e-mail` = '$email'";
@@ -39,25 +16,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result && $result->num_rows > 0) {
         $row = $result->fetch_assoc();
         
-        // 使用 password_verify 比对密码 (如果你的数据库存的是 hash)
-        // 如果你存的是明文，请改回 if ($password == $row['password'])
         if (password_verify($password, $row['password']) || $password == $row['password']) {
-            $_SESSION['isLoggedIn'] = true;
             $_SESSION['user_id'] = $row['user_id'];
-            $_SESSION['name'] = $row['name'];
             $_SESSION['userRole'] = $row['role']; 
 
-            header("Content-Type: application/json");
-            echo json_encode(["success" => true, "message" => "Login Successful!", "role" => $row['role']]);
-            exit;
+            // 成功：只返回这个 JSON
+            echo json_encode(["success" => true, "message" => "登录成功"]);
         } else {
-            die("❌ 密码错误！");
+            echo json_encode(["success" => false, "message" => "密码错误"]);
         }
     } else {
-        die("❌ 用户不存在！");
+        echo json_encode(["success" => false, "message" => "用户不存在"]);
     }
-} else {
-    echo "请通过 POST 请求登录。";
 }
 $conn->close();
 ?>
