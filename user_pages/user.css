@@ -58,3 +58,21 @@ body { font-family: 'Segoe UI', sans-serif; background-color: #F8F9FA; margin: 0
     margin-bottom: 10px;
     padding: 8px;
 }
+
+#application-history-table {
+    width: 100%;
+    border-collapse: collapse; /* 这一行能让表格看起来更紧凑但整齐 */
+    margin-top: 20px;
+}
+
+#application-history-table th, 
+#application-history-table td {
+    padding: 15px 20px;       /* 核心：这里增加了左右 20px 的间距 */
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0; /* 添加一条淡淡的分割线，更清晰 */
+}
+
+#application-history-table th {
+    background-color: #f7fafc; /* 表头稍微加一点背景色，更有层次 */
+    color: #4a5568;
+}
