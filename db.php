@@ -1,40 +1,26 @@
 <?php
-// db.php - 智能适配本地与云端的数据库连接文件
+// db.php - 彻底硬编码测试版
 
-// 1. 获取环境变量 (Railway 提供 DB_URL，或者手动设置 DB_HOST 等)
-$dbUrl = getenv('DB_URL');
+// ⚠️ 直接在此处填入你从 Railway 获取的正确公网信息
+$host = "hayabusa.proxy.rlwy.net";
+$port = 59703;
+$user = "root";
+$pass = "这里填写你 Railway MYSQL_ROOT_PASSWORD 的真实值"; 
+$dbname = "railway"; // 这里的数据库名填你 Variables 里看到的那个
 
-if ($dbUrl) {
-    // ☁️ 云端模式 (Railway)
-    // 自动解析 Railway 提供的 URL 格式: mysql://user:pass@host:port/dbname
-    $url = parse_url($dbUrl);
-    $host = $url["host"];
-    $user = $url["user"];
-    $pass = isset($url["pass"]) ? $url["pass"] : "";
-    $dbname = ltrim($url["path"], '/');
-    $port = isset($url["port"]) ? $url["port"] : 3306;
-} else {
-    // 🏠 本地模式 (Docker/开发环境)
-    $host = getenv('DB_HOST') ?: "db";
-    $user = getenv('DB_USER') ?: "root";
-    $pass = getenv('DB_PASS') ?: "root";
-    $dbname = getenv('DB_NAME') ?: "boothera";
-    $port = getenv('DB_PORT') ?: 3306;
-}
-
-// 2. 建立连接
-// 使用 mysqli_init 初始化，以便配置 SSL
-// 3. 执行连接
+// 建立连接
 $conn = mysqli_init();
+// 如果连接依然报错，请尝试注释下面这行 SSL 配置再测试
 mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
 
+// 尝试连接
 if (!$conn->real_connect($host, $user, $pass, $dbname, $port, NULL, MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT)) {
-    // ⚠️ 关键修改：不要用 die() 隐藏信息，直接打印出真实的数据库报错！
-    die("数据库连接失败 (Debug): " . mysqli_connect_error() . " | Host: " . $host . " | User: " . $user);
+    // 如果报错，这里会把具体原因打印在屏幕上
+    die("数据库连接失败: " . mysqli_connect_error() . " | Host: " . $host . " | Port: " . $port);
 }
 
-// 4. 设置字符集
+// 设置字符集
 $conn->set_charset("utf8mb4");
 
-// 成功连接后，不需要输出任何东西，保持静默即可
+// 连接成功则什么都不输出，保证程序正常运行
 ?>
