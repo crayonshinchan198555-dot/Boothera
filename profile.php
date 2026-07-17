@@ -29,7 +29,7 @@ if ($method === 'GET') {
             FROM Users 
             WHERE `e-mail` = ? LIMIT 1";
         
-        if ($ = $conn->prepare($sql)) {
+        if ($stmt = $conn->prepare($sql)) {
             $stmt->bind_param("s", $email);
             $stmt->execute();
             $result = $stmt->get_result();
