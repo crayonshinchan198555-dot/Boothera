@@ -356,7 +356,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(result => {
             // 检查 success 是否为 true
             if (result.success) {
-                const grid = document.getElementById('events-grid');
+                const grid = document.getElementById('event-grid');
                 grid.innerHTML = ''; // 清空加载
 
                 // 遍历 result.data
