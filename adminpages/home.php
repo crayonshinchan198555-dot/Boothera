@@ -327,6 +327,6 @@ if (!$isLoggedIn || !$hasRole) {
     </div>
 
     <!-- 引入外部逻辑脚本 -->
-    <script src="home.js"></script>
+    <script src="/adminpages/home.js"></script>
 </body>
 </html>
