@@ -465,11 +465,20 @@ function restoreSavedApplications() {
  */
 function logout() {
     if (confirm("Are you sure you want to log out?")) {
-        localStorage.removeItem("isLoggedIn");
-        window.location.href = "/index.html";
+        // 请求后端的注销逻辑（销毁 Session）
+        fetch('logout.php', { method: 'POST' })
+        .then(() => {
+            // 清理本地状态
+            localStorage.removeItem("isLoggedIn");
+            // 跳转回登录页
+            window.location.href = "login.html";
+        })
+        .catch(err => {
+            // 如果后端请求失败，也要强制跳转
+            window.location.href = "login.html";
+        });
     }
 }
-
 /**
  * =========================================================================
  * 【新功能区域】11. 消息中心（读取、展示留言、以及 Admin 实时 Reply 回复逻辑）
