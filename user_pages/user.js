@@ -481,3 +481,35 @@ function loadBooths(eventId) {
             container.innerHTML = '加载失败，请重试。';
         });
 }
+
+function loadApplicationHistory() {
+    const email = localStorage.getItem('userEmail');
+    const tbody = document.getElementById('app-history-body');
+
+    if (!email) return;
+
+    // 调用你的 API
+    fetch(`../application.php?email=${encodeURIComponent(email)}`)
+        .then(res => res.json())
+        .then(result => {
+            if (result.success && result.data) {
+                tbody.innerHTML = ''; // 清空列表
+                result.data.forEach(app => {
+                    const row = `
+                        <tr>
+                            <td>${app.event_name || 'N/A'}</td>
+                            <td>${app.booth_number || app.booth_id}</td>
+                            <td>${app.product_category}</td>
+                            <td>${app.product_name}</td>
+                            <td class="status-${app.status.toLowerCase()}">${app.status}</td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            }
+        })
+        .catch(err => console.error("获取记录失败:", err));
+}
+
+// 页面加载完后立即调用
+document.addEventListener("DOMContentLoaded", loadApplicationHistory);

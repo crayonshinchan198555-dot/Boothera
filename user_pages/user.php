@@ -148,11 +148,24 @@ if (!isset($_SESSION['user_id'])) {
                 <!-- ------------------------------------------ -->
                 <!-- 选项卡 4：我的申请面板 (My Applications Tab) -->
                 <!-- ------------------------------------------ -->
-                <div id="tab-my-applications" class="tab-panel">
-                    <h2>My Applications</h2>
-                    <!-- 用于动态渲染已申请内容的卡片网格 -->
-                    <div class="card-grid" id="my-apps-grid"></div>
-                </div>
+               <!-- 原来的 <p>My Applications</p> 替换为下方的表格 -->
+<div class="tab-panel" id="tab-my-applications">
+    <h2>My Applications</h2>
+    <table id="application-history-table">
+        <thead>
+            <tr>
+                <th>Event</th>
+                <th>Booth</th>
+                <th>Category</th>
+                <th>Product</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="app-history-body">
+            <!-- JS 会把数据插到这里 -->
+        </tbody>
+    </table>
+</div>
 
                 <!-- ------------------------------------------ -->
                 <!-- 选项卡 5：个人资料面板 (Profile Tab)         -->
