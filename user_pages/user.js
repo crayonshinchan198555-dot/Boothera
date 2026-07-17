@@ -167,16 +167,20 @@ function toggleEdit() {
     const editForm = document.getElementById('profile-edit-form');
     const btn = document.getElementById('edit-btn');
 
-    // 如果当前处于查看状态，点击后显示编辑表单
-    if (editForm.style.display === 'none') {
+    // 安全检查：如果页面没找到这些 ID，报错提示你
+    if (!viewDiv || !editForm || !btn) {
+        console.error("找不到 HTML 元素，请检查 ID 是否匹配！", {viewDiv, editForm, btn});
+        return;
+    }
+
+    if (editForm.style.display === 'none' || editForm.style.display === '') {
         viewDiv.style.display = 'none';
         editForm.style.display = 'block';
-        btn.textContent = '✖'; // 切换按钮为取消图标
+        btn.textContent = '✖';
     } else {
-        // 如果当前处于编辑状态，点击后切回查看状态
         viewDiv.style.display = 'block';
         editForm.style.display = 'none';
-        btn.textContent = '✏️'; // 恢复编辑图标
+        btn.textContent = '✏️';
     }
 }
 
