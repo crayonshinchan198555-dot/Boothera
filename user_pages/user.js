@@ -70,8 +70,14 @@ function showEventDetail(title, date, loc, time, desc, price) {
  * 打开摊位申请表单
  */
 function openApplyForm() {
-    // 自动将刚刚点击的活动标题填入表单中
-    document.getElementById('form-event-title').innerText = window.currentEventTitle;
+    // 确保从详情页的标题获取最新的标题，而不是依赖可能为空的全局变量
+    const detailTitle = document.getElementById('d-title').innerText;
+    const formTitleEl = document.getElementById('form-event-title');
+    
+    if (formTitleEl) {
+        formTitleEl.innerText = "Apply: " + detailTitle;
+    }
+    
     // 切换到申请表单页面
     switchTab('apply-form');
 }

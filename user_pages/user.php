@@ -125,9 +125,7 @@ if (!isset($_SESSION['user_id'])) {
                         <form id="application-form" onsubmit="event.preventDefault(); submitApplication();">
                             <!-- 摊位选择 (单选按钮) -->
                             <p><strong>Select Booth:</strong></p>
-                            <label><input type="radio" name="booth" value="Booth 1" required> Booth 1</label><br>
-                            <label><input type="radio" name="booth" value="Booth 2" required> Booth 2</label><br>
-                            <label><input type="radio" name="booth" value="Booth 5" required> Booth 5</label>
+                            <div id="booth-container"></div>
                             
                             <!-- 申请人姓名 -->
                             <p><strong>Applicant Name:</strong></p>
