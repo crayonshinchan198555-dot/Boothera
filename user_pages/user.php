@@ -188,7 +188,7 @@ if (!isset($_SESSION['user_id'])) {
                         <p><strong>Business name:</strong> <span id="view-business">Uncle Rojak</span></p>    
                     </div>
 
-                    <div id="profile-edit" style="display: none;">
+                    <div id="profile-edit-form" style="display: none;">
                         <p><strong>Name:</strong> <input type="text" id="edit-name"></p>
                         <p><strong>Phone:</strong> <input type="text" id="edit-phone"></p>
                         <p><strong>Business:</strong> <input type="text" id="edit-business"></p>
