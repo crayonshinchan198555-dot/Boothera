@@ -1,22 +1,29 @@
 <?php
+
+set_error_handler(function($errno, $errstr) {
+    echo json_encode(["success" => false, "message" => "PHP Error: " . $errstr]);
+    exit;
+});
+
 ini_set('session.cookie_path', '/');
 session_start();
 
 header('Content-Type: application/json');
 
-// 使用 getenv() 获取 Railway 自动注入的环境变量
-$servername = getenv('MYSQLHOST');
-$username   = getenv('MYSQLUSER');
-$password   = getenv('MYSQLPASSWORD');
-$dbname     = getenv('MYSQLDATABASE'); // 请确认你 Railway 里的变量名是 MYSQLDATABASE 还是 MYSQL_DATABASE
-$port       = getenv('MYSQLPORT');
+// 显式从环境变量获取，如果获取不到，给一个明确的报错，而不是让程序继续往下跑
+$servername = getenv('MYSQLHOST') ?: getenv('MYSQL_HOST');
+$username   = getenv('MYSQLUSER') ?: getenv('MYSQL_USER');
+$password   = getenv('MYSQLPASSWORD') ?: getenv('MYSQL_PASSWORD');
+$dbname     = getenv('MYSQLDATABASE') ?: getenv('MYSQL_DATABASE');
+$port       = getenv('MYSQLPORT') ?: getenv('MYSQL_PORT');
 
-// 连接数据库
-$conn = new mysqli($servername, $username, $password, $dbname, $port);
-
-if ($conn->connect_error) {
-    die(json_encode(["success" => false, "message" => "Database connection failed: " . $conn->connect_error]));
+// 如果必要参数为空，直接输出 JSON 报错并终止，防止页面输出 HTML 警告
+if (!$servername || !$username) {
+    echo json_encode(["success" => false, "message" => "Database configuration missing!"]);
+    exit;
 }
+
+$conn = new mysqli($servername, $username, $password, $dbname, $port);
 
 $action = $_POST['action'] ?? '';
 $email = $_POST['email'] ?? '';
