@@ -1,7 +1,12 @@
 <?php
 // 1. 强制关闭所有错误输出，防止它们破坏 JSON 格式
-ini_set('display_errors', 0);
-error_reporting(0);
+<?php
+// 在顶部添加：
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// ... 其余代码 ...
 
 // 2. 设置响应头为 JSON
 header("Content-Type: application/json; charset=UTF-8");
