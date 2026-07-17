@@ -1,5 +1,4 @@
-<?php
-// 1. 强制关闭所有错误输出，防止它们破坏 JSON 格式
+
 <?php
 // 在顶部添加：
 ini_set('display_errors', 1);
