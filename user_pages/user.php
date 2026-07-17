@@ -12,7 +12,7 @@ if (!isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <title>Boothera User Dashboard</title>
     <!-- 引入外部样式表 -->
-    <link rel="stylesheet" href="/user_pages/user.css">
+    <link rel="stylesheet" href="user.css">
 </head>
 <body>
     <div class="container">
@@ -262,7 +262,6 @@ if (!isset($_SESSION['user_id'])) {
         </div>
     </div>
     <!-- 引入外部逻辑脚本 -->
-    <!-- 将原来的 ./user.js 修改为以下路径 -->
-    <script src="/user_pages/user.js"></script>>
+    <script src="./user.js"></script>
 </body>
 </html>

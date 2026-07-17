@@ -1,9 +1,3 @@
-// 示例代码
-document.addEventListener('DOMContentLoaded', () => {
-    console.log("页面已加载，开始获取数据...");
-    fetchEvents();
-    fetchProfile();
-});
 /**
  * 切换选项卡页面 (Tab Switching)
  * @param {string} tabId - 要切换到的目标选项卡ID
