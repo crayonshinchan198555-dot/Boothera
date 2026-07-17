@@ -12,7 +12,7 @@ if (!isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <title>Boothera User Dashboard</title>
     <!-- 引入外部样式表 -->
-    <link rel="stylesheet" href="user.css">
+    <link rel="stylesheet" href="/user_pages/user.css">
 </head>
 <body>
     <div class="container">
