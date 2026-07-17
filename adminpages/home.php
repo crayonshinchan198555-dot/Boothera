@@ -1,18 +1,17 @@
 <?php
 session_start();
 
-// 💡 调试输出：看看它们到底是什么
-// echo "Session Role: " . $_SESSION['userRole']; exit; 
+// 打印出当前所有的 Session 内容
+echo "<pre>当前 Session 内容: ";
+print_r($_SESSION);
+echo "</pre>";
 
-// 强制使用绝对路径进行判断
-$isLoggedIn = isset($_SESSION['user_id']);
-$isAdmin = (isset($_SESSION['userRole']) && $_SESSION['userRole'] == 'admin');
-
-if (!$isLoggedIn || !$isAdmin) {
-    // 💡 关键修改：把路径改成绝对路径 /login.html 或者绝对跳转
-    // 并且确保没有多余的空格或字符
-    echo "<script>alert('Access Denied: Please sign in as admin!'); window.location.href='/index.html';</script>";
-    exit();
+// 如果发现 Session 里确实没有东西，或者 userRole 不是 admin，直接停止并显示
+if (!isset($_SESSION['user_id'])) {
+    die("严重错误：Session 中找不到 user_id，说明登录信息在跳转过程中丢失了。");
+}
+if ($_SESSION['userRole'] !== 'admin') {
+    die("错误：当前角色是 " . $_SESSION['userRole'] . "，而不是 admin。");
 }
 ?>
  
