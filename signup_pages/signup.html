@@ -51,6 +51,15 @@
             </div>
 
             <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="************">
+                    <i class="far fa-eye toggle-password" onclick="togglePassword('confirmPassword', this)"></i>
+                </div>
+                <span class="error-msg" id="confirmError">Passwords do not match</span>
+            </div>
+
+            <div class="form-group">
                 <label for="business_name">Business Name</label>
                 <input type="text" id="business_name" name="business_name" required placeholder="Enter business name">
                 <span class="error-msg">Business name is required</span>
