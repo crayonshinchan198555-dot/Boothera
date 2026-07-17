@@ -11,7 +11,8 @@ $password = $_POST['password'] ?? '';
 $row = null;
 
 // 3. 查询数据库
-$sql = "SELECT password, role FROM Users WHERE `e-mail` = '$email'";
+// 必须确保反引号包围了 e-mail 列名
+$sql = "SELECT password, role FROM `Users` WHERE `e-mail` = '$email'";
 $result = $conn->query($sql);
 
 if ($result && $result->num_rows > 0) {
