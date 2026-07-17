@@ -9,10 +9,7 @@ ob_start();
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
-$servername = "db";  
-$username = "root";       
-$password = "root";     
-$dbname = "boothera"; 
+require_once 'db.php';
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) { 
