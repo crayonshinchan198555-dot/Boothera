@@ -38,12 +38,12 @@ if (!isset($_SESSION['user_id'])) {
                 <!-- 活动列表选项 -->
                 <a href="javascript:void(0);" class="menu-item active" id="menu-events" onclick="switchTab('events'); return false;">Events</a>
                 <!-- 我的申请选项 -->
-                <a href="#" class="menu-item" id="menu-my-applications" onclick="switchTab('my-applications')">My Applications</a>
+                <a href="javascript:void(0);" class="menu-item" id="menu-my-applications" onclick="switchTab('my-applications'); return false;">My Applications</a>
                 <!-- 个人资料选项 -->
-                <a href="#" class="menu-item" id="menu-profile" onclick="switchTab('profile')">Profile</a>
+                <a href="javascript:void(0);" class="menu-item" id="menu-profile" onclick="switchTab('profile'); return false;">Profile</a>
                 
                 <!-- 【新增加的功能】: 帮助与支持选项 -->
-                <a href="#" class="menu-item" id="menu-help" onclick="switchTab('help')">Help & Support</a>
+                <a href="javascript:void(0);" class="menu-item" id="menu-help" onclick="switchTab('help'); return false;">Help & Support</a>
             </div>
             
             <!-- 侧边栏底部：登出按钮 -->

@@ -351,32 +351,46 @@ function handleUserSendMessage(event) {
 
 document.addEventListener("DOMContentLoaded", function() {
     // 调用你的 get_events.php
+    // 注意：如果页面在 user_pages 目录下，fetch 路径应该是 '../get_events.php'
     fetch('../get_events.php') 
         .then(response => response.json())
         .then(result => {
-            // 检查 success 是否为 true
             if (result.success) {
                 const grid = document.getElementById('event-grid');
+                if (!grid) return; // 安全检查
+                
                 grid.innerHTML = ''; // 清空加载
 
-                // 遍历 result.data
                 result.data.forEach(event => {
                     const card = document.createElement('div');
                     card.className = 'booth-card';
+                    card.style.cursor = 'pointer'; // 告诉用户这是可以点的
+
+                    // 1. 处理日期：直接用原始字符串，避免 new Date() 报错导致的 undefined
+                    const displayDate = event.event_date || event.date || '待定';
                     
-                    // 假设你的数据库表里日期字段叫 event_date
-                    // 如果你的 get_events.php 没有返回月份，我们需要在这里用 JS 处理
-                    const dateObj = new Date(event.event_date);
-                    const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
-                    
-                    card.setAttribute('data-state', event.venue); // 对应你 PHP 里的 venue
-                    card.setAttribute('data-month', month);
-                    
-                    // 渲染卡片内容
+                    // 2. 渲染内容
                     card.innerHTML = `
                         <h3>${event.event_name}</h3>
-                        <p>📍 ${event.venue} | 📅 ${event.event_date}</p>
+                        <p>📍 ${event.venue} | 📅 ${displayDate}</p>
                     `;
+                    
+                    // 3. 添加点击事件 (修正了原来的重复添加问题)
+                    card.onclick = function() {
+                        // 更新详情页标题
+                        const titleEl = document.getElementById('form-event-title');
+                        if (titleEl) {
+                            titleEl.innerText = event.event_name;
+                        }
+                        // 切换页面
+                        if (typeof switchTab === 'function') {
+                            switchTab('tab-apply-form');
+                        } else {
+                            console.error("switchTab 函数未找到");
+                        }
+                    };
+
+                    // 4. 只添加一次到 grid 中
                     grid.appendChild(card);
                 });
             } else {
