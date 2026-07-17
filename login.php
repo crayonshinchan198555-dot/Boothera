@@ -3,16 +3,21 @@ session_start();
 header('Content-Type: application/json; charset=UTF-8');
 require_once 'db.php';
 
-// 接收数据
-$email = $_POST['email'] ?? '';
-$password = $_POST['password'] ?? '';
+// 【核心修改】：不依赖 $_POST，直接从原始输入流读取
+$rawInput = file_get_contents("php://input");
+parse_str($rawInput, $data);
 
-// 如果收到数据，打印出来看看（调试用）
+// 提取数据
+$email = $data['email'] ?? '';
+$password = $data['password'] ?? '';
+
+// 如果此时还报空，说明前端根本没发出 body
 if (empty($email)) {
-    echo json_encode(["success" => false, "message" => "后端没收到 Email"]);
+    echo json_encode(["success" => false, "message" => "后端没收到 Email，原始请求内容: " . $rawInput]);
     exit;
 }
 
+// 接下来执行你原本的数据库逻辑
 $stmt = $conn->prepare("SELECT `password`, `role` FROM `Users` WHERE `e-mail` = ?");
 $stmt->bind_param("s", $email);
 $stmt->execute();
