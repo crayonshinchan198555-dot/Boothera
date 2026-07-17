@@ -4,13 +4,6 @@
  */
 document.addEventListener("DOMContentLoaded", function() {
     // 检查用户是否已经登录
-    const isLoggedIn = localStorage.getItem("isLoggedIn");
-    
-    // 如果没有登录，就踢回 index.html (登录页)
-    if (isLoggedIn !== "true") {
-        alert("Please sign in first!");
-        window.location.href = "/index.html"; 
-        return;
     }
 
     // 从电脑本地存储 (LocalStorage) 恢复之前保存过的活动和审批状态
