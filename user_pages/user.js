@@ -552,7 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function fetchHistory() {
-    fetch('message.php?action=user_get_history')
+    fetch('/message.php?action=user_get_history')
     .then(response => response.json())
     .then(data => {
         console.log("获取到的留言数据:", data); // 在控制台(F12)查看是否拿到数据
