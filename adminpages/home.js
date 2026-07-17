@@ -44,45 +44,46 @@ document.addEventListener("DOMContentLoaded", function() {
  * 1. 切换左侧菜单 Tab 功能
  */
 function switchTab(tabId) {
-    // 移除侧边栏所有按钮的高亮 (active) 状态
-    const menuItems = document.querySelectorAll('.menu-item');
-    menuItems.forEach(item => item.classList.remove('active'));
+    console.log("正在切换到标签页:", tabId);
 
-    // 隐藏主视图区的所有面板
-    const panels = document.querySelectorAll('.tab-panel');
-    panels.forEach(panel => panel.classList.remove('active'));
+    // --- 第一部分：处理侧边栏高亮 ---
+    document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+    const activeMenu = document.getElementById('menu-' + tabId) || document.getElementById('menu-events');
+    if (activeMenu) activeMenu.classList.add('active');
 
-    // 给被点击的侧边栏按钮加上高亮状态
-    const currentMenu = document.getElementById('menu-' + tabId);
-    if (currentMenu) {
-        currentMenu.classList.add('active');
-    } else if (tabId === 'events') {
-        document.getElementById('menu-events').classList.add('active');
-    }
-
-    // 将对应的目标面板显示出来
-    const targetPanel = document.getElementById('tab-' + tabId);
+    // --- 第二部分：处理主视图面板显示/隐藏 ---
+    // 隐藏所有面板
+    document.querySelectorAll('.tab-panel, .tab-content, [id$="-section"]').forEach(section => {
+        section.style.display = 'none';
+        section.classList.remove('active');
+    });
+s
+    // 显示目标面板
+    const targetPanel = document.getElementById('tab-' + tabId) || document.getElementById(tabId + '-section');
     if (targetPanel) {
+        targetPanel.style.display = 'block';
         targetPanel.classList.add('active');
     }
 
-    // 根据面板不同，自动更改网页顶部的大标题
+    // --- 第三部分：更新标题 ---
     const pageTitle = document.getElementById('page-title');
     if (pageTitle) {
-        if (tabId === 'events') pageTitle.innerText = "Events Management";
-        if (tabId === 'event-details') pageTitle.innerText = "Event Details";
-        if (tabId === 'application') pageTitle.innerText = "Applications";
-        if (tabId === 'add-event') pageTitle.innerText = "Add New Event";
-        
-        // 如果切换到消息面板，把顶部标题改掉
-        if (tabId === 'messages') {
-            pageTitle.innerText = "User Messages";
-            
-            // 🚀 切换到消息面板时，立刻去 PHP 实时抓取最新的用户消息！
-            if (typeof window.restoreUserMessages === 'function') {
-                window.restoreUserMessages();
-            }
-        }
+        const titles = {
+            'events': 'Events Management',
+            'event-details': 'Event Details',
+            'application': 'Applications',
+            'add-event': 'Add New Event',
+            'messages': 'User Messages'
+        };
+        pageTitle.innerText = titles[tabId] || "Dashboard";
+    }
+
+    // --- 第四部分：触发特殊页面加载逻辑 ---
+    if (tabId === 'application' && typeof loadApplications === 'function') {
+        loadApplications();
+    }
+    if (tabId === 'messages' && typeof restoreUserMessages === 'function') {
+        restoreUserMessages();
     }
 }
 
@@ -778,50 +779,7 @@ window.submitAdminReply = function(messageId) {
 // 修改或扩展你的 switchTab 函数
 // 核心切换函数
 // 核心切换函数
-function switchTab(tabName) {
-    console.log("正在切换到标签页:", tabName);
 
-    // 1. 切换左侧菜单高亮状态
-    document.querySelectorAll('.menu-item').forEach(item => {
-        item.classList.remove('active');
-    });
-    const activeMenu = document.getElementById(`menu-${tabName}`);
-    if (activeMenu) activeMenu.classList.add('active');
-
-    // 2. 暴力大招：自动寻找并隐藏右侧所有的内容区域
-    // 只要是 class 包含 tab-content 或 tab-panel 的容器，通通先隐藏
-    document.querySelectorAll('.tab-content, .tab-panel').forEach(section => {
-        section.style.display = 'none';
-    });
-
-    // 3. 根据点击的 tab 名字，精准揪出对应的容器显示出来
-    if (tabName === 'application') {
-        // 优先显示带精美表格的选项卡，如果没有就显示基础容器
-        const realTableSection = document.getElementById('tab-application');
-        const backupSection = document.getElementById('application-section');
-        
-        if (realTableSection) realTableSection.style.display = 'block';
-        else if (backupSection) backupSection.style.display = 'block';
-
-        // 触发拉取数据
-        loadApplications(); 
-    } else {
-        // 智能匹配：先试 `-section`，再试 `tab-`
-        let targetSection = document.getElementById(`${tabName}-section`) || 
-                            document.getElementById(`tab-${tabName}`);
-        
-        if (targetSection) {
-            targetSection.style.display = 'block';
-        } else {
-            console.warn(`未能在 HTML 中找到对应的容器：${tabName}-section 或 tab-${tabName}`);
-        }
-
-        // 留言页面特殊触发
-        if (tabName === 'messages' && typeof restoreUserMessages === 'function') {
-            restoreUserMessages();
-        }
-    }
-}
 
 // 异步从 admin_application.php 获取数据
 function loadApplications() {
