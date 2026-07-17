@@ -7,12 +7,13 @@ print_r($_SESSION);
 echo "</pre>";
 
 // 如果发现 Session 里确实没有东西，或者 userRole 不是 admin，直接停止并显示
-if (!isset($_SESSION['user_id'])) {
-    die("严重错误：Session 中找不到 user_id，说明登录信息在跳转过程中丢失了。");
+// 修改 adminpages/home.php 中的这部分代码
+if (!isset($_SESSION['user_id']) || $_SESSION['userRole'] !== 'admin') {
+    // 将 '../login.html' 修改为 '/index.html'
+    echo "<script>alert('Please sign in first!'); window.location.href='/index.html';</script>";
+    exit();
 }
-if ($_SESSION['userRole'] !== 'admin') {
-    die("错误：当前角色是 " . $_SESSION['userRole'] . "，而不是 admin。");
-}
+
 ?>
  
 <!DOCTYPE html>
