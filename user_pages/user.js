@@ -348,3 +348,40 @@ function handleUserSendMessage(event) {
     // 实时更新列表
     renderUserMessageHistory();
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    // 调用你的 get_events.php
+    fetch('../get_events.php') 
+        .then(response => response.json())
+        .then(result => {
+            // 检查 success 是否为 true
+            if (result.success) {
+                const grid = document.getElementById('events-grid');
+                grid.innerHTML = ''; // 清空加载
+
+                // 遍历 result.data
+                result.data.forEach(event => {
+                    const card = document.createElement('div');
+                    card.className = 'booth-card';
+                    
+                    // 假设你的数据库表里日期字段叫 event_date
+                    // 如果你的 get_events.php 没有返回月份，我们需要在这里用 JS 处理
+                    const dateObj = new Date(event.event_date);
+                    const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+                    
+                    card.setAttribute('data-state', event.venue); // 对应你 PHP 里的 venue
+                    card.setAttribute('data-month', month);
+                    
+                    // 渲染卡片内容
+                    card.innerHTML = `
+                        <h3>${event.event_name}</h3>
+                        <p>📍 ${event.venue} | 📅 ${event.event_date}</p>
+                    `;
+                    grid.appendChild(card);
+                });
+            } else {
+                console.error("数据加载失败:", result.message);
+            }
+        })
+        .catch(err => console.error("网络请求错误:", err));
+});

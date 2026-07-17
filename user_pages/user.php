@@ -70,33 +70,27 @@ if (!isset($_SESSION['user_id'])) {
                         <!-- 关键词输入框 -->
                         <input type="text" id="event-search" class="search-input" placeholder="Search events..." onkeyup="filterEvents()">
                         
-                        <!-- 州属筛选下拉框 (马来西亚各州) -->
-                        <select id="state-filter" class="filter-select" onchange="filterEvents()">
-                            <option value="">All States</option>
-                            <option value="Johor">Johor</option><option value="Subang">Kedah</option><option value="Kelantan">Kelantan</option>
-                            <option value="Melaka">Melaka</option><option value="Negeri Sembilan">Negeri Sembilan</option><option value="Pahang">Pahang</option>
-                            <option value="Penang">Penang</option><option value="Perak">Perak</option><option value="Perlis">Perlis</option>
-                            <option value="Sabah">Sabah</option><option value="Sarawak">Sarawak</option><option value="Selangor">Selangor</option>
-                            <option value="Terengganu">Terengganu</option>
-                        </select>
-                        
                         <!-- 月份筛选下拉框 -->
                         <select id="month-filter" class="filter-select" onchange="filterEvents()">
                             <option value="">All Months</option>
-                            <option value="01">January</option><option value="02">February</option><option value="03">March</option>
-                            <option value="04">April</option><option value="05">May</option><option value="06">June</option>
-                            <option value="07">July</option><option value="08">August</option><option value="09">September</option>
-                            <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+                            <option value="01">January</option>
+                            <option value="02">February</option>
+                            <option value="03">March</option>
+                            <option value="04">April</option>
+                            <option value="05">May</option>
+                            <option value="06">June</option>
+                            <option value="07">July</option>
+                            <option value="08">August</option>
+                            <option value="09">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
                         </select>
                     </div>
                     
                     <!-- 活动卡片网格布局容器 -->
                     <div class="card-grid" id="event-grid">
-                        <!-- 示例活动卡片：点击可查看详情，内含各种 data 属性和点击传参 -->
-                        <div class="booth-card" data-state="Melaka" data-month="06" onclick="showEventDetail('Paws and Heart Pet Lovers Carnival', '20 June 2026', 'Sunway Lagoon, Malaysia', '10:00 AM – 7:00 PM', 'A fun event for pet lovers to enjoy activities.', 'RM150/day', '14')">
-                            <h3>Paws and Heart Pet Lovers Carnival</h3>
-                            <p>📍 Melaka | 📅 20 June 2026</p>
-                        </div>
+        
                     </div>
                 </div>
 
