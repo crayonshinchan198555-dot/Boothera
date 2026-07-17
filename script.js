@@ -52,17 +52,18 @@ async function login() {
     
     // 1. 先判断是否登录成功
     if (result.success) {
-    alert("🎉 登录成功！");
-    
-    // 如果后端返回了 redirect 地址，就用后端的；
-    // 如果没返回，我们就根据你数据库里定义的路径逻辑补救
-    const targetUrl = result.redirect || '/user_pages/user.php'; 
-    
-    console.log("即将跳转至: " + targetUrl);
-    window.location.href = targetUrl; // 这才是正确的动态跳转
-} else {
-    alert("❌ 登录失败: " + result.message);
-}
+        alert("🎉 登录成功！");
+        
+        // 确保邮箱被存储：优先用后端返回的，如果没有，用表单输入的
+        const emailToSave = result.email || document.getElementById('login-email').value;
+        localStorage.setItem('userEmail', emailToSave);
+        
+        // 成功后才跳转
+        window.location.href = result.redirect; 
+    } else {
+        // 2. 登录失败，只提示，不存储任何东西
+        alert("❌ 登录失败: " + result.message);
+    }
 } catch (e) {
     document.body.innerHTML = "<h1>后端报错详情:</h1>" + text;
 }
