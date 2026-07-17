@@ -1,4 +1,3 @@
-
 <?php
 // 在顶部添加：
 ini_set('display_errors', 1);
