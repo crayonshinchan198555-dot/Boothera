@@ -85,36 +85,67 @@ function openApplyForm() {
 /**
  * 提交摊位申请
  */
-function submitApplication() {
+async function submitApplication() {
     // 1. 获取表单数据
     const eventTitle = document.getElementById('form-event-title').innerText;
     const applicantName = document.getElementById('applicant-name').value;
+    const prodCat = document.getElementById('prod-cat').value; // 确保 HTML 中 ID 正确
+    const prodName = document.getElementById('prod-name').value; // 确保 HTML 中 ID 正确
+    const selectedBooth = document.querySelector('input[name="booth_id"]:checked');
 
-    // 2. 模拟数据提交成功后的弹窗逻辑
-    alert("Application submitted successfully!");
+    if (!selectedBooth) {
+        alert("Please select a booth!");
+        return;
+    }
 
-    // 3. 动态添加到 "My Applications" 面板
-    const myAppsGrid = document.getElementById('my-apps-grid');
-    
-    // 创建一个新的卡片结构元素
-    const newCard = document.createElement('div');
-    newCard.className = 'booth-card';
-    
-    // 写入新申请卡片的 HTML 内容（包含 Pending 状态和 Cancel 按钮）
-    newCard.innerHTML = `
-        <h3>${eventTitle}</h3>
-        <p><strong>Applicant:</strong> ${applicantName}</p>
-        <p><strong>Status:</strong> <span class="status-text" style="color: orange; font-weight: bold;">Pending</span></p>
-        <button class="btn-cancel" onclick="cancelApplication(this)" style="margin-top:10px; cursor:pointer;">Cancel Application</button>
-    `;
-    
-    // 将生成的卡片追加到已申请列表中
-    myAppsGrid.appendChild(newCard);
+    // 2. 准备发送给 application.php 的数据
+    // 注意：这里的字段名要与后端 $_POST 接收的保持一致
+    const payload = {
+        action: 'submit',
+        email: localStorage.getItem('userEmail'), // 确保你登录时存储了 email
+        event_id: window.currentEventId,         // 点击卡片时存入的全局 ID
+        booth_id: selectedBooth.value,
+        product_category: prodCat,
+        product_name: prodName
+    };
 
-    // 4. 清空表单数据
-    document.getElementById('application-form').reset();
-    // 自动切换到我的申请标签页查看状态
-    switchTab('my-applications');
+    try {
+        // 3. 发送 POST 请求到后端
+        const response = await fetch('../application.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        // 4. 处理后端返回的结果
+        if (result.success) {
+            alert("Application submitted successfully!");
+
+            // 5. 动态添加到页面 (只有数据库写入成功才添加)
+            const myAppsGrid = document.getElementById('my-apps-grid');
+            const newCard = document.createElement('div');
+            newCard.className = 'booth-card';
+            
+            newCard.innerHTML = `
+                <h3>${eventTitle}</h3>
+                <p><strong>Applicant:</strong> ${applicantName}</p>
+                <p><strong>Status:</strong> <span class="status-text" style="color: orange; font-weight: bold;">Pending</span></p>
+                <button class="btn-cancel" onclick="cancelApplication(this)" style="margin-top:10px; cursor:pointer;">Cancel Application</button>
+            `;
+            myAppsGrid.appendChild(newCard);
+
+            // 6. 清空表单并跳转
+            document.getElementById('application-form').reset();
+            switchTab('my-applications');
+        } else {
+            alert("Submission failed: " + result.message);
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        alert("Network error, please try again.");
+    }
 }
 
 /**
