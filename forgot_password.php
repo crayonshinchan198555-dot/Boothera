@@ -1,86 +1,59 @@
 <?php
+// 1. 强制不输出 HTML 错误，确保只返回 JSON
+error_reporting(0);
+ini_set('display_errors', 0);
+header('Content-Type: application/json; charset=UTF-8');
 
-set_error_handler(function($errno, $errstr) {
-    echo json_encode(["success" => false, "message" => "PHP Error: " . $errstr]);
-    exit;
-});
+// 2. 数据库连接配置 (请填入你在 Railway 看到的真实值)
+$host = 'hayabusa.proxy.rlwy.net';
+$user = '填入你的 MYSQLUSER 值'; 
+$pass = '填入你的 MYSQLPASSWORD 值';
+$db   = '填入你的 MYSQLDATABASE 值';
+$port = 59703; // 这是你在 Networking 看到的端口
 
-ini_set('session.cookie_path', '/');
-session_start();
+$conn = new mysqli($host, $user, $pass, $db, $port);
 
-header('Content-Type: application/json');
-
-// 显式从环境变量获取，如果获取不到，给一个明确的报错，而不是让程序继续往下跑
-$servername = "你在 Railway 控制台看到的那个 MYSQLHOST 的值"; 
-$username   = "你在 Railway 控制台看到的那个 MYSQLUSER 的值";
-$password   = "你在 Railway 控制台看到的那个 MYSQLPASSWORD 的值";
-$dbname     = "你在 Railway 控制台看到的那个 MYSQLDATABASE 的值";
-$port       = "你在 Railway 控制台看到的那个 MYSQLPORT 的值";
-
-// 如果必要参数为空，直接输出 JSON 报错并终止，防止页面输出 HTML 警告
-if (!$servername || !$username) {
-    echo json_encode(["success" => false, "message" => "Database configuration missing!"]);
+// 检查连接是否成功
+if ($conn->connect_error) {
+    echo json_encode(["success" => false, "message" => "数据库连接失败: " . $conn->connect_error]);
     exit;
 }
 
-$conn = new mysqli($servername, $username, $password, $dbname, $port);
-
+// 3. 处理请求逻辑
+session_start();
 $action = $_POST['action'] ?? '';
-$email = $_POST['email'] ?? '';
-$email = mysqli_real_escape_string($conn, $email);
 
-// 功能 1：生成并发送验证码
+// 功能 1：点击 Get Code
 if ($action === 'send_code') {
-    $sql = "SELECT * FROM Users WHERE `e-mail` = '$email'";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows === 0) {
-        echo json_encode(["success" => false, "message" => "❌ Email not found!"]);
-        exit;
-    }
-
     $code = strval(rand(100000, 999999));
     $_SESSION['reset_code'] = $code;
-    $_SESSION['reset_email'] = $email;
-    $_SESSION['reset_code_time'] = time();
-
+    
+    // 直接返回 code 给前端，前端会弹窗显示
     echo json_encode(["success" => true, "code" => $code]);
     exit;
 }
 
-// 功能 2：校验验证码并修改密码
+// 功能 2：点击 Reset Password
 if ($action === 'reset_password') {
+    $email = mysqli_real_escape_string($conn, $_POST['email'] ?? '');
     $input_code = $_POST['code'] ?? '';
-    $new_password = $_POST['password'] ?? '';
+    $new_pass = $_POST['password'] ?? '';
 
-    if (!isset($_SESSION['reset_code']) || $_SESSION['reset_email'] !== $email) {
-        echo json_encode(["success" => false, "message" => "❌ Please get a verification code first!"]);
-        exit;
-    }
-
-    if ($input_code !== $_SESSION['reset_code']) {
-        echo json_encode(["success" => false, "message" => "❌ Invalid verification code!"]);
-        exit;
-    }
-
-    if (time() - $_SESSION['reset_code_time'] > 300) {
-        echo json_encode(["success" => false, "message" => "❌ Code expired!"]);
-        exit;
-    }
-
-    $new_password = mysqli_real_escape_string($conn, $new_password);
-    $update_sql = "UPDATE Users SET `password` = '$new_password' WHERE `e-mail` = '$email'";
-
-    if ($conn->query($update_sql) === TRUE) {
-        unset($_SESSION['reset_code']);
-        unset($_SESSION['reset_email']);
-        unset($_SESSION['reset_code_time']);
-        echo json_encode(["success" => true, "message" => "🎉 Password reset successful!"]);
+    // 校验 Session 中的验证码
+    if (isset($_SESSION['reset_code']) && $input_code === $_SESSION['reset_code']) {
+        // 使用 password_hash 加密存入数据库
+        $hashed_pass = password_hash($new_pass, PASSWORD_DEFAULT);
+        
+        $sql = "UPDATE Users SET password = '$hashed_pass' WHERE `e-mail` = '$email'";
+        if ($conn->query($sql)) {
+            unset($_SESSION['reset_code']); // 成功后清除验证码
+            echo json_encode(["success" => true, "message" => "密码修改成功！"]);
+        } else {
+            echo json_encode(["success" => false, "message" => "数据库更新失败"]);
+        }
     } else {
-        echo json_encode(["success" => false, "message" => "Error: " . $conn->error]);
+        echo json_encode(["success" => false, "message" => "验证码错误或已过期！"]);
     }
     exit;
 }
-
-$conn->close();
 ?>
