@@ -45,22 +45,18 @@ async function login() {
             body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pass)}`
         });
 
-        // 🚨 关键修改：先获取文本，而不是直接解析 JSON
         const text = await response.text();
         
-        console.log("后端返回的原始数据:", text); // 按 F12 在控制台里看这个
-
-        // 尝试解析 JSON，如果失败则直接显示文本
         try {
             const result = JSON.parse(text);
             if (result.success) {
                 alert("🎉 登录成功！");
-                window.location.href = "/adminpages/home.php";
+                // 自动跳转到后端指定的路径
+                window.location.href = result.redirect; 
             } else {
                 alert("❌ 登录失败: " + result.message);
             }
         } catch (e) {
-            // 如果后端报错，这里会直接把数据库连接错误显示出来！
             document.body.innerHTML = "<h1>后端报错详情:</h1>" + text;
         }
         
