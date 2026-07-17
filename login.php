@@ -1,26 +1,21 @@
 <?php
-session_start();
-header('Content-Type: application/json; charset=UTF-8');
-require_once 'db.php';
+// ... 前面的代码不变 ...
 
-$email = mysqli_real_escape_string($conn, $_POST['email'] ?? '');
-$password = $_POST['password'] ?? '';
-
-// 1. 查询用户
-$sql = "SELECT password FROM Users WHERE `e-mail` = '$email'";
-$result = $conn->query($sql);
-
-if ($result && $result->num_rows > 0) {
-    $row = $result->fetch_assoc();
+if ($password === $row['password']) {
+    $_SESSION['user_email'] = $email;
     
-    // 【关键】：这里直接对比明文密码
-    if ($password === $row['password']) {
-        $_SESSION['user_email'] = $email;
-        echo json_encode(["success" => true, "message" => "登录成功"]);
-    } else {
-        echo json_encode(["success" => false, "message" => "密码错误"]);
-    }
+    // 【修正路径】：根据你的文件夹结构指定正确路径
+    // admin 在 adminpages/home.php
+    // user 在 user_pages/user.php
+    $target = ($row['role'] === 'admin') ? 'adminpages/home.php' : 'user_pages/user.php';
+    
+    echo json_encode([
+        "success" => true, 
+        "message" => "登录成功", 
+        "redirect" => $target // 这里传的就是正确的相对路径
+    ]);
 } else {
-    echo json_encode(["success" => false, "message" => "用户不存在"]);
+    echo json_encode(["success" => false, "message" => "密码错误"]);
 }
+// ... 后面的代码不变 ...
 ?>
