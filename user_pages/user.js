@@ -544,3 +544,21 @@ function loadProfile() {
         })
         .catch(err => console.error("请求出错:", err));
 }
+
+// 在 user.js 里确保有这段：
+window.addEventListener('DOMContentLoaded', () => {
+    loadMessageHistory(); // 确保这个函数被调用了！
+});
+
+function loadMessageHistory() {
+    fetch('message.php?action=user_get_history')
+        .then(res => res.json())
+        .then(data => {
+            console.log("获取到的历史记录:", data); // 在控制台看看这里有没有东西
+            if (data.length > 0) {
+                // 执行渲染逻辑
+            } else {
+                // 显示“No message history found”
+            }
+        });
+}
