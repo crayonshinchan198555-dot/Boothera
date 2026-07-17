@@ -9,7 +9,7 @@ function switchTab(tabId) {
     document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
     
     // 如果 tabId 已经包含了 'tab-'，就不再重复拼接
-    const fullId = tabId.startsWith('tab-') ? tabId : ('tab-' + tabId);
+    const fullId = document.getElementById(tabId) ? tabId : ('tab-' + tabId);
     
     // 显示选中的目标
     const target = document.getElementById(fullId);
