@@ -13,7 +13,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $role =$_POST['role'] ?? 'user';
     $business_name =$_POST['business_name'] ?? null;
 
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+    // 修改后的代码
+    $password_to_save = $password; // 直接使用原始密码
 
     // 确保这里的字段名与数据库完全一致（请再次确认数据库里到底是 e-mail 还是 email）
     $stmt =$conn->prepare("INSERT INTO Users (name, phone_number, `e-mail`, password, role, business_name) VALUES (?, ?, ?, ?, ?, ?)");
@@ -23,7 +24,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    $stmt->bind_param("ssssss", $name, $phone_number, $email, $hashed_password, $role, $business_name);
+    // 将原本的 $hashed_password 改为 $password_to_save
+    $stmt->bind_param("ssssss", $name, $phone_number, $email, $password_to_save, $role, $business_name);
 
     if ($stmt->execute()) {
         echo json_encode(["success" => true, "message" => "注册成功！", "redirect" => "../index.html"]);
