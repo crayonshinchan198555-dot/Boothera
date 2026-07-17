@@ -1,71 +1,59 @@
 <?php
 session_start();
 
-// 设置返回格式为 JSON
-header("Content-Type: application/json; charset=UTF-8");
+// 🚨 调试模式：强制关闭 JSON，直接输出错误信息到屏幕
+// 如果你看到页面上有任何文字，那就是连接失败的原因
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-// 1. 从环境变量获取数据库信息（这是 Render 连接外部数据库的标准做法）
-$servername = getenv('DB_HOST'); // 在 Render 环境里填入 Railway 的 Host
-$username   = getenv('DB_USER'); // 在 Render 环境里填入 Railway 的 User
-$password   = getenv('DB_PASS'); // 在 Render 环境里填入 Railway 的 Password
-$dbname     = getenv('DB_NAME'); // 在 Render 环境里填入 Railway 的 Database 名
+$h = getenv('DB_HOST');
+$u = getenv('DB_USER');
+$p = getenv('DB_PASS');
+$d = getenv('DB_NAME');
+$port = getenv('DB_PORT') ?: 3306;
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+// 测试连接
+$conn = new mysqli($h, $u, $p, $d, $port);
 
 if ($conn->connect_error) {
-    echo json_encode(["success" => false, "message" => "Database connection failed: " . $conn->connect_error]);
-    exit;
+    die("<h1>❌ 数据库连接失败!</h1><p>错误原因: " . $conn->connect_error . "</p><p>检查一下 Render 里的变量: Host=$h, User=$u, DB=$d, Port=$port</p>");
 }
 
-// 2. 处理登录数据
+// 如果连上了，这里会输出“连接成功”
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = isset($_POST['email']) ? trim($_POST['email']) : '';
     $password = isset($_POST['password']) ? $_POST['password'] : '';
 
     if (empty($email) || empty($password)) {
-        echo json_encode(["success" => false, "message" => "Email and password cannot be empty!"]);
-        exit;
+        die("Email and password cannot be empty!");
     }
 
-    // 防止 SQL 注入
     $email = mysqli_real_escape_string($conn, $email);
-
-    // 3. 查数据库
     $sql = "SELECT * FROM Users WHERE `e-mail` = '$email'";
     $result = $conn->query($sql);
 
     if ($result && $result->num_rows > 0) {
         $row = $result->fetch_assoc();
         
-        // 4. 比对密码
-        if ($password == $row['password']) {
-            
-            // 把用户信息存进 Session (留给 message.php 备用)
+        // 使用 password_verify 比对密码 (如果你的数据库存的是 hash)
+        // 如果你存的是明文，请改回 if ($password == $row['password'])
+        if (password_verify($password, $row['password']) || $password == $row['password']) {
             $_SESSION['isLoggedIn'] = true;
             $_SESSION['user_id'] = $row['user_id'];
             $_SESSION['name'] = $row['name'];
             $_SESSION['userRole'] = $row['role']; 
 
-            // 5. 🚀 关键：以标准 JSON 格式告知前端登录成功，并把 role 顺便传过去
-            echo json_encode([
-                "success" => true,
-                "message" => "Login Successful!",
-                "role" => $row['role']
-            ]);
+            header("Content-Type: application/json");
+            echo json_encode(["success" => true, "message" => "Login Successful!", "role" => $row['role']]);
             exit;
-            
-        } else { 
-            echo json_encode(["success" => false, "message" => "Invalid email or password!"]);
-            exit;
+        } else {
+            die("❌ 密码错误！");
         }
-    } else { 
-        echo json_encode(["success" => false, "message" => "Invalid email or password!"]);
-        exit;
+    } else {
+        die("❌ 用户不存在！");
     }
 } else {
-    echo json_encode(["success" => false, "message" => "Unsupported request method."]);
-    exit;
+    echo "请通过 POST 请求登录。";
 }
-
 $conn->close();
 ?>
