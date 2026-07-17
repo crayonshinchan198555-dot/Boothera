@@ -96,18 +96,37 @@ function closeForgotModal() {
 }
 
 // 获取验证码按钮动作
+// 修改后的获取验证码函数
 function sendCode() {
-    // ⚠️ 先获取用户填写的 Email
     const email = document.getElementById('reset-email').value.trim();
     
-    // 如果没有填 Email，立刻拦截并警告
     if (!email) {
         alert("❌ Please enter your email address first!");
         return; 
     }
 
-    // 只有填了 Email，才会通过验证并发送
-    alert("🎉 A 6-digit code has been sent to " + email + ", please check your inbox!");
+    // 将数据封装成 FormData 发送给 PHP
+    const formData = new FormData();
+    formData.append('action', 'send_code');
+    formData.append('email', email);
+
+    fetch('/forgot_password.php', { // 确保路径正确（如果文件在根目录就是 /）
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // 调试模式：直接显示验证码，方便你测试
+            alert("🎉 A 6-digit code has been sent! Code: " + data.code);
+        } else {
+            alert(data.message); // 显示错误信息 (如：Email not found)
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("❌ Failed to connect to server.");
+    });
 }
 
 // 提交新密码动作

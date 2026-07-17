@@ -1,5 +1,6 @@
 <?php
 session_start();
+ini_set('session.cookie_path', '/');
 header('Content-Type: application/json');
 
 $servername = "db";  
