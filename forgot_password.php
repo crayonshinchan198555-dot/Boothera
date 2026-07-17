@@ -1,17 +1,21 @@
 <?php
-session_start();
 ini_set('session.cookie_path', '/');
+session_start();
+
 header('Content-Type: application/json');
 
-$servername = "db";  
-$username = "root";       
-$password = "root";     
-$dbname = "boothera"; 
+// 使用 getenv() 获取 Railway 自动注入的环境变量
+$servername = getenv('MYSQLHOST');
+$username   = getenv('MYSQLUSER');
+$password   = getenv('MYSQLPASSWORD');
+$dbname     = getenv('MYSQLDATABASE'); // 请确认你 Railway 里的变量名是 MYSQLDATABASE 还是 MYSQL_DATABASE
+$port       = getenv('MYSQLPORT');
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+// 连接数据库
+$conn = new mysqli($servername, $username, $password, $dbname, $port);
+
 if ($conn->connect_error) {
-    echo json_encode(["success" => false, "message" => "Database connection failed"]);
-    exit;
+    die(json_encode(["success" => false, "message" => "Database connection failed: " . $conn->connect_error]));
 }
 
 $action = $_POST['action'] ?? '';
