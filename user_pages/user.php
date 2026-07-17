@@ -108,8 +108,7 @@ if (!isset($_SESSION['user_id'])) {
                         <p><strong>Time:</strong> <span id="d-time"></span></p>
                         <p><strong>Description:</strong> <span id="d-desc"></span></p>
                         <p><strong>Rental Price:</strong> <span id="d-price" style="font-weight:bold;"></span></p>
-                        <p><strong>Total Booths Available:</strong> <span id="d-booths"></span></p>
-                        <!-- 立即申请按钮，点击前往表单 -->
+                        
                         <button class="btn-submit-event" style="width: 100%; padding: 15px; margin-top:20px;" onclick="openApplyForm()">Apply Now</button>
                     </div>
                 </div>

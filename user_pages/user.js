@@ -55,8 +55,8 @@ function showEventDetail(title, date, loc, time, desc, price, booths) {
     document.getElementById('d-venue').innerText = loc;
     document.getElementById('d-time').innerText = time;
     document.getElementById('d-desc').innerText = desc;
-    document.getElementById('d-price').innerText = price;
-    document.getElementById('d-booths').innerText = booths;
+    document.getElementById('d-price').innerText = event.booth_price ? ('$' + event.booth_price) : '面议';;
+    
     // 将当前活动标题记录到全局变量，方便后续表单调用
     window.currentEventTitle = title;
     // 切换到详情页面
