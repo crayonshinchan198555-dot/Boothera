@@ -352,47 +352,55 @@ function handleUserSendMessage(event) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-    // 调用你的 get_events.php
-    // 注意：如果页面在 user_pages 目录下，fetch 路径应该是 '../get_events.php'
+    // 调用 get_events.php
     fetch('../get_events.php') 
         .then(response => response.json())
         .then(result => {
             if (result.success) {
                 const grid = document.getElementById('event-grid');
-                if (!grid) return; // 安全检查
+                if (!grid) return; 
                 
-                grid.innerHTML = ''; // 清空加载
+                grid.innerHTML = ''; // 清空原有内容
 
                 result.data.forEach(event => {
                     const card = document.createElement('div');
                     card.className = 'booth-card';
-                    card.style.cursor = 'pointer'; // 告诉用户这是可以点的
+                    card.style.cursor = 'pointer'; 
 
-                    // 1. 处理日期：直接用原始字符串，避免 new Date() 报错导致的 undefined
+                    // 渲染卡片内容
                     const displayDate = event.event_date || event.date || '待定';
-                    
-                    // 2. 渲染内容
                     card.innerHTML = `
-                        <h3>${event.event_name}</h3>
-                        <p>📍 ${event.venue} | 📅 ${displayDate}</p>
+                        <h3>${event.event_name || '无名称'}</h3>
+                        <p>📍 ${event.venue || '待定'} | 📅 ${displayDate}</p>
                     `;
                     
-                    // 3. 添加点击事件 (修正了原来的重复添加问题)
+                    // 点击事件：填充详情并切换面板
                     card.onclick = function() {
-                        document.getElementById('d-title').innerText = event.event_name;
-                        document.getElementById('d-venue').innerText = event.venue;
-                        document.getElementById('d-date').innerText = event.event_date || '待定';
-                        document.getElementById('d-time').innerText = event.event_time || '待定'; // 假设数据库有 time 字段
-                        document.getElementById('d-desc').innerText = event.description || '无详细描述';
-                        document.getElementById('d-price').innerText = event.rental_price || '面议';
-                        document.getElementById('d-booths').innerText = event.total_booths || '0';
+                        // 打印完整对象以供调试，如果还是不显示，看控制台里的字段名是否对得上
+                        console.log("点击活动的完整数据:", event);
 
-    // 2. 切换到详情页面板
-    // 注意：确保这里的 ID 和你 HTML 里的 id="tab-event-detail" 一致
-                        switchTab('tab-event-detail'); 
+                        // 填充详情页内容
+                        const dTitle = document.getElementById('d-title');
+                        const dVenue = document.getElementById('d-venue');
+                        const dDate = document.getElementById('d-date');
+                        const dTime = document.getElementById('d-time');
+                        const dDesc = document.getElementById('d-desc');
+                        const dPrice = document.getElementById('d-price');
+                        const dBooths = document.getElementById('d-booths');
+
+                        if (dTitle) dTitle.innerText = event.event_name || '无标题';
+                        if (dVenue) dVenue.innerText = event.venue || '无地点';
+                        if (dDate) dDate.innerText = event.event_date || event.date || '待定';
+                        if (dTime) dTime.innerText = event.event_time || event.time || '待定';
+                        if (dDesc) dDesc.innerText = event.description || '无详细描述';
+                        if (dPrice) dPrice.innerText = event.rental_price || event.price || '面议';
+                        if (dBooths) dBooths.innerText = event.total_booths || event.booths || '0';
+
+                        // 核心修复：直接传入 HTML 中定义的完整 ID，不再加 tab- 前缀
+                        // 确保你的 switchTab 函数里没有自动拼接 'tab-' 的逻辑，或者该函数已支持处理
+                        switchTab('event-detail'); 
                     };
 
-                    // 4. 只添加一次到 grid 中
                     grid.appendChild(card);
                 });
             } else {
