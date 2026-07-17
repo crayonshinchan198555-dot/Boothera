@@ -92,15 +92,10 @@ async function submitApplication() {
     alert("当前读取到的邮箱是: " + debugEmail); 
     // --- 
     const selectedBooth = document.querySelector('input[name="booth_id"]:checked');
-    if (!selectedBooth) return alert("Please select a booth!");
 
-    // 1. 从 localStorage 获取用户邮箱
-    const userEmail = localStorage.getItem('userEmail'); 
-    
-    // 2. 如果没获取到，说明没登录
-    if (!userEmail) {
-        alert("登录失效，请重新登录！");
-        return;
+    if (!selectedBooth) {
+        alert("请先选择一个摊位！");
+        return; // 终止函数，不继续提交
     }
 
     // 3. 准备数据，确保带上 email
