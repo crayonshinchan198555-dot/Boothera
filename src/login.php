@@ -4,11 +4,11 @@ session_start();
 // 设置返回格式为 JSON
 header("Content-Type: application/json; charset=UTF-8");
 
-// 1. 连接数据库
-$servername = "db";  
-$username = "root";       
-$password = "root";     
-$dbname = "boothera"; 
+// 1. 从环境变量获取数据库信息（这是 Render 连接外部数据库的标准做法）
+$servername = getenv('DB_HOST'); // 在 Render 环境里填入 Railway 的 Host
+$username   = getenv('DB_USER'); // 在 Render 环境里填入 Railway 的 User
+$password   = getenv('DB_PASS'); // 在 Render 环境里填入 Railway 的 Password
+$dbname     = getenv('DB_NAME'); // 在 Render 环境里填入 Railway 的 Database 名
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
