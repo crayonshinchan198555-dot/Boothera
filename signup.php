@@ -1,15 +1,25 @@
 <?php
 // 1. 确保你的数据库连接配置依然正确（Docker 内部互相通信模式）
-$servername = "db";  
-$username = "root";       
-$password = "root";     
-$dbname = "boothera"; 
+require_once 'db.php';
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 // 检查连接是否成功
-if ($conn->connect_error) {
-    die("数据库连接失败: " . $conn->connect_error);
+// 修改 signup.php 的这一部分：
+if ($conn->query($sql) === TRUE) {
+    // 设置响应头为 JSON
+    header("Content-Type: application/json; charset=UTF-8");
+    echo json_encode([
+        "success" => true,
+        "message" => "注册成功！即将跳转到登录页面...",
+        "redirect" => "login.html" // 假设你的登录页是 login.html
+    ]);
+} else {
+    header("Content-Type: application/json; charset=UTF-8");
+    echo json_encode([
+        "success" => false,
+        "message" => "注册失败: " . $conn->error
+    ]);
 }
 
 // 2. 接收来自 HTML 表单提交的数据 (对接你 HTML 的 name 属性)
@@ -20,9 +30,12 @@ $password = $_POST['password'] ?? '';
 $role = $_POST['role'] ?? 'user';             
 $business_name = $_POST['business_name'] ?? null;
 
-// 3. 编写匹配新表字段的 SQL 插入语句
+// 在 $sql 语句之前添加这行：
+$hashed_password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+
+// 然后在 SQL 中使用 $hashed_password 而不是 $password
 $sql = "INSERT INTO Users (name, phone_number, `e-mail`, password, role, business_name) 
-        VALUES ('$name', '$phone_number', '$email', '$password', '$role', '$business_name')";
+        VALUES ('$name', '$phone_number', '$email', '$hashed_password', '$role', '$business_name')";, '$business_name')";
 
 // 👇 👇 👇 核心修改在这里 👇 👇 👇
 if ($conn->query($sql) === TRUE) {

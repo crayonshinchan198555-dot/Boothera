@@ -14,21 +14,17 @@ function togglePassword(inputId, icon) {
 
 // 2. Strict Submission Form Validation
 document.getElementById('signupForm').addEventListener('submit', function(event) {
-    // Prevent form from actual submission reload
-    event.preventDefault();
+    event.preventDefault(); // 阻止表单默认提交刷新
     
     let isFormValid = true;
 
-    // Validate all text/tel/email/password inputs
+    // Validate all inputs
     const inputs = document.querySelectorAll('.form-group input');
-    
     inputs.forEach(input => {
-        // Find correct wrapper container (handles regular inputs vs password wrapper layers)
         const formGroup = input.parentElement.classList.contains('password-wrapper') 
             ? input.parentElement.parentElement 
             : input.parentElement;
 
-        // Force enforcement rule: Cannot be empty/blank spaces
         if (!input.value.trim()) {
             formGroup.classList.add('invalid');
             isFormValid = false;
@@ -36,7 +32,6 @@ document.getElementById('signupForm').addEventListener('submit', function(event)
             formGroup.classList.remove('invalid');
         }
 
-        // Standard regex pattern validation for Email
         if (input.type === 'email' && input.value.trim()) {
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailPattern.test(input.value.trim())) {
@@ -46,7 +41,7 @@ document.getElementById('signupForm').addEventListener('submit', function(event)
         }
     });
 
-    // Check Password Matching Accuracy
+    // Check Password Matching
     const password = document.getElementById('password');
     const confirmPassword = document.getElementById('confirmPassword');
     const confirmFormGroup = confirmPassword.parentElement.parentElement;
@@ -67,14 +62,32 @@ document.getElementById('signupForm').addEventListener('submit', function(event)
         termsGroup.classList.remove('invalid-terms');
     }
 
-    // Success Hook Execution
+    // Success Hook Execution - 发送数据到后端
     if (isFormValid) {
-        alert('Registration Successful! All required fields are validated.');
-        // logic to push backend payload data can be initiated here
+        const formData = new FormData(this); // this 指向 signupForm
+
+        fetch('../signup.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                // 假设你的登录页在根目录
+                window.location.href = '../login.php'; 
+            } else {
+                alert("注册失败: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("发生错误，请查看控制台。");
+        });
     }
 });
 
-// 3. Clear warning messages automatically as soon as the user starts typing
+// 3. Clear warning messages
 const allInputs = document.querySelectorAll('.form-group input, #terms');
 allInputs.forEach(input => {
     input.addEventListener('input', function() {
