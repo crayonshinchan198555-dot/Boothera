@@ -22,12 +22,17 @@ $action = $_POST['action'] ?? $_GET['action'] ?? '';
 $email = $_POST['email'] ?? $_GET['email'] ?? '';
 
 // 自动兜底：如果 Session 里没有 user_id，但是前端传了 email，查出 user_id
+// 严格以 Session 为准，不要轻易被前端传的 email 覆盖
 $user_id = $_SESSION['user_id'] ?? null;
+
+// 只有在没有 session 的极端情况下，才允许通过 email 获取，且必须确保安全
 if (!$user_id && !empty($email)) {
     $email_clean = mysqli_real_escape_string($conn, $email);
     $u_res = $conn->query("SELECT user_id FROM Users WHERE `e-mail` = '$email_clean' LIMIT 1");
     if ($u_res && $row = $u_res->fetch_assoc()) {
         $user_id = $row['user_id'];
+        // 关键修复：查到之后，把这个 id 存入 session，防止后续逻辑混乱
+        $_SESSION['user_id'] = $user_id; 
     }
 }
 
