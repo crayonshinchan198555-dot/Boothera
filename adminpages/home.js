@@ -2,7 +2,6 @@ window.switchTab = switchTab;
 
 document.addEventListener("DOMContentLoaded", function() {
     // 检查用户是否已经登录
-    }
 
     // 从电脑本地存储 (LocalStorage) 恢复之前保存过的活动和审批状态
     restoreSavedEvents();
