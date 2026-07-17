@@ -1,42 +1,27 @@
 <?php
+file_put_contents('debug.log', "POST数据: " . print_r($_POST, true) . PHP_EOL, FILE_APPEND);
+// ... 保持原来的代码 ...
 session_start();
 header('Content-Type: application/json; charset=UTF-8');
 require_once 'db.php';
 
-// --- 最强接收方案 ---
-// 1. 优先尝试 $_POST
+// 只用最原始的方式获取，不要 parse_str，不要 file_get_contents
 $email = $_POST['email'] ?? '';
 $password = $_POST['password'] ?? '';
 
-// 2. 如果 $_POST 为空，强制读取 raw body 并解析
+// 如果这里直接报空，说明 JS 发送有问题，我们先看数据库查询
 if (empty($email)) {
-    $raw_input = file_get_contents("php://input");
-    parse_str($raw_input, $data);
-    $email = $data['email'] ?? '';
-    $password = $data['password'] ?? '';
-}
-
-// 3. 统一清理
-$email = trim($email); 
-$email = mysqli_real_escape_string($conn, $email);
-
-// --- 调试：如果还是空，直接在前端报错停止 ---
-if (empty($email)) {
-    echo json_encode(["success" => false, "message" => "错误：PHP 未接收到任何 Email 数据，请检查前端 JS 发送格式。"]);
+    echo json_encode(["success" => false, "message" => "后端未收到数据 (Email为空)"]);
     exit;
 }
 
-// --- 数据库查询 ---
-$sql = "SELECT `password`, `role` FROM `Users` WHERE `e-mail` = '$email'";
-$result = $conn->query($sql);
+// 严谨的查询
+$stmt = $conn->prepare("SELECT `password`, `role` FROM `Users` WHERE `e-mail` = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
 
-if (!$result) {
-    echo json_encode(["success" => false, "message" => "SQL错误: " . $conn->error]);
-    exit;
-}
-
-if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
+if ($row = $result->fetch_assoc()) {
     if ($password === $row['password']) {
         $_SESSION['user_email'] = $email;
         $target = ($row['role'] === 'admin') ? 'adminpages/home.php' : 'user_pages/user.php';
@@ -45,7 +30,8 @@ if ($result->num_rows > 0) {
         echo json_encode(["success" => false, "message" => "密码错误"]);
     }
 } else {
-    echo json_encode(["success" => false, "message" => "用户不存在。查询邮箱: [" . $email . "]"]);
+    echo json_encode(["success" => false, "message" => "用户不存在"]);
 }
+$stmt->close();
 exit;
 ?>
