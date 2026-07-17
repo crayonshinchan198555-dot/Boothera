@@ -34,55 +34,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /**Login interactions**/
 // 1. 登录逻辑（已修正跳转）
-function login() {
+async function login() {
     const email = document.getElementById('login-email').value.trim();
     const pass = document.getElementById('password').value;
-    const terms = document.getElementById('terms').checked;
 
-    // 💡 帮你在这里加上了非空拦截：必须两项都填才能继续登录
-    if (!email || !pass) {
-        alert("❌ Please enter both email and password!");
-        return;
-    }
+    // 1. 发送请求给你的 PHP 后端
+    const response = await fetch('src/login.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pass)}`
+    });
 
-    if (!terms) {
-        alert("Please agree to the Terms & Conditions.");
-        return;
-    }
+    const result = await response.json(); // 假设 PHP 返回 JSON
 
-    const defaultEmail = "admin@boothera.com";
-    const defaultPassword = "password123";
-
-    const userEmail = "user@boothera.com";
-    const userPassword = "password123";
-
-    // 1. 检查 Admin
-    if (email === defaultEmail && pass === defaultPassword) {
-        localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("userRole", "admin"); // 标记角色
-        alert("🎉 Login Successful! (Admin)");
-        window.location.href = "home.html"; 
-        return;
-    }
-
-    // 2. 检查 User
-    if (email === userEmail && pass === userPassword) {
-        localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("userRole", "user"); // 标记角色
-        alert("🎉 Login Successful! (User)");
-        window.location.href = "user_pages/user.html"; 
-        return;
-    }
-
-    // 3. 检查存储的账号
-    const savedPassword = localStorage.getItem('user_' + email);
-    if (savedPassword && savedPassword === pass) {
-        localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("userRole", "user"); // 普通注册用户默认为 user
-        alert("🎉 Login Successful!");
-        window.location.href = "user.html";
+    if (result.success) {
+        alert("🎉 登录成功！");
+        window.location.href = "home.html";
     } else {
-        alert("❌ Invalid email or password!");
+        alert("❌ 登录失败: " + result.message);
     }
 }
 

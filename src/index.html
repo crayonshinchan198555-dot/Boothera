@@ -110,7 +110,7 @@ document.querySelector('.form-box').addEventListener('submit', function(event) {
     const emailInput = document.getElementById('login-email').value.trim();
     const passwordInput = document.getElementById('password').value;
 
-    fetch('login.php', {
+    fetch('src/login.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `email=${encodeURIComponent(emailInput)}&password=${encodeURIComponent(passwordInput)}`
