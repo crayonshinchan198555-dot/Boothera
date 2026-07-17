@@ -86,6 +86,11 @@ function openApplyForm() {
  * 提交摊位申请
  */
 async function submitApplication() {
+    // 【调试代码】
+    const debugEmail = localStorage.getItem('userEmail');
+    console.log("当前读取到的邮箱是:", debugEmail);
+    alert("当前读取到的邮箱是: " + debugEmail); 
+    // --- 
     const selectedBooth = document.querySelector('input[name="booth_id"]:checked');
     if (!selectedBooth) return alert("Please select a booth!");
 
@@ -101,7 +106,7 @@ async function submitApplication() {
     // 3. 准备数据，确保带上 email
     const payload = {
         action: 'submit',
-        email: userEmail, // 必须带上这个！
+        email: localStorage.getItem('userEmail'), // 必须带上这个！
         event_id: window.currentEventId,
         booth_id: selectedBooth.value,
         product_category: document.getElementById('prod-cat').value,
