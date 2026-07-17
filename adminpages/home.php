@@ -1,8 +1,12 @@
 <?php
 session_start();
 // 如果没登录，或者不是管理员，踢回登录页
+echo "<pre>Debug Session: ";
+print_r($_SESSION);
+echo "</pre>";
+
 if (!isset($_SESSION['user_id']) || $_SESSION['userRole'] !== 'admin') {
-    header("Location: login.html"); 
+    header("Location: index.html"); 
     exit();
 }
 ?>
