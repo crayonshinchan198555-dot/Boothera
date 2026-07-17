@@ -1,8 +1,6 @@
 <?php
 // db.php - 彻底硬编码测试版
 // 强制 Session 在整个域名下都生效，而不仅仅是当前文件夹
-session_set_cookie_params(['path' => '/']); 
-session_start();
 
 // ⚠️ 直接在此处填入你从 Railway 获取的正确公网信息
 $host = "hayabusa.proxy.rlwy.net";

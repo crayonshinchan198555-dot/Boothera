@@ -1,8 +1,12 @@
 <?php
 session_start();
-header("Content-Type: application/json; charset=UTF-8"); // 必须强制声明返回 JSON
-// 💡 这一行是解决所有问题的关键：必须引入数据库连接，否则 $conn 永远是 null
+// 💡 加这一行：关闭报错显示，防止 Warning/Notice 破坏 JSON 格式
+ini_set('display_errors', 0);
+error_reporting(0);
+
+header("Content-Type: application/json; charset=UTF-8");
 require_once 'db.php'; 
+
 
 // 确认你的 db.php 里面定义了 $conn。
 // 如果 db.php 里写的是别的变量名（比如 $mysqli），请在这里统一修改.
