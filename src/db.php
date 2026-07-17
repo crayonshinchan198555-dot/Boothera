@@ -24,20 +24,13 @@ if ($dbUrl) {
 
 // 2. 建立连接
 // 使用 mysqli_init 初始化，以便配置 SSL
+// 3. 执行连接
 $conn = mysqli_init();
-
-// 很多云数据库(如 Railway)要求 SSL，开启此选项更稳妥
-// 如果连接时报错说找不到 SSL，请注释掉 mysqli_ssl_set 这一行
 mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
 
-// 3. 执行连接
 if (!$conn->real_connect($host, $user, $pass, $dbname, $port, NULL, MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT)) {
-    // 错误处理：输出明确的错误信息方便调试
-    die(json_encode([
-        "success" => false,
-        "message" => "Database Connection Failed: " . mysqli_connect_error(),
-        "debug_info" => "Host: $host, DB: $dbname"
-    ]));
+    // ⚠️ 关键修改：不要用 die() 隐藏信息，直接打印出真实的数据库报错！
+    die("数据库连接失败 (Debug): " . mysqli_connect_error() . " | Host: " . $host . " | User: " . $user);
 }
 
 // 4. 设置字符集
