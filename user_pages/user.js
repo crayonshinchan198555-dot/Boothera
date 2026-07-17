@@ -348,7 +348,7 @@ function sendMessageToAdmin() {
     payload.append('email', localStorage.getItem('userEmail')); // 确保传递email以便PHP查到user_id
 
     // 3. 发送给服务器
-    fetch('message.php', { // ⚠️ 确保文件名是你的后端处理文件名
+    fetch('/message.php', { // ⚠️ 确保文件名是你的后端处理文件名
         method: 'POST',
         body: payload
     })
