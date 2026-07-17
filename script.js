@@ -72,6 +72,8 @@ async function login() {
         alert("网络请求彻底失败: " + error);
     }
 
+}
+
 // 显示/隐藏密码
 function togglePassword() {
     const x = document.getElementById("password");
