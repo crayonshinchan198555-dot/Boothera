@@ -173,7 +173,10 @@ if (!isset($_SESSION['user_id'])) {
                 <div id="tab-profile" class="tab-panel">
                     <div class="booth-card" style="position: relative;"></div>
                     <!-- 编辑个人资料的触发按钮 -->
-                    <button id="edit-btn" class="edit-profile-btn" onclick="toggleEdit()">✏️</button>
+                    <!-- 直接替换你原有的那行图标代码 -->
+                    <button type="button" id="edit-btn" onclick="toggleEdit()" style="cursor: pointer; background: transparent; border: none; font-size: 20px;">
+                        ✏️
+                    </button>
                     <h2>Profile Details</h2>
                     
                     <!-- 个人资料查看状态区域 -->
