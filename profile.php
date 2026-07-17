@@ -17,7 +17,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 if ($method === 'GET') {
     $action = isset($_GET['action']) ? $_GET['action'] : '';
     $email = isset($_GET['email']) ? trim($_GET['email']) : '';
-
+    }
     if ($action === 'get_profile') {
         if (empty($email)) {
             echo json_encode(["success" => false, "message" => "邮箱不能为空！"]);
