@@ -402,7 +402,14 @@ document.addEventListener("DOMContentLoaded", function() {
                         if (dTime) dTime.innerText = event.event_time || event.time || '待定';
                         if (dDesc) dDesc.innerText = event.description || '无详细描述';
                         if (dPrice) dPrice.innerText = event.booth_price ? ('$' + event.booth_price) : 'No Price Data';
-    
+                        const formTitle = document.getElementById('form-event-title');
+                        if (formTitle) {
+                            formTitle.innerText = event.event_name || '无标题';
+                        }
+                    
+
+    // 3. 调用加载函数
+                        loadBooths(event.event_id);
 
                         // 核心修复：直接传入 HTML 中定义的完整 ID，不再加 tab- 前缀
                         // 确保你的 switchTab 函数里没有自动拼接 'tab-' 的逻辑，或者该函数已支持处理
@@ -422,9 +429,12 @@ document.addEventListener("DOMContentLoaded", function() {
  * @param {number} eventId - 活动ID
  */
 function loadBooths(eventId) {
+    // 调试弹窗，确保点击后代码运行
+    alert("正在尝试加载摊位，ID为: " + eventId);
+    
     const container = document.getElementById('booth-container');
     
-    // 如果页面没找到这个容器，先提示一下
+    // 如果页面没找到这个容器，报错
     if (!container) {
         console.error("未找到 booth-container，请检查 HTML 是否包含 <div id='booth-container'></div>");
         return;
