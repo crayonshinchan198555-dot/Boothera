@@ -546,34 +546,47 @@ function loadProfile() {
 }
 
 // 在 user.js 里确保有这段：
-window.addEventListener('DOMContentLoaded', () => {
-    loadMessageHistory(); // 确保这个函数被调用了！
+// 页面加载时自动获取历史留言
+document.addEventListener('DOMContentLoaded', () => {
+    fetchHistory();
 });
 
-function loadMessageHistory() {
-    // 确保这里的 URL 与你的文件路径一致
-    fetch('message.php?action=user_get_history') 
-        .then(response => response.json())
-        .then(data => {
-            console.log("获取到的历史留言:", data); // 调试用
-            const container = document.querySelector('.message-history-container'); // 确保这个类名与你HTML中的一致
+function fetchHistory() {
+    fetch('message.php?action=user_get_history')
+    .then(response => response.json())
+    .then(data => {
+        console.log("获取到的留言数据:", data); // 在控制台(F12)查看是否拿到数据
+        
+        const container = document.getElementById('user-message-history-grid');
+        const noHistoryText = document.getElementById('no-history-text');
+        
+        if (!container) return; 
+
+        // 如果有数据
+        if (data && data.length > 0) {
+            // 隐藏或删除默认提示文字
+            if (noHistoryText) noHistoryText.style.display = 'none';
             
-            if (data && data.length > 0) {
-                container.innerHTML = ''; // 清空提示
-                data.forEach(msg => {
-                    const div = document.createElement('div');
-                    div.innerHTML = `<p><strong>${msg.subject}</strong>: ${msg.content}</p>
-                                     <p><small>Reply: ${msg.reply || 'Pending...'}</small></p><hr>`;
-                    container.appendChild(div);
-                });
-            } else {
-                container.innerHTML = '<p>No message history found.</p>';
-            }
-        })
-        .catch(err => console.error("加载历史记录失败:", err));
+            // 清空旧的列表项（除了提示文字以外的动态内容）
+            // 如果你想保留提示文字，可以手动删除容器内除了 no-history-text 的所有项
+            
+            data.forEach(msg => {
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                item.style.padding = '10px';
+                item.style.border = '1px solid #e2e8f0';
+                item.style.borderRadius = '8px';
+                item.innerHTML = `
+                    <p style="margin:0; font-weight:bold;">Subject: ${msg.subject}</p>
+                    <p style="margin:5px 0;">Content: ${msg.content}</p>
+                    <p style="margin:0; color: #2563eb;">Reply: ${msg.reply ? msg.reply : '<em>Pending...</em>'}</p>
+                `;
+                container.appendChild(item);
+            });
+        } else {
+            // 如果数据为空，确保提示文字显示
+            if (noHistoryText) noHistoryText.style.display = 'block';
+        }
+    })
+    .catch(error => console.error("加载留言历史失败:", error));
 }
-
-// 页面加载完成后自动触发
-window.addEventListener('DOMContentLoaded', () => {
-    loadMessageHistory();
-});
