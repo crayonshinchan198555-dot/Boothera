@@ -49,16 +49,19 @@ function filterEvents() {
 /**
  * 显示活动详细信息
  */
-function showEventDetail(title, date, loc, time, desc, price, booths) {
+function showEventDetail(title, date, loc, time, desc, price) {
     document.getElementById('d-title').innerText = title;
     document.getElementById('d-date').innerText = date;
     document.getElementById('d-venue').innerText = loc;
     document.getElementById('d-time').innerText = time;
     document.getElementById('d-desc').innerText = desc;
-    document.getElementById('d-price').innerText = event.booth_price;
+    
+    // 直接使用传入的 price 参数，而不是去访问 event 对象
+    document.getElementById('d-price').innerText = price ? ('$' + price) : 'No Price Data';
     
     // 将当前活动标题记录到全局变量，方便后续表单调用
     window.currentEventTitle = title;
+    
     // 切换到详情页面
     switchTab('event-detail');
 }
@@ -386,15 +389,14 @@ document.addEventListener("DOMContentLoaded", function() {
                         const dTime = document.getElementById('d-time');
                         const dDesc = document.getElementById('d-desc');
                         const dPrice = document.getElementById('d-price');
-                        const dBooths = document.getElementById('d-booths');
 
                         if (dTitle) dTitle.innerText = event.event_name || '无标题';
                         if (dVenue) dVenue.innerText = event.venue || '无地点';
                         if (dDate) dDate.innerText = event.event_date || event.date || '待定';
                         if (dTime) dTime.innerText = event.event_time || event.time || '待定';
                         if (dDesc) dDesc.innerText = event.description || '无详细描述';
-                        if (dPrice) dPrice.innerText = event.rental_price || event.price || '面议';
-                        if (dBooths) dBooths.innerText = event.total_booths || event.booths || '0';
+                        if (dPrice) dPrice.innerText = event.booth_price ? ('$' + event.booth_price) : 'No Price Data';
+    
 
                         // 核心修复：直接传入 HTML 中定义的完整 ID，不再加 tab- 前缀
                         // 确保你的 switchTab 函数里没有自动拼接 'tab-' 的逻辑，或者该函数已支持处理
