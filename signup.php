@@ -12,7 +12,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password =$_POST['password'] ?? '';
     $role =$_POST['role'] ?? 'user';
     $business_name =$_POST['business_name'] ?? null;
-
+    // 在 $hashed_password = ... 这一行之前加上：
+    error_log("Debug password: " . ($_POST['password'] ?? 'NULL'));
     // 修改后的代码
     $password_to_save = $password; // 直接使用原始密码
 
