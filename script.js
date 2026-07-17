@@ -38,23 +38,36 @@ async function login() {
     const email = document.getElementById('login-email').value.trim();
     const pass = document.getElementById('password').value;
 
-    // 1. 发送请求给你的 PHP 后端
-    const response = await fetch('src/login.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pass)}`
-    });
+    try {
+        const response = await fetch('src/login.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pass)}`
+        });
 
-    const result = await response.json(); // 假设 PHP 返回 JSON
+        // 🚨 关键修改：先获取文本，而不是直接解析 JSON
+        const text = await response.text();
+        
+        console.log("后端返回的原始数据:", text); // 按 F12 在控制台里看这个
 
-    if (result.success) {
-        alert("🎉 登录成功！");
-        window.location.href = "home.html";
-    } else {
-        alert("❌ 登录失败: " + result.message);
+        // 尝试解析 JSON，如果失败则直接显示文本
+        try {
+            const result = JSON.parse(text);
+            if (result.success) {
+                alert("🎉 登录成功！");
+                window.location.href = "home.html";
+            } else {
+                alert("❌ 登录失败: " + result.message);
+            }
+        } catch (e) {
+            // 如果后端报错，这里会直接把数据库连接错误显示出来！
+            document.body.innerHTML = "<h1>后端报错详情:</h1>" + text;
+        }
+        
+    } catch (error) {
+        alert("网络请求彻底失败: " + error);
     }
 }
-
 // 显示/隐藏密码
 function togglePassword() {
     const x = document.getElementById("password");
