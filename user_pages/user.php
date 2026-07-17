@@ -121,12 +121,12 @@ if (!isset($_SESSION['user_id'])) {
                     <button onclick="switchTab('event-detail')" class="btn-back">← Back to Details</button>
                     <!-- 表单卡片 -->
                     <div class="booth-card">
-                        <h2>Apply: <span id="form-event-title"></span></h2>
+                        <h2><span id="form-event-title"></span></h2>
                         <form id="application-form" onsubmit="event.preventDefault(); submitApplication();">
                             <!-- 摊位选择 (单选按钮) -->
                             <p><strong>Select Booth:</strong></p>
                             <div id="booth-container"></div>
-                            
+
                             <!-- 申请人姓名 -->
                             <p><strong>Applicant Name:</strong></p>
                             <input type="text" id="applicant-name" class="search-input" style="width:100%;" required>

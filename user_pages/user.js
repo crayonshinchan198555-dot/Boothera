@@ -417,3 +417,44 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .catch(err => console.error("网络请求错误:", err));
 });
+/**
+ * 加载并显示指定活动的摊位
+ * @param {number} eventId - 活动ID
+ */
+function loadBooths(eventId) {
+    const container = document.getElementById('booth-container');
+    
+    // 如果页面没找到这个容器，先提示一下
+    if (!container) {
+        console.error("未找到 booth-container，请检查 HTML 是否包含 <div id='booth-container'></div>");
+        return;
+    }
+
+    container.innerHTML = 'Loading...'; // 加载中提示
+
+    // 请求后端 API
+    fetch(`../get_booths.php?event_id=${eventId}`)
+        .then(response => response.json())
+        .then(result => {
+            container.innerHTML = ''; // 清空加载提示
+            
+            if (result.success && result.data && result.data.length > 0) {
+                result.data.forEach(booth => {
+                    // 创建 HTML 结构：单选按钮 + 摊位号
+                    const label = document.createElement('label');
+                    label.style.display = 'block'; // 让每个选项换行显示
+                    label.innerHTML = `
+                        <input type="radio" name="booth_id" value="${booth.booth_id}"> 
+                        ${booth.booth_number}
+                    `;
+                    container.appendChild(label);
+                });
+            } else {
+                container.innerHTML = '该活动暂无可用摊位。';
+            }
+        })
+        .catch(err => {
+            console.error("加载摊位失败:", err);
+            container.innerHTML = '加载失败，请重试。';
+        });
+}
