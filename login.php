@@ -3,63 +3,49 @@ session_start();
 header('Content-Type: application/json; charset=UTF-8');
 require_once 'db.php';
 
-// 1. 获取并清理输入数据 (增加 trim()，强制去掉你输入时可能不小心带上的隐藏空格)
-// 把这一行
-// $email = mysqli_real_escape_string($conn, $_POST['email'] ?? '');
+// --- 最强接收方案 ---
+// 1. 优先尝试 $_POST
+$email = $_POST['email'] ?? '';
+$password = $_POST['password'] ?? '';
 
-// 改成这种更通用的方式，防止有的 PHP 环境读不到 $_POST
-$data = [];
-parse_str(file_get_contents("php://input"), $data); // 如果是 raw body，这个能抓到
-$email = mysqli_real_escape_string($conn, $_POST['email'] ?? ($data['email'] ?? ''));
-$password = $_POST['password'] ?? ($data['password'] ?? '');
+// 2. 如果 $_POST 为空，强制读取 raw body 并解析
+if (empty($email)) {
+    $raw_input = file_get_contents("php://input");
+    parse_str($raw_input, $data);
+    $email = $data['email'] ?? '';
+    $password = $data['password'] ?? '';
+}
 
-// 如果连不上数据库，直接在前端报错
-if ($conn->connect_error) {
-    echo json_encode(["success" => false, "message" => "数据库连接失败: " . $conn->connect_error]);
+// 3. 统一清理
+$email = trim($email); 
+$email = mysqli_real_escape_string($conn, $email);
+
+// --- 调试：如果还是空，直接在前端报错停止 ---
+if (empty($email)) {
+    echo json_encode(["success" => false, "message" => "错误：PHP 未接收到任何 Email 数据，请检查前端 JS 发送格式。"]);
     exit;
 }
 
-$row = null;
-
-// 2. 查询数据库 (反引号包围特殊列名)
+// --- 数据库查询 ---
 $sql = "SELECT `password`, `role` FROM `Users` WHERE `e-mail` = '$email'";
 $result = $conn->query($sql);
 
-// 3. 如果 SQL 语句执行失败（比如表名写错），直接把数据库的原始报错发给前端
 if (!$result) {
-    echo json_encode([
-        "success" => false, 
-        "message" => "SQL执行报错: " . $conn->error . " | 发送的SQL: " . $sql
-    ]);
+    echo json_encode(["success" => false, "message" => "SQL错误: " . $conn->error]);
     exit;
 }
 
-// 4. 判断并处理结果
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
-    
-    // 检查密码 (明文对比)
-    if ($row && $password === $row['password']) {
+    if ($password === $row['password']) {
         $_SESSION['user_email'] = $email;
-        
-        // 根据角色设置跳转路径
         $target = ($row['role'] === 'admin') ? 'adminpages/home.php' : 'user_pages/user.php';
-        
-        echo json_encode([
-            "success" => true, 
-            "message" => "登录成功", 
-            "redirect" => $target
-        ]);
+        echo json_encode(["success" => true, "message" => "登录成功", "redirect" => $target]);
     } else {
         echo json_encode(["success" => false, "message" => "密码错误"]);
     }
 } else {
-    // 【关键调试点】：如果找不到用户，把真正查询的邮箱加上括号显示出来！
-    // 这样你能一眼看出是不是多了一个空格，或者大写小写不对
-    echo json_encode([
-        "success" => false, 
-        "message" => "用户不存在。数据库里找不到: [" . $email . "]"
-    ]);
+    echo json_encode(["success" => false, "message" => "用户不存在。查询邮箱: [" . $email . "]"]);
 }
 exit;
 ?>
