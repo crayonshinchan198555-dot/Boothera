@@ -86,65 +86,42 @@ function openApplyForm() {
  * 提交摊位申请
  */
 async function submitApplication() {
-    // 1. 获取表单数据
-    const eventTitle = document.getElementById('form-event-title').innerText;
-    const applicantName = document.getElementById('applicant-name').value;
-    const prodCat = document.getElementById('prod-cat').value; // 确保 HTML 中 ID 正确
-    const prodName = document.getElementById('prod-name').value; // 确保 HTML 中 ID 正确
     const selectedBooth = document.querySelector('input[name="booth_id"]:checked');
+    if (!selectedBooth) return alert("Please select a booth!");
 
-    if (!selectedBooth) {
-        alert("Please select a booth!");
+    // 1. 从 localStorage 获取用户邮箱
+    const userEmail = localStorage.getItem('userEmail'); 
+    
+    // 2. 如果没获取到，说明没登录
+    if (!userEmail) {
+        alert("登录失效，请重新登录！");
         return;
     }
 
-    // 2. 准备发送给 application.php 的数据
-    // 注意：这里的字段名要与后端 $_POST 接收的保持一致
+    // 3. 准备数据，确保带上 email
     const payload = {
         action: 'submit',
-        email: localStorage.getItem('userEmail'), // 确保你登录时存储了 email
-        event_id: window.currentEventId,         // 点击卡片时存入的全局 ID
+        email: userEmail, // 必须带上这个！
+        event_id: window.currentEventId,
         booth_id: selectedBooth.value,
-        product_category: prodCat,
-        product_name: prodName
+        product_category: document.getElementById('prod-cat').value,
+        product_name: document.getElementById('prod-name').value
     };
 
-    try {
-        // 3. 发送 POST 请求到后端
-        const response = await fetch('../application.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
+    // 4. 发送请求
+    const response = await fetch('../application.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
 
-        const result = await response.json();
-
-        // 4. 处理后端返回的结果
-        if (result.success) {
-            alert("Application submitted successfully!");
-
-            // 5. 动态添加到页面 (只有数据库写入成功才添加)
-            const myAppsGrid = document.getElementById('my-apps-grid');
-            const newCard = document.createElement('div');
-            newCard.className = 'booth-card';
-            
-            newCard.innerHTML = `
-                <h3>${eventTitle}</h3>
-                <p><strong>Applicant:</strong> ${applicantName}</p>
-                <p><strong>Status:</strong> <span class="status-text" style="color: orange; font-weight: bold;">Pending</span></p>
-                <button class="btn-cancel" onclick="cancelApplication(this)" style="margin-top:10px; cursor:pointer;">Cancel Application</button>
-            `;
-            myAppsGrid.appendChild(newCard);
-
-            // 6. 清空表单并跳转
-            document.getElementById('application-form').reset();
-            switchTab('my-applications');
-        } else {
-            alert("Submission failed: " + result.message);
-        }
-    } catch (error) {
-        console.error("Error:", error);
-        alert("Network error, please try again.");
+    const result = await response.json();
+    if (result.success) {
+        alert("Application submitted successfully!");
+        switchTab('my-applications');
+        location.reload(); // 刷新以显示最新状态
+    } else {
+        alert("Submission failed: " + result.message);
     }
 }
 
