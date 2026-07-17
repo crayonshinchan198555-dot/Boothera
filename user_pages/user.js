@@ -551,14 +551,29 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 function loadMessageHistory() {
-    fetch('message.php?action=user_get_history')
-        .then(res => res.json())
+    // 确保这里的 URL 与你的文件路径一致
+    fetch('message.php?action=user_get_history') 
+        .then(response => response.json())
         .then(data => {
-            console.log("获取到的历史记录:", data); // 在控制台看看这里有没有东西
-            if (data.length > 0) {
-                // 执行渲染逻辑
+            console.log("获取到的历史留言:", data); // 调试用
+            const container = document.querySelector('.message-history-container'); // 确保这个类名与你HTML中的一致
+            
+            if (data && data.length > 0) {
+                container.innerHTML = ''; // 清空提示
+                data.forEach(msg => {
+                    const div = document.createElement('div');
+                    div.innerHTML = `<p><strong>${msg.subject}</strong>: ${msg.content}</p>
+                                     <p><small>Reply: ${msg.reply || 'Pending...'}</small></p><hr>`;
+                    container.appendChild(div);
+                });
             } else {
-                // 显示“No message history found”
+                container.innerHTML = '<p>No message history found.</p>';
             }
-        });
+        })
+        .catch(err => console.error("加载历史记录失败:", err));
 }
+
+// 页面加载完成后自动触发
+window.addEventListener('DOMContentLoaded', () => {
+    loadMessageHistory();
+});
