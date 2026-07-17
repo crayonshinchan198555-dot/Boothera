@@ -1,20 +1,20 @@
 <?php
 session_start();
 
-// 打印出当前所有的 Session 内容
-echo "<pre>当前 Session 内容: ";
-print_r($_SESSION);
-echo "</pre>";
+// 1. 先进行极其严格的检查
+$isLoggedIn = isset($_SESSION['user_id']);
+$hasRole = isset($_SESSION['userRole']) && trim($_SESSION['userRole']) == 'admin';
 
-// 如果发现 Session 里确实没有东西，或者 userRole 不是 admin，直接停止并显示
-// 修改 adminpages/home.php 中的这部分代码
-if (!isset($_SESSION['user_id']) || $_SESSION['userRole'] !== 'admin') {
-    // 将 '../login.html' 修改为 '/index.html'
+// 2. 如果不满足条件，才弹窗并跳转
+if (!$isLoggedIn || !$hasRole) {
     echo "<script>alert('Please sign in first!'); window.location.href='/index.html';</script>";
     exit();
 }
 
+// 3. 只有成功通过上面的检查，才会执行下面的页面代码
+// 💡 确保这里没有任何其他的 echo 或 header 跳转
 ?>
+
  
 <!DOCTYPE html>
 <html lang="en">
