@@ -1,38 +1,26 @@
 <?php
 session_start();
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=UTF-8');
+require_once 'db.php';
 
-// 直接使用你现有的 db.php，只要它能正常工作，这里就一定能连接
-require_once 'db.php'; 
+$email = mysqli_real_escape_string($conn, $_POST['email'] ?? '');
+$password = $_POST['password'] ?? '';
 
-$action = $_POST['action'] ?? '';
+// 1. 查询用户
+$sql = "SELECT password FROM Users WHERE `e-mail` = '$email'";
+$result = $conn->query($sql);
 
-// 1. 生成验证码
-if ($action === 'send_code') {
-    $code = strval(rand(100000, 999999));
-    $_SESSION['reset_code'] = $code;
+if ($result && $result->num_rows > 0) {
+    $row = $result->fetch_assoc();
     
-    // 直接返回，前端 Alert 出来
-    echo json_encode(["success" => true, "code" => $code]);
-    exit;
-}
-
-// 2. 验证并改密码
-if ($action === 'reset_password') {
-    $email = mysqli_real_escape_string($conn, $_POST['email']);
-    $input_code = $_POST['code'] ?? '';
-    $new_pass = $_POST['password'] ?? '';
-
-    // 匹配验证码
-    if ($input_code === $_SESSION['reset_code']) {
-        // 更新密码 (记得用 password_hash，别用明文存)
-        $hashed_pass = password_hash($new_pass, PASSWORD_DEFAULT);
-        $conn->query("UPDATE Users SET password = '$hashed_pass' WHERE `e-mail` = '$email'");
-        
-        echo json_encode(["success" => true, "message" => "密码修改成功！"]);
+    // 【关键】：这里直接对比明文密码
+    if ($password === $row['password']) {
+        $_SESSION['user_email'] = $email;
+        echo json_encode(["success" => true, "message" => "登录成功"]);
     } else {
-        echo json_encode(["success" => false, "message" => "验证码错误！"]);
+        echo json_encode(["success" => false, "message" => "密码错误"]);
     }
-    exit;
+} else {
+    echo json_encode(["success" => false, "message" => "用户不存在"]);
 }
 ?>
