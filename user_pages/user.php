@@ -249,6 +249,6 @@ if (!isset($_SESSION['user_id'])) {
         </div>
     </div>
     <!-- 引入外部逻辑脚本 -->
-    <script src="user.js"></script>
+    <script src="./user.js"></script>
 </body>
 </html>
