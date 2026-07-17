@@ -1,30 +1,25 @@
 <?php
-// 1. 关闭直接显示错误，改用错误日志记录
-ini_set('display_errors', 0); 
-error_reporting(E_ALL);
-
-// 2. 设置 JSON 头
+// 确保文件第一行就是 <?php，前面没有任何空格、换行或 BOM 符号
 header("Content-Type: application/json; charset=UTF-8");
 
 require_once 'db.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = $_POST['name'] ?? '';
-    $phone_number = $_POST['phone_number'] ?? '';
-    $email = $_POST['e-mail'] ?? '';
-    $password = $_POST['password'] ?? '';
-    $role = $_POST['role'] ?? 'user';
-    $business_name = $_POST['business_name'] ?? null;
+    // 使用 null coalescing 操作符，防止报错
+    $name =$_POST['name'] ?? '';
+    $phone_number =$_POST['phone_number'] ?? '';
+    $email =$_POST['e-mail'] ?? '';
+    $password =$_POST['password'] ?? '';
+    $role =$_POST['role'] ?? 'user';
+    $business_name =$_POST['business_name'] ?? null;
 
-    // 密码加密（一定要做）
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    // 使用准备好的语句插入，防止 SQL 注入（这是更好的习惯）
-   $stmt =$conn->prepare("INSERT INTO Users (name, phone_number, `e-mail`, password, role, business_name) VALUES (?, ?, ?, ?, ?, ?)");
+    // 确保这里的字段名与数据库完全一致（请再次确认数据库里到底是 e-mail 还是 email）
+    $stmt =$conn->prepare("INSERT INTO Users (name, phone_number, `e-mail`, password, role, business_name) VALUES (?, ?, ?, ?, ?, ?)");
     
     if (!$stmt) {
-        // 如果预处理失败，返回详细错误而不破坏 JSON
-        echo json_encode(["success" => false, "message" => "SQL准备失败: " . $conn->error]);
+        echo json_encode(["success" => false, "message" => "SQL准备错误: " . $conn->error]);
         exit();
     }
 
@@ -33,12 +28,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($stmt->execute()) {
         echo json_encode(["success" => true, "message" => "注册成功！", "redirect" => "../index.html"]);
     } else {
-        echo json_encode(["success" => false, "message" => "数据库插入失败: " . $stmt->error]);
+        echo json_encode(["success" => false, "message" => "执行错误: " . $stmt->error]);
     }
     $stmt->close();
 } else {
-    echo json_encode(["success" => false, "message" => "请求方法错误"]);
+    echo json_encode(["success" => false, "message" => "仅支持POST请求"]);
 }
 $conn->close();
-exit(); // 确保脚本执行完毕后立刻终止，防止后面有空格或其他输出
+exit();
 ?>
