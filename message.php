@@ -2,29 +2,26 @@
 ini_set('session.cookie_path', '/');
 session_start();
 
-// 强制开启输出缓冲，防止任何意外输出破坏 JSON
+// 强制开启输出缓冲，防止任何意外输出破坏 JSON 格式
 ob_start(); 
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
+// 引入数据库连接配置 (确保 db.php 中定义了 $conn)
 require_once 'db.php'; 
-// 注意：如果 db.php 里面已经连接了数据库，这里不要再 new mysqli(...) 了！
-// 检查 db.php，如果里面已经有了 $conn，直接用就行。
 
-// ==========================================
-// 剩余逻辑...
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) { 
+// 检查 $conn 是否已成功连接
+if (!isset($conn) || $conn->connect_error) {
     ob_clean();
-    die(json_encode(["success" => false, "message" => "Database connection failed"])); 
+    die(json_encode(["success" => false, "message" => "Database connection failed"]));
 }
 
 // 兼容前端的两种接收方式
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
 $email = $_POST['email'] ?? $_GET['email'] ?? '';
 
-// 💡 自动兜底：如果 Session 里没有 user_id，但是前端传了 email，查出 user_id
+// 自动兜底：如果 Session 里没有 user_id，但是前端传了 email，查出 user_id
 $user_id = $_SESSION['user_id'] ?? null;
 if (!$user_id && !empty($email)) {
     $email_clean = mysqli_real_escape_string($conn, $email);
@@ -35,7 +32,7 @@ if (!$user_id && !empty($email)) {
 }
 
 // =========================================================================
-// 🚀 核心精准路由分发 (采用明确的 action 匹配，彻底杜绝模糊 POST 拦截)
+// 🚀 核心精准路由分发
 // =========================================================================
 
 // 【动作 A】管理员提交回复
@@ -45,7 +42,7 @@ if ($action === 'admin_reply') {
     
     if (empty($m_id)) {
         ob_clean();
-        die(json_encode(["success" => false, "message" => "Missing message ID (message_id)"]));
+        die(json_encode(["success" => false, "message" => "Missing message ID"]));
     }
     
     $sql = "UPDATE Message SET reply = '$reply' WHERE m_id = '$m_id'";
@@ -60,7 +57,6 @@ if ($action === 'admin_reply') {
 }
 
 // 【动作 B】管理员获取所有留言
-unset($messages); // 规避变量污染
 if ($action === 'admin_get_all') {
     $sql = "SELECT m.*, u.name as username FROM Message m JOIN Users u ON m.user_id = u.user_id ORDER BY m.created_at DESC";
     $result = $conn->query($sql);
@@ -77,7 +73,7 @@ if ($action === 'admin_get_all') {
 if ($action === 'send_message' || (empty($action) && $_SERVER['REQUEST_METHOD'] === 'POST')) {
     if (!$user_id) { 
         ob_clean();
-        die(json_encode(["success" => false, "message" => "Please login first (User ID not found)"])); 
+        die(json_encode(["success" => false, "message" => "Please login first"])); 
     }
     
     $subject = mysqli_real_escape_string($conn, $_POST['subject'] ?? '');
@@ -98,8 +94,8 @@ if ($action === 'send_message' || (empty($action) && $_SERVER['REQUEST_METHOD'] 
     exit;
 }
 
-// 【动作 D】用户获取自己的留言历史 (兜底防崩策略)
-if ($action === 'user_get_history' || $_SERVER['REQUEST_METHOD'] === 'GET' || empty($action)) {
+// 【动作 D】用户获取自己的留言历史
+if ($action === 'user_get_history' || $_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!$user_id) { 
         ob_clean();
         echo json_encode([]); 
