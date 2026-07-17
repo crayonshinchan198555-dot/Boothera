@@ -211,6 +211,8 @@ async function saveProfile() {
             // 3. 后端成功后，再更新页面显示
             document.getElementById('view-name').textContent = payload.username;
             document.getElementById('view-phone').textContent = payload.phone;
+            // 找到 toggleEdit 函数中的 if 部分，加上这一行：
+            document.getElementById('edit-email').value = payload.email;
             document.getElementById('view-business').textContent = payload.business_name;
             
             alert("Profile updated successfully!");

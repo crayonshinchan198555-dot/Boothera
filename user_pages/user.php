@@ -191,6 +191,7 @@ if (!isset($_SESSION['user_id'])) {
                     <div id="profile-edit-form" style="display: none;">
                         <p><strong>Name:</strong> <input type="text" id="edit-name"></p>
                         <p><strong>Phone:</strong> <input type="text" id="edit-phone"></p>
+                        <p><strong>E-mail:</strong> <input type="email" id="edit-email"></p>
                         <p><strong>Business:</strong> <input type="text" id="edit-business"></p>
                         <button onclick="saveProfile()">Save</button>
                         <button onclick="toggleEdit()">Cancel</button>
