@@ -2,15 +2,18 @@
 ini_set('session.cookie_path', '/');
 session_start();
 
-// 强制开启输出缓冲，防止任何隐式的警告(Notice)污染JSON响应
-ob_start();
+// 强制开启输出缓冲，防止任何意外输出破坏 JSON
+ob_start(); 
 
-// 允许跨域及指定 JSON 返回
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
-require_once 'db.php';
+require_once 'db.php'; 
+// 注意：如果 db.php 里面已经连接了数据库，这里不要再 new mysqli(...) 了！
+// 检查 db.php，如果里面已经有了 $conn，直接用就行。
 
+// ==========================================
+// 剩余逻辑...
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) { 
     ob_clean();
