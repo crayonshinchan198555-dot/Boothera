@@ -392,37 +392,39 @@ document.addEventListener("DOMContentLoaded", function() {
                     `;
                     
                     // 点击事件：填充详情并切换面板
-                    card.onclick = function() {
-                        // 打印完整对象以供调试，如果还是不显示，看控制台里的字段名是否对得上
-                        console.log("点击活动的完整数据:", event);
+                    // 点击事件：填充详情并切换面板
+card.onclick = function() {
+    // 💡【核心修正】把当前点击的活动ID存入全局变量，确保提交表单时能读取到
+    window.currentEventId = event.event_id; 
+    
+    // 打印完整对象以供调试
+    console.log("当前设置的全局活动ID为:", window.currentEventId);
+    console.log("点击活动的完整数据:", event);
 
-                        // 填充详情页内容
-                        const dTitle = document.getElementById('d-title');
-                        const dVenue = document.getElementById('d-venue');
-                        const dDate = document.getElementById('d-date');
-                        const dTime = document.getElementById('d-time');
-                        const dDesc = document.getElementById('d-desc');
-                        const dPrice = document.getElementById('d-price');
+    // 填充详情页内容 (以下代码保持原样)
+    const dTitle = document.getElementById('d-title');
+    const dVenue = document.getElementById('d-venue');
+    const dDate = document.getElementById('d-date');
+    const dTime = document.getElementById('d-time');
+    const dDesc = document.getElementById('d-desc');
+    const dPrice = document.getElementById('d-price');
 
-                        if (dTitle) dTitle.innerText = event.event_name || '无标题';
-                        if (dVenue) dVenue.innerText = event.venue || '无地点';
-                        if (dDate) dDate.innerText = event.event_date || event.date || '待定';
-                        if (dTime) dTime.innerText = event.event_time || event.time || '待定';
-                        if (dDesc) dDesc.innerText = event.description || '无详细描述';
-                        if (dPrice) dPrice.innerText = event.booth_price ? ('$' + event.booth_price) : 'No Price Data';
-                        const formTitle = document.getElementById('form-event-title');
-                        if (formTitle) {
-                            formTitle.innerText = event.event_name || '无标题';
-                        }
-                    
+    if (dTitle) dTitle.innerText = event.event_name || '无标题';
+    if (dVenue) dVenue.innerText = event.venue || '无地点';
+    if (dDate) dDate.innerText = event.event_date || event.date || '待定';
+    if (dTime) dTime.innerText = event.event_time || event.time || '待定';
+    if (dDesc) dDesc.innerText = event.description || '无详细描述';
+    if (dPrice) dPrice.innerText = event.booth_price ? ('$' + event.booth_price) : 'No Price Data';
+    
+    const formTitle = document.getElementById('form-event-title');
+    if (formTitle) {
+        formTitle.innerText = event.event_name || '无标题';
+    }
 
-    // 3. 调用加载函数
-                        loadBooths(event.event_id);
-
-                        // 核心修复：直接传入 HTML 中定义的完整 ID，不再加 tab- 前缀
-                        // 确保你的 switchTab 函数里没有自动拼接 'tab-' 的逻辑，或者该函数已支持处理
-                        switchTab('event-detail'); 
-                    };
+    // 接下来调用加载摊位和切换面板的函数
+    loadBooths(event.event_id);
+    switchTab('event-detail');
+};
 
                     grid.appendChild(card);
                 });
