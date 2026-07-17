@@ -110,7 +110,7 @@ function sendCode() {
     formData.append('action', 'send_code');
     formData.append('email', email);
 
-    fetch('/forgot_password.php', { // 确保路径正确（如果文件在根目录就是 /）
+    fetch('forgot_password.php', { // 确保路径正确（如果文件在根目录就是 /）
         method: 'POST',
         body: formData
     })
