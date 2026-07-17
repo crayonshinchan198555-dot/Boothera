@@ -1,9 +1,12 @@
 <?php
 session_start();
 header("Content-Type: application/json; charset=UTF-8"); // 必须强制声明返回 JSON
+// 💡 这一行是解决所有问题的关键：必须引入数据库连接，否则 $conn 永远是 null
+require_once 'db.php'; 
 
-// 数据库连接部分保持不变...
-// 假设 $conn 已正确定义
+// 确认你的 db.php 里面定义了 $conn。
+// 如果 db.php 里写的是别的变量名（比如 $mysqli），请在这里统一修改.
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'] ?? '';
