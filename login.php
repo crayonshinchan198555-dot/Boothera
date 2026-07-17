@@ -4,9 +4,14 @@ header('Content-Type: application/json; charset=UTF-8');
 require_once 'db.php';
 
 // 1. 获取并清理输入数据 (增加 trim()，强制去掉你输入时可能不小心带上的隐藏空格)
-$raw_email = $_POST['email'] ?? '';
-$email = mysqli_real_escape_string($conn, trim($raw_email));
-$password = $_POST['password'] ?? '';
+// 把这一行
+// $email = mysqli_real_escape_string($conn, $_POST['email'] ?? '');
+
+// 改成这种更通用的方式，防止有的 PHP 环境读不到 $_POST
+$data = [];
+parse_str(file_get_contents("php://input"), $data); // 如果是 raw body，这个能抓到
+$email = mysqli_real_escape_string($conn, $_POST['email'] ?? ($data['email'] ?? ''));
+$password = $_POST['password'] ?? ($data['password'] ?? '');
 
 // 如果连不上数据库，直接在前端报错
 if ($conn->connect_error) {
