@@ -184,16 +184,15 @@ if (!isset($_SESSION['user_id'])) {
                         <p><strong>Password:</strong> <span id="view-password">••••••••</span></p>
                         <p><strong>Business name:</strong> <span id="view-business">Uncle Rojak</span></p>    
                     </div>
+
+                    <div id="profile-edit" style="display: none;">
+                        <p><strong>Name:</strong> <input type="text" id="edit-name"></p>
+                        <p><strong>Phone:</strong> <input type="text" id="edit-phone"></p>
+                        <p><strong>Business:</strong> <input type="text" id="edit-business"></p>
+                        <button onclick="saveProfile()">Save</button>
+                        <button onclick="toggleEdit()">Cancel</button>
+                    </div>
                     
-                    <!-- 个人资料编辑状态表单 (默认隐藏) -->
-                    <form id="profile-edit-form" style="display: none;" onsubmit="event.preventDefault(); saveProfile();">
-                        <p><strong>Name:</strong><br><input type="text" id="edit-name" class="search-input" value="Ali"></p>
-                        <p><strong>Phone number:</strong><br><input type="text" id="edit-phone" class="search-input" value="012-3456 7890"></p>
-                        <p><strong>E-mail:</strong><br><input type="email" id="edit-email" class="search-input" value="ali@gmail.com"></p>
-                        <p><strong>Password:</strong><br><input type="password" id="edit-password" class="search-input" value="12345678"></p>
-                        <p><strong>Business name:</strong><br><input type="text" id="edit-business" class="search-input" value="Uncle Rojak"></p>
-                        <button type="submit" class="btn-submit-event" style="width:100%; margin-top:10px;">Save Changes</button>
-                    </form>
                 </div>
 
                 <!-- ------------------------------------------ -->

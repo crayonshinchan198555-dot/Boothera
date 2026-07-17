@@ -183,21 +183,41 @@ function toggleEdit() {
 /**
  * 保存修改后的个人资料
  */
-function saveProfile() {
-    // 从输入框获取最新修改的值
-    const newName = document.getElementById('edit-name').value;
-    const newPhone = document.getElementById('edit-phone').value;
-    const newEmail = document.getElementById('edit-email').value;
-    const newBusiness = document.getElementById('edit-business').value;
+async function saveProfile() {
+    // 1. 获取最新修改的值
+    const payload = {
+        action: 'update_profile',
+        old_email: localStorage.getItem('userEmail'), // 后端需要用这个作为主键标识
+        username: document.getElementById('edit-name').value,
+        phone: document.getElementById('edit-phone').value,
+        business_name: document.getElementById('edit-business').value
+    };
 
-    // 更新到查看视图文本中
-    document.getElementById('view-name').textContent = newName;
-    document.getElementById('view-phone').textContent = newPhone;
-    document.getElementById('view-email').textContent = newEmail;
-    document.getElementById('view-business').textContent = newBusiness;
+    try {
+        // 2. 发送请求给后端
+        const response = await fetch('../profile.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams(payload).toString()
+        });
 
-    alert("Profile updated successfully!");
-    toggleEdit(); // 保存完成后自动切回查看模式
+        const result = await response.json();
+
+        if (result.success) {
+            // 3. 后端成功后，再更新页面显示
+            document.getElementById('view-name').textContent = payload.username;
+            document.getElementById('view-phone').textContent = payload.phone;
+            document.getElementById('view-business').textContent = payload.business_name;
+            
+            alert("Profile updated successfully!");
+            toggleEdit(); // 切换回查看模式
+        } else {
+            alert("Update failed: " + result.message);
+        }
+    } catch (error) {
+        console.error("Error saving profile:", error);
+        alert("Server error, please try again.");
+    }
 }
 
 /**

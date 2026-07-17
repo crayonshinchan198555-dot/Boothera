@@ -25,11 +25,11 @@ if ($method === 'GET') {
         }
 
         // 使用 mysqli 预处理（用 ? 代替 :email）
-        $sql = "SELECT name AS username, phone_number AS phone, `e-mail` AS email, business_name 
-                FROM Users 
-                WHERE `e-mail` = ? LIMIT 1";
+        $sql = "SELECT name AS username, phone_number AS phone, `e-mail` AS email, business_name, password 
+            FROM Users 
+            WHERE `e-mail` = ? LIMIT 1";
         
-        if ($stmt = $conn->prepare($sql)) {
+        if ($ = $conn->prepare($sql)) {
             $stmt->bind_param("s", $email);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -47,10 +47,7 @@ if ($method === 'GET') {
         } else {
             echo json_encode(["success" => false, "message" => "数据库查询准备失败: " . $conn->error]);
         }
-    } else {
-        echo json_encode(["success" => false, "message" => "无效的 Action 动作。"]);
-    }
-    exit;
+        exit;
 }
 
 // ==========================================================
