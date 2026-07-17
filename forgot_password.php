@@ -11,11 +11,11 @@ session_start();
 header('Content-Type: application/json');
 
 // 显式从环境变量获取，如果获取不到，给一个明确的报错，而不是让程序继续往下跑
-$servername = getenv('MYSQLHOST') ?: getenv('MYSQL_HOST');
-$username   = getenv('MYSQLUSER') ?: getenv('MYSQL_USER');
-$password   = getenv('MYSQLPASSWORD') ?: getenv('MYSQL_PASSWORD');
-$dbname     = getenv('MYSQLDATABASE') ?: getenv('MYSQL_DATABASE');
-$port       = getenv('MYSQLPORT') ?: getenv('MYSQL_PORT');
+$servername = "你在 Railway 控制台看到的那个 MYSQLHOST 的值"; 
+$username   = "你在 Railway 控制台看到的那个 MYSQLUSER 的值";
+$password   = "你在 Railway 控制台看到的那个 MYSQLPASSWORD 的值";
+$dbname     = "你在 Railway 控制台看到的那个 MYSQLDATABASE 的值";
+$port       = "你在 Railway 控制台看到的那个 MYSQLPORT 的值";
 
 // 如果必要参数为空，直接输出 JSON 报错并终止，防止页面输出 HTML 警告
 if (!$servername || !$username) {
