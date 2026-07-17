@@ -1,26 +1,27 @@
 <?php
-// 1. 强制不输出 HTML 错误，确保只返回 JSON
+// 1. 最优先启动 Session
+session_start();
+
+// 2. 然后再处理报错和 Header
 error_reporting(0);
 ini_set('display_errors', 0);
 header('Content-Type: application/json; charset=UTF-8');
 
-// 2. 数据库连接配置 (请填入你在 Railway 看到的真实值)
+// 3. 数据库连接
 $host = 'hayabusa.proxy.rlwy.net';
-$user = '填入你的 MYSQLUSER 值'; 
-$pass = '填入你的 MYSQLPASSWORD 值';
-$db   = '填入你的 MYSQLDATABASE 值';
-$port = 59703; // 这是你在 Networking 看到的端口
+$user = '...'; 
+$pass = '...';
+$db   = '...';
+$port = 59703;
 
 $conn = new mysqli($host, $user, $pass, $db, $port);
 
-// 检查连接是否成功
 if ($conn->connect_error) {
-    echo json_encode(["success" => false, "message" => "数据库连接失败: " . $conn->connect_error]);
+    echo json_encode(["success" => false, "message" => "数据库连接失败"]);
     exit;
 }
 
-// 3. 处理请求逻辑
-session_start();
+// 4. 处理逻辑
 $action = $_POST['action'] ?? '';
 
 // 功能 1：点击 Get Code
