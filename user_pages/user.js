@@ -453,6 +453,7 @@ card.onclick = function() {
             }
         })
         .catch(err => console.error("网络请求错误:", err));
+        loadProfile();
 });
 /**
  * 加载并显示指定活动的摊位
@@ -533,3 +534,29 @@ function loadApplicationHistory() {
 
 // 页面加载完后立即调用
 document.addEventListener("DOMContentLoaded", loadApplicationHistory);
+
+function loadProfile() {
+    // 1. 获取登录用户的邮箱 (假设登录时你把邮箱存在了 localStorage)
+    const email = localStorage.getItem('userEmail');
+    if (!email) {
+        console.log("未检测到登录邮箱，请先登录");
+        return;
+    }
+
+    // 2. 调用你的 profile.php API
+    fetch(`../profile.php?action=get_profile&email=${encodeURIComponent(email)}`)
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                const user = result.data;
+                // 3. 将后端返回的数据填入页面对应的 ID 中
+                document.getElementById('view-name').textContent = user.username;
+                document.getElementById('view-phone').textContent = user.phone;
+                document.getElementById('view-email').textContent = user.email;
+                document.getElementById('view-business').textContent = user.business_name;
+            } else {
+                console.error("加载失败:", result.message);
+            }
+        })
+        .catch(err => console.error("请求出错:", err));
+}
