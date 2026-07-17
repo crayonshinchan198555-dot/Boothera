@@ -30,11 +30,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         echo json_encode(["success" => false, "message" => "执行错误: " . $stmt->error]);
     }
+// ... 前面的代码 ...
     $stmt->close();
 } else {
-    echo json_encode(["success" => false, "message" => "仅支持POST请求"]);
-} else {
-    // 增加调试输出
+    // 这里是唯一的一个 else，对应最外层的 if ($_SERVER["REQUEST_METHOD"] == "POST")
     echo json_encode([
         "success" => false, 
         "message" => "仅支持POST请求",
