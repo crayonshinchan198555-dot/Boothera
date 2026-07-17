@@ -2,6 +2,8 @@
 // ==========================================================
 // 4. profile.php - 用户资料管理 API (已修正为 mysqli 稳定版)
 // ==========================================================
+error_reporting(0); 
+ini_set('display_errors', 0);
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
