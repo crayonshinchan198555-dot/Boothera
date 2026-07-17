@@ -377,17 +377,17 @@ document.addEventListener("DOMContentLoaded", function() {
                     
                     // 3. 添加点击事件 (修正了原来的重复添加问题)
                     card.onclick = function() {
-                        // 更新详情页标题
-                        const titleEl = document.getElementById('form-event-title');
-                        if (titleEl) {
-                            titleEl.innerText = event.event_name;
-                        }
-                        // 切换页面
-                        if (typeof switchTab === 'function') {
-                            switchTab('tab-apply-form');
-                        } else {
-                            console.error("switchTab 函数未找到");
-                        }
+                        document.getElementById('d-title').innerText = event.event_name;
+                        document.getElementById('d-venue').innerText = event.venue;
+                        document.getElementById('d-date').innerText = event.event_date || '待定';
+                        document.getElementById('d-time').innerText = event.event_time || '待定'; // 假设数据库有 time 字段
+                        document.getElementById('d-desc').innerText = event.description || '无详细描述';
+                        document.getElementById('d-price').innerText = event.rental_price || '面议';
+                        document.getElementById('d-booths').innerText = event.total_booths || '0';
+
+    // 2. 切换到详情页面板
+    // 注意：确保这里的 ID 和你 HTML 里的 id="tab-event-detail" 一致
+                        switchTab('tab-event-detail'); 
                     };
 
                     // 4. 只添加一次到 grid 中
