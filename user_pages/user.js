@@ -262,20 +262,6 @@ function robotReply(type) {
     responseBox.style.display = "block";
 }
 
-/**
- * 留言给管理员的逻辑 (Message Admin)
- */
-function sendMessageToAdmin() {
-    // 获取用户输入的留言标题与正文
-    const subject = document.getElementById('msg-subject').value;
-    const content = document.getElementById('msg-content').value;
-    
-    // 纯前端环境模拟提交成果，弹出通知提示
-    alert(`Message sent to Admin successfully!\n\nSubject: ${subject}`);
-    
-    // 成功提交后，重置清空留言表单里的内容
-    document.getElementById('admin-message-form').reset();
-}
 
 /**
  * =========================================================================
@@ -349,49 +335,41 @@ function renderUserMessageHistory() {
 /**
  * 功能：处理 User 发送新留言的动作（带唯一ID与时间戳）
  */
-function handleUserSendMessage(event) {
-    event.preventDefault(); // 阻止默认刷新
+function sendMessageToAdmin() {
+    // 1. 获取输入内容
+    const subject = document.getElementById('msg-subject').value;
+    const content = document.getElementById('msg-content').value;
 
-    // 获取对应的 Input 和 Textarea
-    const subjectInput = document.querySelector('input[placeholder="e.g., Booth Query"]');
-    const contentInput = document.querySelector('textarea[placeholder="Type your message here..."]');
+    // 2. 准备数据发送给 PHP (后端)
+    const payload = new URLSearchParams();
+    payload.append('action', 'send_message');
+    payload.append('subject', subject);
+    payload.append('content', content);
+    payload.append('email', localStorage.getItem('userEmail')); // 确保传递email以便PHP查到user_id
 
-    if (!subjectInput || !contentInput) return;
-
-    const subjectText = subjectInput.value.trim();
-    const contentText = contentInput.value.trim();
-
-    if (!subjectText || !contentText) {
-        alert("Please fill in both Subject and Your Message!");
-        return;
-    }
-
-    // 从 localStorage 获取现有的消息
-    const rawMessages = localStorage.getItem('admin_messages');
-    let allMessages = rawMessages ? JSON.parse(rawMessages) : [];
-
-    // 创建一个标准的消息数据包，包含唯一 ID
-    const newMessage = {
-        id: "msg_" + Date.now(), 
-        subject: subjectText,
-        content: contentText,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + " Today",
-        username: "Ali (ali@gmail.com)", // 这里实际开发可以动态抓取已登录的用户名
-        businessName: "Uncle Rojak",     // 动态抓取商户名
-        reply: null                      // 初始状态没有回复
-    };
-
-    allMessages.push(newMessage);
-    localStorage.setItem('admin_messages', JSON.stringify(allMessages));
-
-    alert("🎉 Message sent to Admin successfully!");
-
-    // 清空输入框
-    subjectInput.value = '';
-    contentInput.value = '';
-
-    // 实时更新列表
-    renderUserMessageHistory();
+    // 3. 发送给服务器
+    fetch('message.php', { // ⚠️ 确保文件名是你的后端处理文件名
+        method: 'POST',
+        body: payload
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("🎉 " + data.message);
+            // 清空表单
+            document.getElementById('admin-message-form').reset();
+            // 刷新历史记录列表
+            if (typeof loadMessageHistory === 'function') {
+                loadMessageHistory();
+            }
+        } else {
+            alert("❌ " + data.message);
+        }
+    })
+    .catch(error => {
+        console.error("请求失败:", error);
+        alert("服务器连接失败，请检查 PHP 文件路径");
+    });
 }
 
 document.addEventListener("DOMContentLoaded", function() {
