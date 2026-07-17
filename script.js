@@ -55,7 +55,7 @@ async function login() {
             const result = JSON.parse(text);
             if (result.success) {
                 alert("🎉 登录成功！");
-                window.location.href = "home.html";
+                window.location.href = "adminpages/home.html";
             } else {
                 alert("❌ 登录失败: " + result.message);
             }
