@@ -5,7 +5,7 @@
 $host = "hayabusa.proxy.rlwy.net";
 $port = 59703;
 $user = "root";
-$pass = "这里填写你 Railway MYSQL_ROOT_PASSWORD 的真实值"; 
+$pass = "LJOfpahcEEtABdvRmGNdPymJtuMUNQVn"; 
 $dbname = "railway"; // 这里的数据库名填你 Variables 里看到的那个
 
 // 建立连接
