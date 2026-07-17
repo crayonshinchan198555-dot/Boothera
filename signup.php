@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("ssssss", $name, $phone_number, $email, $hashed_password, $role, $business_name);
 
     if ($stmt->execute()) {
-        echo json_encode(["success" => true, "message" => "注册成功！", "redirect" => "../login.php"]);
+        echo json_encode(["success" => true, "message" => "注册成功！", "redirect" => "../index.html"]);
     } else {
         echo json_encode(["success" => false, "message" => "数据库插入失败: " . $conn->error]);
     }
