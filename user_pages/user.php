@@ -262,6 +262,7 @@ if (!isset($_SESSION['user_id'])) {
         </div>
     </div>
     <!-- 引入外部逻辑脚本 -->
-    <script src="./user.js"></script>
+    <!-- 将原来的 ./user.js 修改为以下路径 -->
+    <script src="/user_pages/user.js"></script>>
 </body>
 </html>
