@@ -33,6 +33,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->close();
 } else {
     echo json_encode(["success" => false, "message" => "仅支持POST请求"]);
+} else {
+    // 增加调试输出
+    echo json_encode([
+        "success" => false, 
+        "message" => "仅支持POST请求",
+        "method_received" => $_SERVER["REQUEST_METHOD"],
+        "uri" => $_SERVER["REQUEST_URI"]
+    ]);
 }
 $conn->close();
 exit();
