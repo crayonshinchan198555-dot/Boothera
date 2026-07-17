@@ -441,7 +441,11 @@ function loadBooths(eventId) {
     alert("正在尝试加载摊位，ID为: " + eventId);
     
     const container = document.getElementById('booth-container');
-    
+    boothContainer.innerHTML += `
+        <label>
+            <input type="radio" name="booth_id" value="${booth.id}"> ${booth.name}
+        </label><br>
+    `;
     // 如果页面没找到这个容器，报错
     if (!container) {
         console.error("未找到 booth-container，请检查 HTML 是否包含 <div id='booth-container'></div>");
