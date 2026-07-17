@@ -1,7 +1,5 @@
-/**
- * 0. 页面初始化设置 (Page Initialization)
- * 当网页加载完毕后，自动执行此区域的代码
- */
+window.switchTab = switchTab;
+
 document.addEventListener("DOMContentLoaded", function() {
     // 检查用户是否已经登录
     }
@@ -57,7 +55,7 @@ function switchTab(tabId) {
         section.style.display = 'none';
         section.classList.remove('active');
     });
-s
+
     // 显示目标面板
     const targetPanel = document.getElementById('tab-' + tabId) || document.getElementById(tabId + '-section');
     if (targetPanel) {
