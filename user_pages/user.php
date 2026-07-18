@@ -184,7 +184,6 @@ if (!isset($_SESSION['user_id'])) {
                         <p><strong>Name:</strong> <span id="view-name"></span></p>
                         <p><strong>Phone number:</strong> <span id="view-phone"></span></p>
                         <p><strong>E-mail:</strong> <span id="view-email"></span></p>
-                        <p><strong>Password:</strong> <span id="view-password"></span></p>
                         <p><strong>Business name:</strong> <span id="view-business"></span></p>    
                     </div>
 
