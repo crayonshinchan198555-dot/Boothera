@@ -156,4 +156,6 @@ function submitNewPassword() {
         }
     })
     .catch(error => alert("网络错误: " + error));
+}
+
 });
