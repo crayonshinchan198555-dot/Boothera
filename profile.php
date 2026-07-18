@@ -1,38 +1,34 @@
 <?php
 // ==========================================================
-// 4. profile.php - 用户资料管理 API (已修正为 mysqli 稳定版)
+// profile.php - 用户资料管理 API (修复多标签页 Session 覆盖版)
 // ==========================================================
-error_reporting(0); 
-ini_set('display_errors', 0);
-
-header("Access-Control-Allow-Origin: *");
+session_start(); // 必须开启会话
 header("Content-Type: application/json; charset=UTF-8");
 
-// 引入你的数据库连接文件（提供 $conn 对象）
 require_once 'db.php'; 
 
+// 权限检查：确保已登录
+if (!isset($_SESSION['user_id'])) {
+    echo json_encode(["success" => false, "message" => "未登录或登录已过期！"]);
+    exit;
+}
+
+$uid = $_SESSION['user_id'];
 $method = $_SERVER['REQUEST_METHOD'];
 
 // ==========================================================
 // 处理 GET 请求：读取个人资料
 // ==========================================================
 if ($method === 'GET') {
-    $action = isset($_GET['action']) ? $_GET['action'] : '';
-    $email = isset($_GET['email']) ? trim($_GET['email']) : '';
-    }
+    $action = $_GET['action'] ?? '';
+    
     if ($action === 'get_profile') {
-        if (empty($email)) {
-            echo json_encode(["success" => false, "message" => "邮箱不能为空！"]);
-            exit;
-        }
-
-        // 使用 mysqli 预处理（用 ? 代替 :email）
-        $sql = "SELECT name AS username, phone_number AS phone, `e-mail` AS email, business_name, password 
-            FROM Users 
-            WHERE `e-mail` = ? LIMIT 1";
+        // 使用 user_id 进行查询，确保数据隔离
+        $sql = "SELECT name AS username, phone_number AS phone, `e-mail` AS email, business_name 
+                FROM Users WHERE user_id = ? LIMIT 1";
         
         if ($stmt = $conn->prepare($sql)) {
-            $stmt->bind_param("s", $email);
+            $stmt->bind_param("i", $uid);
             $stmt->execute();
             $result = $stmt->get_result();
             $user = $result->fetch_assoc();
@@ -47,35 +43,30 @@ if ($method === 'GET') {
             }
             $stmt->close();
         } else {
-            echo json_encode(["success" => false, "message" => "数据库查询准备失败: " . $conn->error]);
+            echo json_encode(["success" => false, "message" => "数据库查询准备失败。"]);
         }
         exit;
+    }
 }
 
 // ==========================================================
 // 处理 POST 请求：更新个人资料
 // ==========================================================
 if ($method === 'POST') {
-    $action = isset($_POST['action']) ? $_POST['action'] : '';
-    $old_email = isset($_POST['old_email']) ? trim($_POST['old_email']) : '';
-    $username = isset($_POST['username']) ? trim($_POST['username']) : '';
-    $phone = isset($_POST['phone']) ? trim($_POST['phone']) : '';
-    $business_name = isset($_POST['business_name']) ? trim($_POST['business_name']) : '';
-
+    $action = $_POST['action'] ?? '';
+    
     if ($action === 'update_profile') {
-        if (empty($old_email)) {
-            echo json_encode(["success" => false, "message" => "当前登录状态异常，缺少标识邮箱！"]);
-            exit;
-        }
+        $username = trim($_POST['username'] ?? '');
+        $phone = trim($_POST['phone'] ?? '');
+        $business_name = trim($_POST['business_name'] ?? '');
 
-        // 使用 mysqli 预处理更新语句
+        // 使用 user_id 进行更新，而非依赖前端传回的 email
         $sql = "UPDATE Users 
                 SET name = ?, phone_number = ?, business_name = ? 
-                WHERE `e-mail` = ?";
+                WHERE user_id = ?";
         
         if ($stmt = $conn->prepare($sql)) {
-            // "ssss" 代表四个参数都是 string 字符串类型
-            $stmt->bind_param("ssss", $username, $phone, $business_name, $old_email);
+            $stmt->bind_param("sssi", $username, $phone, $business_name, $uid);
             
             if ($stmt->execute()) {
                 echo json_encode([
@@ -83,18 +74,16 @@ if ($method === 'POST') {
                     "message" => "个人资料保存成功！"
                 ]);
             } else {
-                echo json_encode(["success" => false, "message" => "数据库更新执行失败: " . $stmt->error]);
+                echo json_encode(["success" => false, "message" => "数据库更新执行失败。"]);
             }
             $stmt->close();
         } else {
-            echo json_encode(["success" => false, "message" => "数据库更新准备失败: " . $conn->error]);
+            echo json_encode(["success" => false, "message" => "数据库更新准备失败。"]);
         }
-    } else {
-        echo json_encode(["success" => false, "message" => "无效的 POST 动作。"]);
+        exit;
     }
-    exit;
 }
 
-echo json_encode(["success" => false, "message" => "不支持的请求方式。"]);
+echo json_encode(["success" => false, "message" => "无效的请求。"]);
 $conn->close();
 ?>
