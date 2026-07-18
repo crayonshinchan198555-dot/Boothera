@@ -49,34 +49,19 @@ async function login() {
             body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(pass)}`
         });
 
-        const text = await response.text();
+        const result = await response.json(); // 直接用 .json() 更简洁
         
-    try {
-    const result = JSON.parse(text);
-    
-    // 1. 先判断是否登录成功
-    if (result.success) {
-        alert("🎉 登录成功！");
-        
-        // 确保邮箱被存储：优先用后端返回的，如果没有，用表单输入的
-        const emailToSave = result.email || document.getElementById('login-email').value;
-        localStorage.setItem('userEmail', emailToSave);
-        
-        // 成功后才跳转
-        window.location.href = result.redirect; 
-    } else {
-        // 2. 登录失败，只提示，不存储任何东西
-        alert("❌ 登录失败: " + result.message);
-    }
-} catch (e) {
-    document.body.innerHTML = "<h1>后端报错详情:</h1>" + text;
-}
-        
+        if (result.success) {
+            alert("🎉 登录成功！");
+            // 【关键修改】：删除了 localStorage.setItem，不再跨标签页混用数据
+            window.location.href = result.redirect; 
+        } else {
+            alert("❌ 登录失败: " + result.message);
+        }
     } catch (error) {
-        alert("网络请求彻底失败: " + error);
+        alert("网络请求失败: " + error);
     }
 }
-
 // 显示/隐藏密码
 function togglePassword() {
     const x = document.getElementById("password");
