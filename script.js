@@ -75,7 +75,6 @@ async function login() {
     } catch (error) {
         alert("网络请求彻底失败: " + error);
     }
-
 }
 
 // 显示/隐藏密码
@@ -103,24 +102,23 @@ function closeForgotModal() {
 function sendCode() {
     // ⚠️ 获取用户填写的 Email
     const email = document.getElementById('reset-email').value.trim();
-    
+
     // 如果没有填 Email，立刻拦截并警告
     if (!email) {
         alert("❌ Please enter your email address first!");
-        return; 
+        return;
     }
 
     // 1. 生成 6 位随机验证码
     const code = Math.floor(100000 + Math.random() * 900000);
-    
+
     // 2. 将验证码存入本地存储，以便后续验证逻辑使用
     localStorage.setItem('tempVerificationCode', code);
-    
+
     // 3. 弹窗提示，直接把码给用户（这就是你的开发版“伪邮件”）
     alert("🎉 A 6-digit code has been generated for " + email + "!\n\n你的验证码是: " + code + "\n\n(请在下方输入此号码以重置密码)");
 }
 
-// 提交新密码动作
 // 提交新密码动作
 function submitNewPassword() {
     const email = document.getElementById('reset-email').value.trim();
@@ -156,4 +154,3 @@ function submitNewPassword() {
     .catch(error => alert("网络错误: " + error));
 }
 
-});
