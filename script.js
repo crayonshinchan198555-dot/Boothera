@@ -97,7 +97,7 @@ function closeForgotModal() {
 
 // 获取验证码按钮动作
 function sendCode() {
-    // ⚠️ 先获取用户填写的 Email
+    // ⚠️ 获取用户填写的 Email
     const email = document.getElementById('reset-email').value.trim();
     
     // 如果没有填 Email，立刻拦截并警告
@@ -106,22 +106,48 @@ function sendCode() {
         return; 
     }
 
-    // 只有填了 Email，才会通过验证并发送
-    alert("🎉 A 6-digit code has been sent to " + email + ", please check your inbox!");
+    // 1. 生成 6 位随机验证码
+    const code = Math.floor(100000 + Math.random() * 900000);
+    
+    // 2. 将验证码存入本地存储，以便后续验证逻辑使用
+    localStorage.setItem('tempVerificationCode', code);
+    
+    // 3. 弹窗提示，直接把码给用户（这就是你的开发版“伪邮件”）
+    alert("🎉 A 6-digit code has been generated for " + email + "!\n\n你的验证码是: " + code + "\n\n(请在下方输入此号码以重置密码)");
 }
 
+// 提交新密码动作
 // 提交新密码动作
 function submitNewPassword() {
     const email = document.getElementById('reset-email').value.trim();
     const newPass = document.getElementById('new-password').value;
-    
-    if(!email || !newPass) {
-        alert("Please fill up！");
+    const inputCode = document.getElementById('reset-code').value.trim();
+    const savedCode = localStorage.getItem('tempVerificationCode');
+
+    // ... (保持之前的验证码对比逻辑不变) ...
+    if (inputCode !== savedCode) {
+        alert("❌ Verification code is incorrect!");
         return;
     }
-    
-    // 更新本地存储的密码
-    localStorage.setItem('user_' + email, newPass);
-    alert("🎉 Password reset successfully!Please login using the new password.");
-    closeForgotModal();
+
+    // 准备数据发送给后端
+    const formData = new FormData();
+    formData.append('email', email);
+    formData.append('password', newPass);
+
+    fetch('/forgot_password.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            localStorage.removeItem('tempVerificationCode');
+            closeForgotModal();
+        } else {
+            alert("❌ " + data.message);
+        }
+    })
+    .catch(error => alert("网络错误: " + error));
 }
