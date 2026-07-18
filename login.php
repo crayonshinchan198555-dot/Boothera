@@ -14,6 +14,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result = $stmt->get_result();
 
     if ($row = $result->fetch_assoc()) {
+        // 在 if 之前添加：
+        error_log("DEBUG: 输入的密码是: " . $password);
+        error_log("DEBUG: 数据库取出的密码是: " . $row['password']);
+
+// 如果数据库里存的是：$2y$10$t/2n7...
+// 且 $password_verify("root", $row['password']) 依然返回 false
+// 说明该哈希值不是由 "root" 生成的。
         // 验证逻辑：支持哈希验证 或 旧的明文验证
         if (password_verify($password, $row['password']) || $password === $row['password']) {
             
