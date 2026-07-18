@@ -462,7 +462,7 @@ function logout() {
             // 清理本地状态
             localStorage.removeItem("isLoggedIn");
             // 跳转回登录页
-            window.location.href = "login.html";
+            window.location.href = "index.html";
         })
         .catch(err => {
             // 如果后端请求失败，也要强制跳转
