@@ -8,12 +8,26 @@ header("Content-Type: application/json; charset=UTF-8");
 require_once 'db.php'; 
 
 // 权限检查：确保已登录
-if (!isset($_SESSION['user_id'])) {
+// --- 添加此段安全校验 ---
+// 逻辑：如果前端传来的 uid 与当前 Session 的 id 不一致，且不是管理员，则拒绝访问
+if ($uid != $_SESSION['user_id'] && $_SESSION['userRole'] !== 'admin') {
+    echo json_encode(["success" => false, "message" => "无权访问此资料！"]);
+    exit;
+}
+
+// --- 修改前 ---
+// $uid = $_SESSION['user_id']; 
+
+// --- 修改后 ---
+// 优先获取前端传来的 uid，如果没有，则回退到 session 中的 user_id
+$uid = $_GET['uid'] ?? $_POST['uid'] ?? $_SESSION['user_id'] ?? null;
+
+// 权限检查：确保登录且传进来的 uid 是有效的数字
+if (!$uid || !isset($_SESSION['user_id'])) {
     echo json_encode(["success" => false, "message" => "未登录或登录已过期！"]);
     exit;
 }
 
-$uid = $_SESSION['user_id'];
 $method = $_SERVER['REQUEST_METHOD'];
 
 // ==========================================================
