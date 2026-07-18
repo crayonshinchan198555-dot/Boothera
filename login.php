@@ -1,5 +1,6 @@
 <?php
 session_start();
+session_regenerate_id(true); // 这一行会销毁旧 Session 并生成新 ID，防止劫持或缓存冲突
 header("Content-Type: application/json; charset=UTF-8");
 require_once 'db.php'; 
 
