@@ -85,30 +85,83 @@ function openApplyForm() {
 /**
  * 提交摊位申请
  */
-async function submitApplication() {
-    // 【调试代码】
-    const debugEmail = localStorage.getItem('userEmail');
-    console.log("当前读取到的邮箱是:", debugEmail);
-    alert("当前读取到的邮箱是: " + debugEmail); 
-    // --- 
-    const selectedBooth = document.querySelector('input[name="booth_id"]:checked');
+/**
+ * 核心逻辑：移除所有 localStorage 依赖
+ * 确保所有请求通过 Session 自动鉴权
+ */
 
+// 1. 个人资料加载
+/**
+ * 最终版 user.js
+ * 纯粹的 Session 鉴权模式，完全移除 localStorage
+ */
+
+// 1. 加载资料
+function loadProfile() {
+    // 这里不需要传任何参数，服务器通过 Session 自动识别谁在访问
+    fetch('../profile.php?action=get_profile')
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                const user = result.data;
+                document.getElementById('view-name').textContent = user.username;
+                document.getElementById('view-phone').textContent = user.phone;
+                document.getElementById('view-email').textContent = user.email;
+                document.getElementById('view-business').textContent = user.business_name;
+            } else {
+                console.error("加载失败:", result.message);
+            }
+        })
+        .catch(err => console.error("网络错误:", err));
+}
+
+// 2. 保存资料
+async function saveProfile() {
+    const payload = new URLSearchParams({
+        action: 'update_profile',
+        username: document.getElementById('edit-name').value.trim(),
+        phone: document.getElementById('edit-phone').value.trim(),
+        business_name: document.getElementById('edit-business').value.trim()
+    });
+
+    try {
+        const response = await fetch('../profile.php', {
+            method: 'POST',
+            body: payload
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            alert("个人资料保存成功！");
+            location.reload(); // 简单有效，刷新以同步 UI
+        } else {
+            alert("保存失败: " + result.message);
+        }
+    } catch (error) {
+        alert("服务器通讯失败");
+    }
+}
+
+// 初始化
+document.addEventListener("DOMContentLoaded", loadProfile);
+
+// 3. 提交摊位申请
+async function submitApplication() {
+    const selectedBooth = document.querySelector('input[name="booth_id"]:checked');
     if (!selectedBooth) {
         alert("请先选择一个摊位！");
-        return; // 终止函数，不继续提交
+        return;
     }
 
-    // 3. 准备数据，确保带上 email
     const payload = {
         action: 'submit',
-        email: localStorage.getItem('userEmail'), // 必须带上这个！
+        // 不再从 localStorage 获取 email，后端直接从 Session 获取用户ID
         event_id: window.currentEventId,
         booth_id: selectedBooth.value,
         product_category: document.getElementById('prod-cat').value,
         product_name: document.getElementById('prod-name').value
     };
 
-    // 4. 发送请求
     const response = await fetch('../application.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -118,12 +171,19 @@ async function submitApplication() {
     const result = await response.json();
     if (result.success) {
         alert("Application submitted successfully!");
-        switchTab('my-applications');
-        location.reload(); // 刷新以显示最新状态
+        location.reload();
     } else {
         alert("Submission failed: " + result.message);
     }
 }
+
+// 4. 页面初始化加载
+document.addEventListener("DOMContentLoaded", function() {
+    // 如果存在相关加载函数，全部改为无参调用
+    if (typeof loadProfile === 'function') loadProfile();
+    // 如有历史记录加载，也改为无参
+    if (typeof loadApplicationHistory === 'function') loadApplicationHistory();
+});
 
 /**
  * 取消申请事件
@@ -187,44 +247,7 @@ function toggleEdit() {
 /**
  * 保存修改后的个人资料
  */
-async function saveProfile() {
-    // 1. 获取最新修改的值
-    const payload = {
-        action: 'update_profile',
-        old_email: localStorage.getItem('userEmail'), // 后端需要用这个作为主键标识
-        username: document.getElementById('edit-name').value,
-        phone: document.getElementById('edit-phone').value,
-        business_name: document.getElementById('edit-business').value
-    };
 
-    try {
-        // 2. 发送请求给后端
-        const response = await fetch('../profile.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams(payload).toString()
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            // 3. 后端成功后，再更新页面显示
-            document.getElementById('view-name').textContent = payload.username;
-            document.getElementById('view-phone').textContent = payload.phone;
-            // 找到 toggleEdit 函数中的 if 部分，加上这一行：
-            document.getElementById('edit-email').value = payload.email;
-            document.getElementById('view-business').textContent = payload.business_name;
-            
-            alert("Profile updated successfully!");
-            toggleEdit(); // 切换回查看模式
-        } else {
-            alert("Update failed: " + result.message);
-        }
-    } catch (error) {
-        console.error("Error saving profile:", error);
-        alert("Server error, please try again.");
-    }
-}
 
 /**
  * 登出系统
@@ -519,31 +542,12 @@ function loadApplicationHistory() {
 // 页面加载完后立即调用
 document.addEventListener("DOMContentLoaded", loadApplicationHistory);
 
-function loadProfile() {
-    // 1. 获取登录用户的邮箱 (假设登录时你把邮箱存在了 localStorage)
-    const email = localStorage.getItem('userEmail');
-    if (!email) {
-        console.log("未检测到登录邮箱，请先登录");
-        return;
-    }
+/**
+ * 修改后的 loadProfile 函数
+ * 不再需要传 email 参数，直接请求即可
+ */
 
-    // 2. 调用你的 profile.php API
-    fetch(`../profile.php?action=get_profile&email=${encodeURIComponent(email)}`)
-        .then(response => response.json())
-        .then(result => {
-            if (result.success) {
-                const user = result.data;
-                // 3. 将后端返回的数据填入页面对应的 ID 中
-                document.getElementById('view-name').textContent = user.username;
-                document.getElementById('view-phone').textContent = user.phone;
-                document.getElementById('view-email').textContent = user.email;
-                document.getElementById('view-business').textContent = user.business_name;
-            } else {
-                console.error("加载失败:", result.message);
-            }
-        })
-        .catch(err => console.error("请求出错:", err));
-}
+
 
 // 在 user.js 里确保有这段：
 // 页面加载时自动获取历史留言
