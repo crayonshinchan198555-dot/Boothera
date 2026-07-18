@@ -29,20 +29,21 @@ function switchTab(tabId) {
  * 筛选活动列表 (根据搜索关键词、州属、月份)
  */
 function filterEvents() {
-    // 获取搜索框输入值并转成小写
     const s = document.getElementById('event-search').value.toLowerCase();
-    // 获取选中的州属筛选值
-    const st = document.getElementById('state-filter').value;
-    // 获取选中的月份筛选值
+    const st = document.getElementById('state-filter') ? document.getElementById('state-filter').value : "";
     const mo = document.getElementById('month-filter').value;
     
-    // 遍历所有的活动卡片进行匹配筛选
     document.querySelectorAll('#event-grid .booth-card').forEach(c => {
-        const title = c.querySelector('h3').innerText.toLowerCase();
-        const state = c.getAttribute('data-state');
-        const month = c.getAttribute('data-month');
-        // 判断条件：标题包含关键词、州属匹配（或未选）、月份匹配（或未选）
-        c.style.display = (title.includes(s) && (st === "" || state === st) && (mo === "" || month === mo)) ? 'block' : 'none';
+        const title = c.querySelector('h3') ? c.querySelector('h3').innerText.toLowerCase() : "";
+        const state = c.getAttribute('data-state') || "";
+        const month = c.getAttribute('data-month') || "";
+        
+        // 只有当所有条件都满足时，才显示
+        const matchS = title.includes(s);
+        const matchSt = (st === "" || state === st);
+        const matchMo = (mo === "" || month === mo);
+        
+        c.style.display = (matchS && matchSt && matchMo) ? 'block' : 'none';
     });
 }
 
@@ -407,17 +408,29 @@ document.addEventListener("DOMContentLoaded", function() {
                 grid.innerHTML = ''; // 清空原有内容
 
                 result.data.forEach(event => {
-                    const card = document.createElement('div');
-                    card.className = 'booth-card';
-                    card.style.cursor = 'pointer'; 
+    const card = document.createElement('div');
+    card.className = 'booth-card';
+    card.style.cursor = 'pointer';
 
-                    // 渲染卡片内容
-                    const displayDate = event.event_date || event.date || '待定';
-                    card.innerHTML = `
-                        <h3>${event.event_name || '无名称'}</h3>
-                        <p>📍 ${event.venue || '待定'} | 📅 ${displayDate}</p>
-                    `;
-                    
+    // 1. 提取日期中的月份 (假设 event.date 是 "2026-08-15")
+    const dateStr = event.event_date || event.date || '';
+    const month = dateStr ? dateStr.split('-')[1] : ''; // 提取出 "08"
+    
+    // 2. 将数据绑定到卡片属性上 (核心修改点)
+    card.setAttribute('data-month', month);
+    card.setAttribute('data-state', event.venue_state || ''); // 确保你的数据库返回了 state 字段
+
+    // 3. 渲染卡片内容
+    const displayDate = dateStr || '待定';
+    card.innerHTML = `
+        <h3>${event.event_name || '无名称'}</h3>
+        <p>📍 ${event.venue || '待定'} | 📅 ${displayDate}</p>
+    `;
+    
+    // 将卡片加入网格
+    grid.appendChild(card);
+    
+    // ... 保持你原有的点击事件逻辑不变 ...
                     // 点击事件：填充详情并切换面板
                     // 点击事件：填充详情并切换面板
 card.onclick = function() {
