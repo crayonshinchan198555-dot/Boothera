@@ -1,22 +1,21 @@
 <?php
-// 确保文件第一行就是 <?php，前面没有任何空格、换行或 BOM 符号
 header("Content-Type: application/json; charset=UTF-8");
 
 require_once 'db.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // 使用 null coalescing 操作符，防止报错
-    $name =$_POST['name'] ?? '';
-    $phone_number =$_POST['phone_number'] ?? '';
-    $email =$_POST['e-mail'] ?? '';
-    $password =$_POST['password'] ?? '';
-    $role =$_POST['role'] ?? 'user';
-    $business_name =$_POST['business_name'] ?? null;
-    // 在 $hashed_password = ... 这一行之前加上：
-    error_log("Debug password: " . ($_POST['password'] ?? 'NULL'));
-    // 修改后的代码
-    $password_to_save = $password; // 直接使用原始密码
+    $name = $_POST['name'] ?? '';
+    $phone_number = $_POST['phone_number'] ?? '';
+    $email = $_POST['e-mail'] ?? '';
+    $password = $_POST['password'] ?? '';
+    $role = $_POST['role'] ?? 'user';
+    $business_name = $_POST['business_name'] ?? null;
 
+    // --- 修改部分开始 ---
+    
+    // 1. 使用 password_hash 对密码进行加密
+    // PASSWORD_DEFAULT 会自动选择目前最安全的加密算法（目前是 bcrypt）
+    $password_to_save = password_hash($password, PASSWORD_DEFAULT);
     // 确保这里的字段名与数据库完全一致（请再次确认数据库里到底是 e-mail 还是 email）
     $stmt =$conn->prepare("INSERT INTO Users (name, phone_number, `e-mail`, password, role, business_name) VALUES (?, ?, ?, ?, ?, ?)");
     
