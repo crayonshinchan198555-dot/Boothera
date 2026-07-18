@@ -1,7 +1,7 @@
 /**Boothera 开屏动画**/
 document.addEventListener('DOMContentLoaded', () => {
     const splashScreen = document.getElementById('splash-screen');
-
+    const welcomePage = document.getElementById('welcome-page');
     const loginContainer = document.querySelector('.container');
     
     /* 【4行字逐个蹦出】精准时间轴明细：
@@ -17,20 +17,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const showTimeDuration = 5800; 
 
     setTimeout(() => {
-        splashScreen.classList.add('fade-out');
+    splashScreen.classList.add('fade-out');
+    
+    setTimeout(() => {
+        splashScreen.style.display = 'none';
         
-        setTimeout(() => {
-            splashScreen.style.display = 'none';
-            
-            // ⚠️ 修复：开屏动画彻底隐藏后，必须把登录页显示出来！
-            if (loginContainer) {
-                loginContainer.style.display = 'flex';
-            }
-            
-        }, 800);
+        // 【关键点】：动画结束后，先显示欢迎页
+        if (welcomePage) {
+            welcomePage.style.display = 'flex'; 
+        }
+    }, 800);
+}, 5800); // 你的开屏时间
 
-    }, showTimeDuration);
-});
+function showLogin() {
+    if (welcomePage) {
+        welcomePage.style.display = 'none'; // 隐藏欢迎页
+    }
+    if (loginContainer) {
+        loginContainer.style.display = 'flex'; // 显示登录页
+    }
+}
 
 /**Login interactions**/
 // 1. 登录逻辑（已修正跳转）

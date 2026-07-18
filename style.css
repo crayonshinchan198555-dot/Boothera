@@ -422,3 +422,87 @@ input::-webkit-credentials-auto-fill-button {
     position: absolute;
     right: 0;
 }
+
+/* 1. 确保 Welcome Page 容器能够填满屏幕并垂直排列 */
+#welcome-page {
+    display: none; /* 默认隐藏，由 JS 控制显示 */
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #fcfcfc; /* 保持清新底色 */
+}
+
+/* 2. 导航栏样式 (Navbar) */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+    background: transparent;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+.nav-links a {
+    margin-right: 20px;
+    text-decoration: none;
+    color: #555;
+}
+
+/* 3. 内容区样式 (Content Wrapper) */
+.content-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 100px;
+    flex: 1; /* 让内容区自动填充剩余空间 */
+}
+
+.left-side {
+    flex: 1;
+    padding-right: 50px;
+}
+
+.left-side h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+    color: #222;
+}
+
+.left-side p {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.right-side {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.right-side img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1); /* 给图片加点阴影，更有质感 */
+}
+
+/* 4. 按钮样式 (Get Started) */
+.left-side button {
+    padding: 15px 30px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.left-side button:hover {
+    background-color: #555;
+}
