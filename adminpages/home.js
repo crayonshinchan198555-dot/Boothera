@@ -466,7 +466,7 @@ function logout() {
         })
         .catch(err => {
             // 如果后端请求失败，也要强制跳转
-            window.location.href = "login.html";
+            window.location.href = "index.html";
         });
     }
 }
