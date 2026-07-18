@@ -457,16 +457,16 @@ function restoreSavedApplications() {
 function logout() {
     if (confirm("Are you sure you want to log out?")) {
         // 请求后端的注销逻辑（销毁 Session）
-        fetch('logout.php', { method: 'POST' })
+        fetch('../logout.php', { method: 'POST' })
         .then(() => {
             // 清理本地状态
             localStorage.removeItem("isLoggedIn");
             // 跳转回登录页
-            window.location.href = "index.html";
+            window.location.href = "../index.html";
         })
         .catch(err => {
             // 如果后端请求失败，也要强制跳转
-            window.location.href = "index.html";
+            window.location.href = "../index.html";
         });
     }
 }

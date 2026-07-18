@@ -230,7 +230,7 @@ async function saveProfile() {
  * 登出系统
  */
 function logout() { 
-    window.location.href = "/index.html"; 
+    window.location.href = "../index.html"; 
 }
 
 /* ========================================================== */
