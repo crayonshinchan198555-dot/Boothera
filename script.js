@@ -1,35 +1,33 @@
-/**Boothera 开屏动画**/
+// 1. 开屏动画逻辑
 document.addEventListener('DOMContentLoaded', () => {
     const splashScreen = document.getElementById('splash-screen');
     const welcomePage = document.getElementById('welcome-page');
-    const loginContainer = document.querySelector('.container');
-    
-    /* 【4行字逐个蹦出】精准时间轴明细：
-      - 0.5s -> your 出来
-      - 1.1s -> space, 出来
-      - 1.7s -> your 出来
-      - 2.3s -> stage. 出来
-      - 3.2s -> 山脉 Logo 弹出
-      - 4.2s -> BOOTHERA 品牌字弹出
-      - 4.8s -> 画面全部完美定格
-      - 5.8s -> 停留 1 秒后，整个开屏绿底平滑淡出，露出登录页
-    */
     const showTimeDuration = 5800; 
+    /* 【4行字逐个蹦出】精准时间轴明细： - 0.5s -> your 出来 
+    - 1.1s -> space, 出来 
+    - 1.7s -> your 出来 
+    - 2.3s -> stage. 出来 
+    - 3.2s -> 山脉 Logo 弹出 
+    - 4.2s -> BOOTHERA 品牌字弹出 
+    - 4.8s -> 画面全部完美定格 
+    - 5.8s -> 停留 1 秒后，整个开屏绿底平滑淡出，露出登录页 */
 
     setTimeout(() => {
-    splashScreen.classList.add('fade-out');
-    
-    setTimeout(() => {
-        splashScreen.style.display = 'none';
-        
-        // 【关键点】：动画结束后，先显示欢迎页
-        if (welcomePage) {
-            welcomePage.style.display = 'flex'; 
-        }
-    }, 800);
-}, 5800); // 你的开屏时间
+        splashScreen.classList.add('fade-out');
+        setTimeout(() => {
+            splashScreen.style.display = 'none';
+            if (welcomePage) {
+                welcomePage.style.display = 'flex'; 
+            }
+        }, 800);
+    }, showTimeDuration);
+});
 
+// 2. 将跳转函数放在外部，确保全局可见
 function showLogin() {
+    const welcomePage = document.getElementById('welcome-page');
+    const loginContainer = document.querySelector('.container');
+
     if (welcomePage) {
         welcomePage.style.display = 'none'; // 隐藏欢迎页
     }
