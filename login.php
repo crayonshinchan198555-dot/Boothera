@@ -4,34 +4,44 @@ header("Content-Type: application/json; charset=UTF-8");
 require_once 'db.php'; 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['email'] ?? '';
-    $password = $_POST['password'] ?? '';
+    // 1. 获取并清理输入（防止多余空格干扰）
+    $email = trim($_POST['email'] ?? '');
+    $password = trim($_POST['password'] ?? '');
 
-    // 使用预处理语句
+    if (empty($email) || empty($password)) {
+        echo json_encode(["success" => false, "message" => "邮箱和密码不能为空"]);
+        exit;
+    }
+
+    // 2. 使用预处理语句查询用户
     $stmt = $conn->prepare("SELECT user_id, password, role FROM Users WHERE `e-mail` = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($row = $result->fetch_assoc()) {
-        // 在 if 之前添加：
-        error_log("DEBUG: 输入的密码是: " . $password);
-        error_log("DEBUG: 数据库取出的密码是: " . $row['password']);
+        $dbPassword = $row['password'];
 
-// 如果数据库里存的是：$2y$10$t/2n7...
-// 且 $password_verify("root", $row['password']) 依然返回 false
-// 说明该哈希值不是由 "root" 生成的。
-        // 验证逻辑：支持哈希验证 或 旧的明文验证
-        if (password_verify($password, $row['password']) || $password === $row['password']) {
+        // 3. 验证逻辑：优先哈希验证，其次明文对比
+        $isHashValid = password_verify($password, $dbPassword);
+        $isPlainTextValid = ($password === $dbPassword);
+
+        if ($isHashValid || $isPlainTextValid) {
             
-            // 如果是明文，可以在这里执行一次自动升级（可选）
-            if ($password === $row['password'] && !password_needs_rehash($row['password'], PASSWORD_DEFAULT)) {
-                // 这里可以执行 SQL UPDATE 将新哈希值存回数据库
+            // 如果是明文登录，考虑自动升级到哈希存储（增强安全性）
+            if ($isPlainTextValid) {
+                $newHash = password_hash($password, PASSWORD_DEFAULT);
+                $updateStmt = $conn->prepare("UPDATE Users SET password = ? WHERE user_id = ?");
+                $updateStmt->bind_param("si", $newHash, $row['user_id']);
+                $updateStmt->execute();
+                $updateStmt->close();
             }
 
+            // 4. 设置 Session
             $_SESSION['user_id'] = $row['user_id'];
             $_SESSION['userRole'] = $row['role']; 
 
+            // 5. 根据角色定义跳转路径
             $redirectUrl = ($row['role'] === 'admin') ? 'adminpages/home.php' : 'user_pages/user.php';
 
             echo json_encode([
@@ -40,7 +50,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 "redirect" => $redirectUrl
             ]);
         } else {
-            echo json_encode(["success" => false, "message" => "密码错误"]);
+            // 调试用：如果登录失败，可以在 Response 中看到具体对比情况
+            echo json_encode([
+                "success" => false, 
+                "message" => "密码错误",
+                "debug" => "输入验证失败" // 在生产环境中请移除此调试信息
+            ]);
         }
     } else {
         echo json_encode(["success" => false, "message" => "用户不存在"]);
