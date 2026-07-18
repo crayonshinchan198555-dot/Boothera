@@ -40,7 +40,7 @@ Password:root
 
 Role:user
 Email:user1@demo.com
-Password:root
+Password:pass
 ---------------------------------------------------
 Url link
 https://boothera.onrender.com
