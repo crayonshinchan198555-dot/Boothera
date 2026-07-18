@@ -181,11 +181,11 @@ if (!isset($_SESSION['user_id'])) {
                     
                     <!-- 个人资料查看状态区域 -->
                     <div id="profile-view">
-                        <p><strong>Name:</strong> <span id="view-name">Ali</span></p>
-                        <p><strong>Phone number:</strong> <span id="view-phone">012-3456 7890</span></p>
-                        <p><strong>E-mail:</strong> <span id="view-email">ali@gmail.com</span></p>
-                        <p><strong>Password:</strong> <span id="view-password">••••••••</span></p>
-                        <p><strong>Business name:</strong> <span id="view-business">Uncle Rojak</span></p>    
+                        <p><strong>Name:</strong> <span id="view-name"></span></p>
+                        <p><strong>Phone number:</strong> <span id="view-phone"></span></p>
+                        <p><strong>E-mail:</strong> <span id="view-email"></span></p>
+                        <p><strong>Password:</strong> <span id="view-password"></span></p>
+                        <p><strong>Business name:</strong> <span id="view-business"></span></p>    
                     </div>
 
                     <div id="profile-edit-form" style="display: none;">
