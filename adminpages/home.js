@@ -1,5 +1,7 @@
+// 将全局函数 switchTab 挂载到 window 对象上，以便在页面其他地方可以直接调用
 window.switchTab = switchTab;
 
+// 监听整个网页的 DOM 内容加载完成事件，确保 HTML 元素都存在后再执行内部逻辑
 document.addEventListener("DOMContentLoaded", function() {
     // 检查用户是否已经登录
 
@@ -16,24 +18,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const addEventForm = document.getElementById('add-event-form');
     if (addEventForm) {
         addEventForm.addEventListener('submit', handleAddEventSubmit);
-    }
-
-    // 监听 "Upload Booth Layout" 图片上传动作，用来显示即时预览图 (Preview)
-    const layoutInput = document.getElementById('add-input-layout');
-    if (layoutInput) {
-        layoutInput.addEventListener('change', function(e) {
-            const file = e.target.files[0]; // 获取上传的文件
-            if (file) {
-                const reader = new FileReader(); // 使用 FileReader 将图片转为 Base64 字符串
-                reader.onload = function(event) {
-                    const previewImg = document.getElementById('layout-preview');
-                    const previewContainer = document.getElementById('layout-preview-container');
-                    previewImg.src = event.target.result; // 将 Base64 字符串赋给 <img> 标签
-                    previewContainer.style.display = 'block'; // 显示预览框
-                };
-                reader.readAsDataURL(file); // 开始读取文件
-            }
-        });
     }
 });
 
