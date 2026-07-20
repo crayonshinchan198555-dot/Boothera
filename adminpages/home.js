@@ -25,29 +25,29 @@ document.addEventListener("DOMContentLoaded", function() {
  * 1. 切换左侧菜单 Tab 功能
  */
 function switchTab(tabId) {
-    console.log("正在切换到标签页:", tabId);
+    console.log("正在切换到标签页:", tabId);// 在控制台打印当前切换的目标标签页 ID
 
     // --- 第一部分：处理侧边栏高亮 ---
-    document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
-    const activeMenu = document.getElementById('menu-' + tabId) || document.getElementById('menu-events');
-    if (activeMenu) activeMenu.classList.add('active');
+    document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active')); // 移除所有菜单项的高亮类
+    const activeMenu = document.getElementById('menu-' + tabId) || document.getElementById('menu-events');// 获取当前对应的菜单项，若无则默认选 events
+    if (activeMenu) activeMenu.classList.add('active');// 给当前菜单项添加高亮类
 
     // --- 第二部分：处理主视图面板显示/隐藏 ---
     // 隐藏所有面板
     document.querySelectorAll('.tab-panel, .tab-content, [id$="-section"]').forEach(section => {
-        section.style.display = 'none';
-        section.classList.remove('active');
+        section.style.display = 'none'; // 将所有面板样式设为隐藏
+        section.classList.remove('active');// 移除激活状态类
     });
 
     // 显示目标面板
-    const targetPanel = document.getElementById('tab-' + tabId) || document.getElementById(tabId + '-section');
+    const targetPanel = document.getElementById('tab-' + tabId) || document.getElementById(tabId + '-section');// 获取目标面板元素
     if (targetPanel) {
-        targetPanel.style.display = 'block';
-        targetPanel.classList.add('active');
+        targetPanel.style.display = 'block';// 将目标面板显示出来
+        targetPanel.classList.add('active'); // 添加激活状态类
     }
 
     // --- 第三部分：更新标题 ---
-    const pageTitle = document.getElementById('page-title');
+    const pageTitle = document.getElementById('page-title');// 获取页面顶部标题元素
     if (pageTitle) {
         const titles = {
             'events': 'Events Management',
@@ -55,21 +55,21 @@ function switchTab(tabId) {
             'application': 'Applications',
             'add-event': 'Add New Event',
             'messages': 'User Messages'
-        };
-        pageTitle.innerText = titles[tabId] || "Dashboard";
+        };// 定义各个 tabId 对应的标题文本字典
+        pageTitle.innerText = titles[tabId] || "Dashboard";// 根据 tabId 设置标题，若未匹配则默认 Dashboard
     }
 
     // --- 第四部分：触发特殊页面加载逻辑 ---
     if (tabId === 'application' && typeof loadApplications === 'function') {
-        loadApplications();
+        loadApplications();// 如果切换到 application 标签且函数存在，则加载申请列表
     }
     if (tabId === 'messages' && typeof restoreUserMessages === 'function') {
-        restoreUserMessages();
+        restoreUserMessages();// 如果切换到 messages 标签且函数存在，则恢复用户消息
     }
 }
 
 /**
- * 2. 点击活动卡片，进入详情页并展示数据 (包括展示 Layout 平面图)
+ * 2. 点击event card，查看event details
  */
 function viewEventDetails(cardElement) {
     // 🔑 获取卡片上绑定的全局唯一事件 ID
@@ -82,7 +82,7 @@ function viewEventDetails(cardElement) {
     const price = cardElement.getAttribute('data-price');
     const booths = cardElement.getAttribute('data-booths');
 
-    // 💡 将 ID 存入详情区域或临时挂载在 DOM 上，以便后续的编辑和删除能精准定位
+    // 💡 将 ID 存入详情区域或临时挂载在 DOM 上，以便后续的edit和delete能精准定位
     document.getElementById('tab-event-details').setAttribute('data-current-event-id', eventId);
 
     document.getElementById('detail-title').innerText = title;
@@ -94,18 +94,19 @@ function viewEventDetails(cardElement) {
     document.getElementById('detail-booths').innerText = booths; 
 
     // 优先通过更具唯一性的 ID 从本地存储获取扩展数据，若没有则退回到以 title 读取
-    let savedData = localStorage.getItem('saved_event_' + eventId) || localStorage.getItem('saved_event_' + title);
+    let savedData = localStorage.getItem('saved_event_' + eventId) || localStorage.getItem('saved_event_' + title);// 从本地存储读取保存的事件数据
     const layoutContainer = document.getElementById('detail-layout-container');
     
     if (savedData) {
         const parsedData = JSON.parse(savedData);
-        if (parsedData.layout) {
-            layoutContainer.innerHTML = `<img src="${parsedData.layout}" alt="Booth Layout" style="width: 100%; border-radius: 8px; border: 1px solid #ddd;">`;
+        // 假设改为展示事件描述 description，或者其他业务字段
+        if (parsedData.description) {
+            layoutContainer.innerHTML = `<p>${parsedData.description}</p>`;
         } else {
-            layoutContainer.innerHTML = `<p style="color: #9BB0C1; font-style: italic;">No layout map uploaded for this event.</p>`;
+            layoutContainer.innerHTML = `<p style="color: #9BB0C1; font-style: italic;">No additional details available.</p>`;
         }
     } else {
-        layoutContainer.innerHTML = `<p style="color: #9BB0C1; font-style: italic;">No layout map uploaded for this event.</p>`;
+        layoutContainer.innerHTML = `<p style="color: #9BB0C1; font-style: italic;">No event information found.</p>`;
     }
 
     switchTab('event-details');
