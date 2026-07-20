@@ -1,526 +1,601 @@
 /* ================= 全局基础样式重置 (Global Reset) ================= */
+/* 选择页面中的所有元素 */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0; /* 清除所有元素的默认外边距 */
+    padding: 0; /* 清除所有元素的默认内边距 */
+    box-sizing: border-box; /* 设置盒模型为边框盒模型，使宽高包含内边距和边框 */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* 设置全局字体样式序列 */
 }
 
+/* 设置网页主体(body)的样式 */
 body {
-    background-color: #F4F7F9; /* 网页大背景色 */
-    color: #4A5568;
-    height: 100vh;
+    background-color: #F4F7F9; /* 设置网页大背景色 */
+    color: #4A5568; /* 设置全局文字基本颜色 */
+    height: 100vh; /* 设置网页主体高度占满整个视口高度 */
     overflow: hidden; /* 防止网页整体出现滚动条 */
 }
 
+/* 设置整个页面容器(container)的样式 */
 .container {
-    display: flex;
-    width: 100%;
-    height: 100vh;
+    display: flex; /* 使用弹性盒模型布局 */
+    width: 100%; /* 设置宽度占满父容器 */
+    height: 100vh; /* 设置高度占满整个视口高度 */
 }
 
 /* ================= 1. 侧边栏样式 (Sidebar - Morandi Blue) ================= */
+/* 设置侧边栏(sidebar)的整体样式 */
 .sidebar {
-    width: 260px;
-    background-color: #D3E0EA; /* 浅莫兰迪蓝主色 */
-    display: flex;
-    flex-direction: column;
-    padding: 30px 0;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+    width: 260px; /* 设置侧边栏固定宽度 */
+    background-color: #D3E0EA; /* 浅莫兰迪蓝主色背景 */
+    display: flex; /* 使用弹性盒模型布局 */
+    flex-direction: column; /* 设置子元素纵向排列 */
+    padding: 30px 0; /* 设置上下内边距30像素，左右为0 */
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05); /* 设置右侧轻微阴影效果 */
 }
 
+/* 设置Logo区域的样式 */
 .logo-section {
-    padding: 0 25px 25px 25px;
-    border-bottom: 1px solid #BAC9D4;
+    padding: 0 25px 25px 25px; /* 设置Logo区域内边距：上0，右左下25像素 */
+    border-bottom: 1px solid #BAC9D4; /* 设置底部边框线颜色 */
 }
 
+/* 设置Logo和品牌名称容器的样式 */
 .logo-container {
-    display: flex;
-    align-items: center;
-    gap: 8px; /* Logo与字体的间距 */
+    display: flex; /* 使用弹性盒模型布局 */
+    align-items: center; /* 设置子元素垂直居中对齐 */
+    gap: 8px; /* 设置Logo与字体的间距 */
 }
 
+/* 设置Logo山脉图标的宽高 */
 .logo-mountain {
-    width: 32px;
-    height: 32px;
+    width: 32px; /* 设置图标宽度 */
+    height: 32px; /* 设置图标高度 */
 }
 
+/* 设置品牌文字的样式 */
 .brand-text {
-    color: #4F6D7A; /* 莫兰迪深灰蓝 */
-    font-size: 20px;
-    font-weight: bold;
-    letter-spacing: 1px;
+    color: #4F6D7A; /* 莫兰迪深灰蓝文字颜色 */
+    font-size: 20px; /* 设置文字大小 */
+    font-weight: bold; /* 设置文字加粗 */
+    letter-spacing: 1px; /* 设置字符间距 */
 }
 
+/* 设置Logo区域副标题的样式 */
 .logo-section .subtitle {
-    font-size: 11px;
-    color: #7C94A1;
-    margin-top: 4px;
-    padding-left: 40px;
+    font-size: 11px; /* 设置副标题字体大小 */
+    color: #7C94A1; /* 设置副标题文字颜色 */
+    margin-top: 4px; /* 设置顶部外边距 */
+    padding-left: 40px; /* 设置左侧内边距 */
 }
 
 /* 侧边菜单导航 (Navigation Menu) */
+/* 设置导航菜单栏的样式 */
 .menu {
-    flex: 1;
-    margin-top: 25px;
-    padding: 0 15px;
+    flex: 1; /* 让菜单占据侧边栏剩余的弹性空间 */
+    margin-top: 25px; /* 设置顶部外边距 */
+    padding: 0 15px; /* 设置左右内边距 */
 }
 
+/* 设置单个菜单项的样式 */
 .menu-item {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: #5C7481;
-    padding: 14px 18px;
-    border-radius: 10px;
-    margin-bottom: 8px;
-    font-weight: 500;
-    transition: all 0.3s ease; /* 悬停动画过渡时间 */
+    display: flex; /* 使用弹性盒模型布局 */
+    align-items: center; /* 设置子元素垂直居中对齐 */
+    text-decoration: none; /* 去除超链接默认下划线 */
+    color: #5C7481; /* 设置菜单文字颜色 */
+    padding: 14px 18px; /* 设置内边距大小 */
+    border-radius: 10px; /* 设置圆角大小 */
+    margin-bottom: 8px; /* 设置底部外边距 */
+    font-weight: 500; /* 设置字体粗细 */
+    transition: all 0.3s ease; /* 悬停动画过渡时间与方式 */
 }
 
+/* 设置菜单项中图标的样式 */
 .menu-item .icon {
-    margin-right: 12px;
-    font-size: 16px;
+    margin-right: 12px; /* 设置图标右侧外边距 */
+    font-size: 16px; /* 设置图标字体大小 */
 }
 
 /* 鼠标悬停在菜单上时的效果 */
 .menu-item:hover {
-    background-color: #E8EEF2;
-    color: #4F6D7A;
-    padding-left: 23px; /* 往右平移的小动效 */
+    background-color: #E8EEF2; /* 设置悬停时的背景颜色 */
+    color: #4F6D7A; /* 设置悬停时的文字颜色 */
+    padding-left: 23px; /* 往右平移的小动效内边距 */
 }
 
 /* 当前处于哪个页面，哪个菜单就会高亮 */
 .menu-item.active {
-    background-color: #9BB0C1;
-    color: #FFFFFF;
+    background-color: #9BB0C1; /* 设置激活状态的高亮背景色 */
+    color: #FFFFFF; /* 设置激活状态的文字白色 */
 }
 
 /* 底部退出按钮 */
+/* 设置侧边栏底部容器样式 */
 .sidebar-footer {
-    padding: 0 20px;
+    padding: 0 20px; /* 设置左右内边距20像素 */
 }
 
+/* 设置退出登录按钮的样式 */
 .logout-btn {
-    width: 100%;
-    padding: 10px;
-    background: transparent;
-    border: 1px solid #BAC9D4;
-    color: #7C94A1;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.3s ease;
+    width: 100%; /* 设置按钮宽度占满父容器 */
+    padding: 10px; /* 设置上下左右内边距 */
+    background: transparent; /* 设置按钮背景透明 */
+    border: 1px solid #BAC9D4; /* 设置边框颜色与粗细 */
+    color: #7C94A1; /* 设置按钮文字颜色 */
+    border-radius: 8px; /* 设置圆角大小 */
+    cursor: pointer; /* 鼠标悬停时显示指针手势 */
+    font-weight: bold; /* 设置字体加粗 */
+    transition: all 0.3s ease; /* 设置过渡动画效果 */
 }
 
 /* 鼠标悬停在退出按钮上变淡红色 */
 .logout-btn:hover {
-    background-color: #E68A8A;
-    color: white;
-    border-color: transparent;
+    background-color: #E68A8A; /* 设置悬停时的淡红色背景 */
+    color: white; /* 设置悬停时的文字颜色为白色 */
+    border-color: transparent; /* 设置悬停时边框颜色透明 */
 }
 
 /* ================= 2. 主页面内容和顶部栏样式 (Main Content & Topbar) ================= */
+/* 设置右侧主页面内容的样式 */
 .main-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+    flex: 1; /* 让主内容区域占据剩余的全部空间 */
+    display: flex; /* 使用弹性盒模型布局 */
+    flex-direction: column; /* 设置子元素纵向排列 */
     overflow-y: auto; /* 让右侧内容可以上下滚动 */
 }
 
+/* 设置顶部栏的样式 */
 .top-bar {
-    background-color: #FFFFFF;
-    padding: 15px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #E2E8F0;
+    background-color: #FFFFFF; /* 设置顶部栏白色背景 */
+    padding: 15px 40px; /* 设置上下15像素，左右40像素的内边距 */
+    display: flex; /* 使用弹性盒模型布局 */
+    justify-content: space-between; /* 设置左右两端对齐 */
+    align-items: center; /* 设置子元素垂直居中对齐 */
+    border-bottom: 1px solid #E2E8F0; /* 设置底部边框线颜色 */
 }
 
+/* 设置顶部栏一级标题的样式 */
 .top-bar h1 {
-    font-size: 22px;
-    color: #4F6D7A;
-    font-weight: 600;
+    font-size: 22px; /* 设置标题文字大小 */
+    color: #4F6D7A; /* 设置标题文字颜色 */
+    font-weight: 600; /* 设置标题字体的粗细 */
 }
 
 /* 右上角工具区 */
+/* 设置右上角操作工具区的样式 */
 .top-right-actions {
-    display: flex;
-    align-items: center;
-    gap: 20px;
+    display: flex; /* 使用弹性盒模型布局 */
+    align-items: center; /* 设置子元素垂直居中对齐 */
+    gap: 20px; /* 设置子元素之间的间距 */
 }
 
 /* 搜索与下拉筛选框 */
+/* 设置搜索与下拉筛选框的整体样式 */
 .search-filter-box {
-    display: flex;
-    background-color: #F1F5F9;
-    border: 1px solid #E2E8F0;
-    border-radius: 20px;
-    padding: 4px 6px;
-    align-items: center;
+    display: flex; /* 使用弹性盒模型布局 */
+    background-color: #F1F5F9; /* 设置搜索框背景颜色 */
+    border: 1px solid #E2E8F0; /* 设置边框颜色与粗细 */
+    border-radius: 20px; /* 设置大圆角胶囊样式 */
+    padding: 4px 6px; /* 设置内边距大小 */
+    align-items: center; /* 设置子元素垂直居中对齐 */
 }
 
+/* 设置搜索框内输入框(input)的样式 */
 .search-filter-box input {
-    border: none;
-    background: transparent;
-    padding: 6px 12px;
-    font-size: 13px;
-    color: #334155;
-    outline: none;
-    width: 180px;
+    border: none; /* 去除输入框默认边框 */
+    background: transparent; /* 设置输入框背景透明 */
+    padding: 6px 12px; /* 设置输入框内边距 */
+    font-size: 13px; /* 设置输入框文字大小 */
+    color: #334155; /* 设置输入文字颜色 */
+    outline: none; /* 去除输入框聚焦时的默认外边框 */
+    width: 180px; /* 设置输入框固定宽度 */
 }
 
+/* 设置搜索框内下拉菜单(select)的样式 */
 .search-filter-box select {
-    border: none;
-    background-color: #FFFFFF;
-    color: #4F6D7A;
-    font-size: 12px;
-    font-weight: 500;
-    padding: 5px 10px;
-    border-radius: 15px;
-    cursor: pointer;
-    outline: none;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    border: none; /* 去除下拉菜单默认边框 */
+    background-color: #FFFFFF; /* 设置下拉菜单背景白色 */
+    color: #4F6D7A; /* 设置下拉菜单文字颜色 */
+    font-size: 12px; /* 设置字体大小 */
+    font-weight: 500; /* 设置字体粗细 */
+    padding: 5px 10px; /* 设置内边距 */
+    border-radius: 15px; /* 设置圆角大小 */
+    cursor: pointer; /* 鼠标悬停时显示指针手势 */
+    outline: none; /* 去除聚焦时的外边框 */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03); /* 设置轻微阴影 */
 }
 
+/* 设置用户个人资料展示区块的样式 */
 .user-profile {
-    font-size: 14px;
-    font-weight: 600;
-    color: #64748B;
-    background-color: #EBF1F5;
-    padding: 6px 15px;
-    border-radius: 15px;
+    font-size: 14px; /* 设置字体大小 */
+    font-weight: 600; /* 设置字体粗细 */
+    color: #64748B; /* 设置文字颜色 */
+    background-color: #EBF1F5; /* 设置背景颜色 */
+    padding: 6px 15px; /* 设置内边距 */
+    border-radius: 15px; /* 设置圆角大小 */
 }
 
+/* 设置内容主体区域的样式 */
 .content-body {
-    padding: 40px;
-    flex: 1;
+    padding: 40px; /* 设置四周内边距40像素 */
+    flex: 1; /* 让主体内容区域占据弹性空间 */
 }
 
 /* JavaScript 会通过增删 'active' 类名来控制面板的显示或隐藏 */
+/* 设置默认标签面板隐藏 */
 .tab-panel {
-    display: none;
+    display: none; /* 默认不显示面板 */
 }
 
+/* 设置激活状态下的标签面板显示 */
 .tab-panel.active {
-    display: block;
+    display: block; /* 当激活时以块级元素显示 */
 }
 
 /* ================= 3. 卡片栅格系统 (Cards Layout) ================= */
+/* 设置卡片网格布局系统的样式 */
 .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* 自动换行排列 */
-    gap: 25px;
+    display: grid; /* 使用网格布局 */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* 自动换行排列，每列最小280像素 */
+    gap: 25px; /* 设置网格间距为25像素 */
 }
 
+/* 设置单个摊位/卡片(booth-card)的样式 */
 .booth-card {
-    background: white;
-    border-radius: 14px;
-    padding: 25px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-    position: relative;
-    border: 1px solid #EBF1F5;
-    transition: transform 0.2s, opacity 0.3s ease;
+    background: white; /* 设置卡片背景色为白色 */
+    border-radius: 14px; /* 设置卡片圆角大小 */
+    padding: 25px; /* 设置卡片内边距 */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02); /* 设置卡片阴影效果 */
+    position: relative; /* 设置相对定位，便于子元素绝对定位 */
+    border: 1px solid #EBF1F5; /* 设置浅色边框 */
+    transition: transform 0.2s, opacity 0.3s ease; /* 设置变换和透明度过渡动画 */
 }
 
 /* 鼠标悬停卡片上浮效果 */
 .booth-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-5px); /* 鼠标悬停时卡片向上平移5像素 */
 }
 
+/* 设置可点击卡片的鼠标样式 */
 .clickable-card {
-    cursor: pointer;
+    cursor: pointer; /* 鼠标悬停时显示指针手势 */
 }
 
+/* 设置卡片内三级标题的样式 */
 .booth-card h3 {
-    margin-bottom: 12px;
-    color: #334155;
-    font-size: 18px;
-    margin-right: 70px; /* 避开右上角的标签位置 */
+    margin-bottom: 12px; /* 设置底部外边距 */
+    color: #334155; /* 设置标题文字颜色 */
+    font-size: 18px; /* 设置字体大小 */
+    margin-right: 70px; /* 避开右上角的标签位置，设置右侧外边距 */
 }
 
+/* 设置卡片内信息文本的样式 */
 .booth-info {
-    font-size: 14px;
-    color: #64748B;
-    margin-bottom: 6px;
+    font-size: 14px; /* 设置字体大小 */
+    color: #64748B; /* 设置文字颜色 */
+    margin-bottom: 6px; /* 设置底部外边距 */
 }
 
 /* 状态徽章标签 (如 Application 里的 Pending/Confirmed) */
+/* 设置状态徽章标签的通用定位与样式 */
 .status-badge {
-    position: absolute;
-    top: 22px;
-    right: 20px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: bold;
+    position: absolute; /* 设置绝对定位 */
+    top: 22px; /* 距离顶部22像素 */
+    right: 20px; /* 距离右侧20像素 */
+    padding: 4px 10px; /* 设置内边距大小 */
+    border-radius: 20px; /* 设置胶囊圆角大小 */
+    font-size: 11px; /* 设置字体大小 */
+    font-weight: bold; /* 设置字体加粗 */
 }
 
 /* 不同的状态对应不同的颜色 */
-.status-badge.incoming { background-color: #E2F0D9; color: #385723; } /* 绿 */
-.status-badge.pending { background-color: #FFF2CC; color: #7F6000; } /* 黄 */
-.status-badge.denied { background-color: #FCE8E6; color: #C5221F; } /* 红 */
+.status-badge.incoming { background-color: #E2F0D9; color: #385723; } /* 绿：设置绿色背景与深绿色文字 */
+.status-badge.pending { background-color: #FFF2CC; color: #7F6000; } /* 黄：设置黄色背景与深黄色文字 */
+.status-badge.denied { background-color: #FCE8E6; color: #C5221F; } /* 红：设置红色背景与深红色文字 */
 
 /* 被管理员 Delete 删除后的活动文字样式 */
 .status-deleted-text {
-    color: #C5221F;
-    background-color: #FCE8E6;
-    padding: 2px 8px;
-    border-radius: 6px;
-    font-weight: bold;
-    font-size: 12px;
+    color: #C5221F; /* 设置删除状态下的红色文字颜色 */
+    background-color: #FCE8E6; /* 设置浅红色背景 */
+    padding: 2px 8px; /* 设置内边距大小 */
+    border-radius: 6px; /* 设置圆角大小 */
+    font-weight: bold; /* 设置字体加粗 */
+    font-size: 12px; /* 设置字体大小 */
 }
 
+/* 设置活动状态文字的样式 */
 .event-status-text {
-    font-size: 13px;
-    color: #4F6D7A;
-    font-weight: 500;
-    margin-top: 10px;
+    font-size: 13px; /* 设置字体大小 */
+    color: #4F6D7A; /* 设置文字颜色 */
+    font-weight: 500; /* 设置字体粗细 */
+    margin-top: 10px; /* 设置顶部外边距 */
 }
 
 /* ================= 4. 活动详情页专属样式 (Event Details) ================= */
+/* 设置返回按钮的样式 */
 .btn-back {
-    background: #9BB0C1;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    margin-bottom: 20px;
-    transition: background 0.2s;
+    background: #9BB0C1; /* 设置背景颜色 */
+    color: white; /* 设置文字颜色为白色 */
+    border: none; /* 去除默认边框 */
+    padding: 8px 16px; /* 设置内边距大小 */
+    border-radius: 8px; /* 设置圆角大小 */
+    cursor: pointer; /* 鼠标悬停时显示指针手势 */
+    font-weight: 600; /* 设置字体粗细 */
+    margin-bottom: 20px; /* 设置底部外边距 */
+    transition: background 0.2s; /* 设置背景颜色过渡动画 */
 }
 
+/* 设置返回按钮悬停时的背景颜色 */
 .btn-back:hover { background: #4F6D7A; }
 
 /* 详情卡片分左右两栏布局 */
+/* 设置详情容器的样式 */
 .detail-container {
-    display: flex;
-    gap: 40px;
-    background: white;
-    padding: 30px;
-    border-radius: 14px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    display: flex; /* 使用弹性盒模型布局 */
+    gap: 40px; /* 设置左右两栏之间的间距为40像素 */
+    background: white; /* 设置背景颜色为白色 */
+    padding: 30px; /* 设置四周内边距 */
+    border-radius: 14px; /* 设置圆角大小 */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02); /* 设置轻微阴影效果 */
 }
 
+/* 设置详情信息左侧区块的弹性比例 */
 .detail-info-section { flex: 1.2; }
+/* 设置详情信息左侧二级标题的颜色和底部外边距 */
 .detail-info-section h2 { color: #334155; margin-bottom: 20px; }
 
+/* 设置信息组合的外边距 */
 .info-group { margin-bottom: 18px; }
+/* 设置信息标签(label)的样式 */
 .info-group label {
-    display: block;
-    font-size: 13px;
-    font-weight: bold;
-    color: #7C94A1;
-    margin-bottom: 4px;
+    display: block; /* 设置为块级元素独占一行 */
+    font-size: 13px; /* 设置字体大小 */
+    font-weight: bold; /* 设置字体加粗 */
+    color: #7C94A1; /* 设置标签文字颜色 */
+    margin-bottom: 4px; /* 设置底部外边距 */
 }
+/* 设置信息段落(p)的样式 */
 .info-group p {
-    font-size: 15px;
-    color: #4A5568;
-    line-height: 1.5;
+    font-size: 15px; /* 设置字体大小 */
+    color: #4A5568; /* 设置段落文字颜色 */
+    line-height: 1.5; /* 设置行高 */
 }
+/* 设置价格标签的字体大小与粗细（使用!important确保样式优先级） */
 .price-tag {
-    font-size: 18px !important;
-    font-weight: bold;
-    color: #4F6D7A;
+    font-size: 18px !important; /* 设置价格字体大小 */
+    font-weight: bold; /* 设置字体加粗 */
+    color: #4F6D7A; /* 设置价格文字颜色 */
 }
 
 /* 右侧管理员管理栏 */
+/* 设置右侧管理员管理区块的样式 */
 .detail-booth-section {
-    flex: 1;
-    background: #F8FAFC;
-    padding: 20px;
-    border-radius: 10px;
-    border: 1px solid #E2E8F0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex: 1; /* 占据1份弹性空间 */
+    background: #F8FAFC; /* 设置背景颜色 */
+    padding: 20px; /* 设置内边距大小 */
+    border-radius: 10px; /* 设置圆角大小 */
+    border: 1px solid #E2E8F0; /* 设置边框颜色与粗细 */
+    display: flex; /* 使用弹性盒模型布局 */
+    flex-direction: column; /* 设置子元素纵向排列 */
+    align-items: center; /* 设置子元素水平居中对齐 */
 }
 
 /* 详情页底部的管理操作按钮（草绿色莫兰迪系） */
+/* 设置管理员管理操作按钮容器的样式 */
 .admin-manage-actions {
-    width: 100%;
-    display: flex;
-    gap: 15px;
+    width: 100%; /* 设置宽度占满父容器 */
+    display: flex; /* 使用弹性盒模型布局 */
+    gap: 15px; /* 设置按钮之间的间距 */
 }
+/* 设置管理员管理按钮的通用样式 */
 .admin-manage-actions button {
-    flex: 1;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s;
+    flex: 1; /* 让按钮平均分配宽度 */
+    padding: 12px; /* 设置内边距大小 */
+    border: none; /* 去除默认边框 */
+    border-radius: 8px; /* 设置圆角大小 */
+    font-size: 14px; /* 设置字体大小 */
+    font-weight: bold; /* 设置字体加粗 */
+    cursor: pointer; /* 鼠标悬停时显示指针手势 */
+    transition: background 0.2s; /* 设置背景过渡动画 */
 }
 
+/* 设置编辑按钮的背景与文字颜色 */
 .btn-edit { background-color: #B8C694; color: #404A27; }
+/* 设置编辑按钮悬停时的背景颜色 */
 .btn-edit:hover { background-color: #A3B37C; }
+/* 设置删除按钮的背景与文字颜色 */
 .btn-delete { background-color: #A9B388; color: #FFFFFF; }
+/* 设置删除按钮悬停时的背景颜色 */
 .btn-delete:hover { background-color: #8F9970; }
 
 /* ================= 5. Application 审批按钮样式 ================= */
+/* 设置审批操作区域的样式 */
 .admin-actions {
-    margin-top: 15px;
-    padding-top: 12px;
-    border-top: 1px dashed #E2E8F0;
-    display: flex;
-    gap: 10px;
+    margin-top: 15px; /* 设置顶部外边距 */
+    padding-top: 12px; /* 设置顶部内边距 */
+    border-top: 1px dashed #E2E8F0; /* 设置顶部虚线边框 */
+    display: flex; /* 使用弹性盒模型布局 */
+    gap: 10px; /* 设置按钮间距 */
 }
+/* 设置审批按钮的通用样式 */
 .admin-actions button {
-    flex: 1;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
+    flex: 1; /* 让按钮平均分配宽度 */
+    padding: 6px 12px; /* 设置内边距大小 */
+    border: none; /* 去除默认边框 */
+    border-radius: 6px; /* 设置圆角大小 */
+    font-size: 12px; /* 设置字体大小 */
+    font-weight: 600; /* 设置字体粗细 */
+    cursor: pointer; /* 鼠标悬停时显示指针手势 */
+    transition: background 0.2s; /* 设置背景过渡动画 */
 }
+/* 设置批准按钮的背景与文字颜色 */
 .btn-approve { background-color: #E2F0D9; color: #385723; }
+/* 设置批准按钮悬停时的背景颜色 */
 .btn-approve:hover { background-color: #D0E8C4; }
+/* 设置拒绝按钮的背景与文字颜色 */
 .btn-deny { background-color: #FCE8E6; color: #C5221F; }
+/* 设置拒绝按钮悬停时的背景颜色 */
 .btn-deny:hover { background-color: #FAD2CF; }
 
 /* ================= 6. Add Event 表单样式 (Forms) ================= */
+/* 设置添加活动容器的样式 */
 .add-event-container {
-    background: white;
-    padding: 30px;
-    border-radius: 14px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-    max-width: 800px;
-    margin: 0 auto;
+    background: white; /* 设置背景颜色为白色 */
+    padding: 30px; /* 设置四周内边距 */
+    border-radius: 14px; /* 设置圆角大小 */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02); /* 设置轻微阴影效果 */
+    max-width: 800px; /* 设置最大宽度限制 */
+    margin: 0 auto; /* 设置水平居中对齐 */
 }
 
+/* 设置添加活动和模态框内标题的颜色、底部外边距及字体大小 */
 .add-event-container h3, .modal-header h3 {
-    color: #4F6D7A;
-    margin-bottom: 20px;
-    font-size: 20px;
+    color: #4F6D7A; /* 设置标题文字颜色 */
+    margin-bottom: 20px; /* 设置底部外边距 */
+    font-size: 20px; /* 设置标题字体大小 */
 }
 
 /* 使用网格布局，每行两个输入框 */
+/* 设置添加和编辑活动表单的网格布局样式 */
 #add-event-form, #edit-event-form {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    display: grid; /* 使用网格布局 */
+    grid-template-columns: 1fr 1fr; /* 设置为均等的两列布局 */
+    gap: 20px; /* 设置网格间距为20像素 */
 }
 
+/* 设置表单组容器的样式 */
 .form-group {
-    display: flex;
-    flex-direction: column;
+    display: flex; /* 使用弹性盒模型布局 */
+    flex-direction: column; /* 设置子元素纵向排列 */
 }
 
+/* 设置表单标签(label)的样式 */
 .form-group label {
-    font-size: 13px;
-    font-weight: bold;
-    color: #7C94A1;
-    margin-bottom: 8px;
+    font-size: 13px; /* 设置字体大小 */
+    font-weight: bold; /* 设置字体加粗 */
+    color: #7C94A1; /* 设置文字颜色 */
+    margin-bottom: 8px; /* 设置底部外边距 */
 }
 
+/* 设置表单内输入框(input)与文本域(textarea)的样式 */
 .form-group input, .form-group textarea {
-    padding: 12px;
-    border: 1px solid #E2E8F0;
-    border-radius: 8px;
-    font-size: 14px;
-    outline: none;
-    color: #334155;
-    transition: border 0.3s;
+    padding: 12px; /* 设置内边距大小 */
+    border: 1px solid #E2E8F0; /* 设置边框颜色与粗细 */
+    border-radius: 8px; /* 设置圆角大小 */
+    font-size: 14px; /* 设置字体大小 */
+    outline: none; /* 去除默认聚焦外边框 */
+    color: #334155; /* 设置输入文字颜色 */
+    transition: border 0.3s; /* 设置边框颜色过渡动画 */
 }
 
+/* 设置输入框和文本域聚焦时的边框颜色 */
 .form-group input:focus, .form-group textarea:focus { border-color: #9BB0C1; }
 
+/* 设置提交活动按钮的样式 */
 .btn-submit-event {
-    background-color: #9BB0C1;
-    color: white;
-    border: none;
-    padding: 14px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s;
+    background-color: #9BB0C1; /* 设置按钮背景颜色 */
+    color: white; /* 设置文字颜色为白色 */
+    border: none; /* 去除默认边框 */
+    padding: 14px; /* 设置内边距大小 */
+    border-radius: 8px; /* 设置圆角大小 */
+    font-size: 16px; /* 设置字体大小 */
+    font-weight: bold; /* 设置字体加粗 */
+    cursor: pointer; /* 鼠标悬停时显示指针手势 */
+    transition: background 0.2s; /* 设置背景过渡动画 */
 }
+/* 设置提交活动按钮悬停时的背景颜色 */
 .btn-submit-event:hover { background-color: #4F6D7A; }
 
 /* ================= 7. Edit 弹窗样式 (Modal View) ================= */
+/* 设置模态弹窗遮罩层的样式 */
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(4px); /* 高级毛玻璃背景效果 */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-    z-index: 999;
+    position: fixed; /* 设置固定定位铺满全屏 */
+    top: 0; /* 距离顶部0 */
+    left: 0; /* 距离左侧0 */
+    width: 100%; /* 宽度占满全屏 */
+    height: 100%; /* 高度占满全屏 */
+    background-color: rgba(0, 0, 0, 0.4); /* 设置半透明黑色背景 */
+    backdrop-filter: blur(4px); /* 高级毛玻璃背景模糊效果 */
+    display: flex; /* 使用弹性盒模型布局 */
+    align-items: center; /* 设置子元素垂直居中 */
+    justify-content: center; /* 设置子元素水平居中 */
+    opacity: 0; /* 默认透明度为0（隐藏） */
+    pointer-events: none; /* 默认不响应鼠标事件 */
+    transition: opacity 0.3s ease; /* 设置透明度过渡动画 */
+    z-index: 999; /* 设置极高的层级显示在最上方 */
 }
 
 /* 当 JS 加上 show-modal 类名时，弹窗就会出现 */
+/* 设置显示弹窗时的状态 */
 .modal-overlay.show-modal {
-    opacity: 1;
-    pointer-events: auto;
+    opacity: 1; /* 显示时透明度为1 */
+    pointer-events: auto; /* 恢复响应鼠标事件 */
 }
 
+/* 设置模态弹窗内容盒子的样式 */
 .modal-content-box {
-    background: #FFFFFF;
-    width: 90%;
-    max-width: 600px;
-    padding: 30px;
-    border-radius: 14px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    transform: translateY(-20px);
-    transition: transform 0.3s ease;
+    background: #FFFFFF; /* 设置白色背景 */
+    width: 90%; /* 设置宽度占90% */
+    max-width: 600px; /* 设置最大宽度限制 */
+    padding: 30px; /* 设置内边距大小 */
+    border-radius: 14px; /* 设置圆角大小 */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1); /* 设置较深的阴影效果 */
+    transform: translateY(-20px); /* 默认向上偏移20像素 */
+    transition: transform 0.3s ease; /* 设置变换过渡动画 */
 }
 
+/* 设置弹窗显示时内容盒子的位移恢复正常位置 */
 .modal-overlay.show-modal .modal-content-box { transform: translateY(0); }
 
+/* 设置模态框头部的样式 */
 .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #E2E8F0;
-    padding-bottom: 15px;
-    margin-bottom: 20px;
+    display: flex; /* 使用弹性盒模型布局 */
+    justify-content: space-between; /* 设置左右两端对齐 */
+    align-items: center; /* 设置垂直居中对齐 */
+    border-bottom: 1px solid #E2E8F0; /* 设置底部边框线颜色 */
+    padding-bottom: 15px; /* 设置底部内边距 */
+    margin-bottom: 20px; /* 设置底部外边距 */
 }
 
+/* 设置关闭模态框按钮的样式 */
 .close-modal-btn {
-    font-size: 24px;
-    color: #94A3B8;
-    cursor: pointer;
+    font-size: 24px; /* 设置字体大小 */
+    color: #94A3B8; /* 设置文字颜色 */
+    cursor: pointer; /* 鼠标悬停时显示指针手势 */
 }
+/* 设置关闭按钮悬停时的文字颜色 */
 .close-modal-btn:hover { color: #4A5568; }
 
+/* 设置模态框底部操作按钮容器的样式 */
 .modal-footer-actions {
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: flex-end;
-    gap: 15px;
-    margin-top: 15px;
+    grid-column: 1 / -1; /* 让按钮容器横跨网格的所有列 */
+    display: flex; /* 使用弹性盒模型布局 */
+    justify-content: flex-end; /* 设置靠右对齐 */
+    gap: 15px; /* 设置按钮之间的间距 */
+    margin-top: 15px; /* 设置顶部外边距 */
 }
 
+/* 设置取消按钮的样式 */
 .btn-cancel {
-    padding: 10px 20px;
-    background: #F1F5F9;
-    border: none;
-    border-radius: 8px;
-    color: #64748B;
-    font-weight: bold;
-    cursor: pointer;
+    padding: 10px 20px; /* 设置内边距大小 */
+    background: #F1F5F9; /* 设置背景颜色 */
+    border: none; /* 去除默认边框 */
+    border-radius: 8px; /* 设置圆角大小 */
+    color: #64748B; /* 设置文字颜色 */
+    font-weight: bold; /* 设置字体加粗 */
+    cursor: pointer; /* 鼠标悬停时显示指针手势 */
 }
+/* 设置取消按钮悬停时的背景颜色 */
 .btn-cancel:hover { background: #E2E8F0; }
 
+/* 设置保存提交按钮的样式 */
 .btn-save-submit {
-    padding: 10px 20px;
-    background: #4F6D7A;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
+    padding: 10px 20px; /* 设置内边距大小 */
+    background: #4F6D7A; /* 设置背景颜色 */
+    border: none; /* 去除默认边框 */
+    border-radius: 8px; /* 设置圆角大小 */
+    color: white; /* 设置文字颜色为白色 */
+    font-weight: bold; /* 设置字体加粗 */
+    cursor: pointer; /* 鼠标悬停时显示指针手势 */
 }
+/* 设置保存提交按钮悬停时的背景颜色 */
 .btn-save-submit:hover { background: #3B535D; }
