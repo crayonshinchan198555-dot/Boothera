@@ -31,7 +31,7 @@ if (!$user_id && !empty($email)) {
     $u_res = $conn->query("SELECT user_id FROM Users WHERE `e-mail` = '$email_clean' LIMIT 1");
     if ($u_res && $row = $u_res->fetch_assoc()) {
         $user_id = $row['user_id'];
-        // 关键修复：查到之后，把这个 id 存入 session，防止后续逻辑混乱
+        // 查到之后，把这个 id 存入 session，防止后续逻辑混乱
         $_SESSION['user_id'] = $user_id; 
     }
 }

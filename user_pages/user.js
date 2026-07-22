@@ -110,10 +110,10 @@ function loadProfile() {
                 document.getElementById('view-email').textContent = user.email;
                 document.getElementById('view-business').textContent = user.business_name;
             } else {
-                console.error("加载失败:", result.message);
+                console.error("Failed to load profile:", result.message);
             }
         })
-        .catch(err => console.error("网络错误:", err));
+        .catch(err => console.error("Network error:", err));
 }
 
 // 2. 保存资料
@@ -133,13 +133,13 @@ async function saveProfile() {
 
         const result = await response.json();
         if (result.success) {
-            alert("个人资料保存成功！");
+            alert("Profile updated successfully!");
             location.reload(); // 简单有效，刷新以同步 UI
         } else {
-            alert("保存失败: " + result.message);
+            alert("Failed to save profile: " + result.message);
         }
     } catch (error) {
-        alert("服务器通讯失败");
+        alert("Network error occurred while saving profile");
     }
 }
 
@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", loadProfile);
 async function submitApplication() {
     const selectedBooth = document.querySelector('input[name="booth_id"]:checked');
     if (!selectedBooth) {
-        alert("请先选择一个摊位！");
+        alert("Please select a booth!");
         return;
     }
 
@@ -230,7 +230,7 @@ function toggleEdit() {
 
     // 安全检查：如果页面没找到这些 ID，报错提示你
     if (!viewDiv || !editForm || !btn) {
-        console.error("找不到 HTML 元素，请检查 ID 是否匹配！", {viewDiv, editForm, btn});
+        console.error("Failed to find HTML elements, please check if the IDs match!", {viewDiv, editForm, btn});
         return;
     }
 
@@ -372,7 +372,7 @@ function sendMessageToAdmin() {
     payload.append('email', localStorage.getItem('userEmail')); // 确保传递email以便PHP查到user_id
 
     // 3. 发送给服务器
-    fetch('/message.php', { // ⚠️ 确保文件名是你的后端处理文件名
+    fetch('/message.php', { // get message from db
         method: 'POST',
         body: payload
     })
@@ -392,7 +392,7 @@ function sendMessageToAdmin() {
     })
     .catch(error => {
         console.error("请求失败:", error);
-        alert("服务器连接失败，请检查 PHP 文件路径");
+        alert("Failed to connect to server, please check the PHP file path");
     });
 }
 
@@ -421,10 +421,10 @@ document.addEventListener("DOMContentLoaded", function() {
     card.setAttribute('data-state', event.venue_state || ''); // 确保你的数据库返回了 state 字段
 
     // 3. 渲染卡片内容
-    const displayDate = dateStr || '待定';
+    const displayDate = dateStr || 'Empty';
     card.innerHTML = `
-        <h3>${event.event_name || '无名称'}</h3>
-        <p>📍 ${event.venue || '待定'} | 📅 ${displayDate}</p>
+        <h3>${event.event_name || 'Empty'}</h3>
+        <p>📍 ${event.venue || 'Empty'} | 📅 ${displayDate}</p>
     `;
     
     // 将卡片加入网格
@@ -438,8 +438,8 @@ card.onclick = function() {
     window.currentEventId = event.event_id; 
     
     // 打印完整对象以供调试
-    console.log("当前设置的全局活动ID为:", window.currentEventId);
-    console.log("点击活动的完整数据:", event);
+    console.log("ID:", window.currentEventId);
+    console.log("CLick to view:", event);
 
     // 填充详情页内容 (以下代码保持原样)
     const dTitle = document.getElementById('d-title');
@@ -449,16 +449,16 @@ card.onclick = function() {
     const dDesc = document.getElementById('d-desc');
     const dPrice = document.getElementById('d-price');
 
-    if (dTitle) dTitle.innerText = event.event_name || '无标题';
-    if (dVenue) dVenue.innerText = event.venue || '无地点';
-    if (dDate) dDate.innerText = event.event_date || event.date || '待定';
-    if (dTime) dTime.innerText = event.event_time || event.time || '待定';
-    if (dDesc) dDesc.innerText = event.description || '无详细描述';
+    if (dTitle) dTitle.innerText = event.event_name || '-';
+    if (dVenue) dVenue.innerText = event.venue || 'Empty';
+    if (dDate) dDate.innerText = event.event_date || event.date || 'Empty';
+    if (dTime) dTime.innerText = event.event_time || event.time || 'Empty';
+    if (dDesc) dDesc.innerText = event.description || 'Empty';
     if (dPrice) dPrice.innerText = event.booth_price ? ('$' + event.booth_price) : 'No Price Data';
     
     const formTitle = document.getElementById('form-event-title');
     if (formTitle) {
-        formTitle.innerText = event.event_name || '无标题';
+        formTitle.innerText = event.event_name || 'Empty';
     }
 
     // 接下来调用加载摊位和切换面板的函数
@@ -469,10 +469,10 @@ card.onclick = function() {
                     grid.appendChild(card);
                 });
             } else {
-                console.error("数据加载失败:", result.message);
+                console.error("Failed to load data:", result.message);
             }
         })
-        .catch(err => console.error("网络请求错误:", err));
+        .catch(err => console.error("Network request error:", err));
         loadProfile();
 });
 /**
@@ -481,14 +481,14 @@ card.onclick = function() {
  */
 function loadBooths(eventId) {
     // 调试弹窗
-    alert("正在尝试加载摊位，ID为: " + eventId);
+    alert("Loading event: " + eventId);
     
     // 1. 获取容器
     const container = document.getElementById('booth-container');
     
     // 2. 如果页面没找到这个容器，报错并终止
     if (!container) {
-        console.error("未找到 booth-container，请检查 HTML 是否包含 <div id='booth-container'></div>");
+        console.error("Failed to find booth-container, please check if the HTML contains <div id='booth-container'></div>");
         return;
     }
 
@@ -518,11 +518,12 @@ function loadBooths(eventId) {
             }
         })
         .catch(err => {
-            console.error("加载摊位失败:", err);
-            container.innerHTML = '加载失败，请重试。';
+            console.error("Failed to load booths:", err);
+            container.innerHTML = 'Failed to load booths, please try again.';
         });
 }
 
+//5.显示apply history
 function loadApplicationHistory() {
     const email = localStorage.getItem('userEmail');
     const tbody = document.getElementById('app-history-body');
@@ -549,7 +550,7 @@ function loadApplicationHistory() {
                 });
             }
         })
-        .catch(err => console.error("获取记录失败:", err));
+        .catch(err => console.error("Failed to fetch application history:", err));
 }
 
 // 页面加载完后立即调用
@@ -572,7 +573,7 @@ function fetchHistory() {
     fetch('/message.php?action=user_get_history')
     .then(response => response.json())
     .then(data => {
-        console.log("获取到的留言数据:", data); // 在控制台(F12)查看是否拿到数据
+        console.log("Failed to load history:", data); // 在控制台(F12)查看是否拿到数据
         
         const container = document.getElementById('user-message-history-grid');
         const noHistoryText = document.getElementById('no-history-text');
@@ -605,5 +606,5 @@ function fetchHistory() {
             if (noHistoryText) noHistoryText.style.display = 'block';
         }
     })
-    .catch(error => console.error("加载留言历史失败:", error));
+    .catch(error => console.error("Failed to load message history:", error));
 }

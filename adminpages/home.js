@@ -109,7 +109,7 @@ function viewEventDetails(cardElement) {
         layoutContainer.innerHTML = `<p style="color: #9BB0C1; font-style: italic;">No event information found.</p>`;
     }
 
-    switchTab('event-details');
+    switchTab('event-details');// 切换视图到事件详情 Tab
 }
 
 /**
@@ -117,39 +117,40 @@ function viewEventDetails(cardElement) {
  * 🚀 已升级支持携带上传文件的 FormData 请求
  */
 function handleAddEventSubmit(e) {
-    e.preventDefault(); 
+    e.preventDefault(); // 阻止表单默认的刷新提交行为 
 
     // 找到提交按钮并禁用它，防止连击或重复提交
-    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const submitBtn = e.target.querySelector('button[type="submit"]'); //按钮
     if (submitBtn) {
-        submitBtn.disabled = true;
+        submitBtn.disabled = true;// 禁用按钮
         submitBtn.innerText = "Publishing..."; // 提示正在发布
     }
 
-    const formData = new FormData(e.target); 
+    const formData = new FormData(e.target); // 创建 FormData 对象以收集表单所有输入和文件
 
     fetch('../add_event.php', {
         method: 'POST',
         body: formData
-    })
-    .then(response => response.json())
+    })// 发送 POST 请求到后端添加活动接口
+    .then(response => response.json())// 将后端响应解析为 JSON
     .then(res => {
         if (res.success) {
-            alert('🎉 活动发布成功！');
-            e.target.reset(); 
-            window.location.reload(); 
+            alert('🎉 Event published successfully!');// 弹出成功提示
+            e.target.reset(); // 重置表单输入
+            window.location.reload(); //刷新页面
         } else {
-            alert('提交失败: ' + res.message);
+            alert('Submission failed: ' + res.message);// 弹出错误提示
             // 失败了就把按钮恢复
             if (submitBtn) {
-                submitBtn.disabled = false;
-                submitBtn.innerText = "🚀 Publish Event";
+                submitBtn.disabled = false;// 恢复按钮可用
+                submitBtn.innerText = "🚀 Publish Event";// 恢复按钮文字
             }
         }
     })
+    //测试定位问题
     .catch(error => {
-        console.error('Error details:', error);
-        alert('请求发送失败');
+        console.error('Error details:', error);//在控制台打印错误详情 
+        alert('Failed to submit event.'); // 弹出请求失败提示
         // 出错了就把按钮恢复
         if (submitBtn) {
             submitBtn.disabled = false;
@@ -159,14 +160,14 @@ function handleAddEventSubmit(e) {
 }
 
 /**
- * 4. 辅助函数：根据数据在网页上画出一张新卡片 (Inject into DOM)
+ * 4. 根据数据 create event card
  */
 function createEventCardInDOM(data) {
-    const eventsContainer = document.getElementById('events-grid');
-    if (!eventsContainer) return;
+    const eventsContainer = document.getElementById('events-grid');// 获取事件网格容器
+    if (!eventsContainer) return;// 如果容器不存在则直接返回
 
-    const card = document.createElement('div');
-    card.className = 'booth-card clickable-card';
+    const card = document.createElement('div');// 创建一个新的 div 元素作为卡片
+    card.className = 'booth-card clickable-card';// 设置卡片的类名
     
     // 🔑 将生成的或既有的唯一 ID 绑定 to DOM 节点属性上
     card.setAttribute('data-id', data.id || ('ev_' + data.title.replace(/\s+/g, '_')));
@@ -179,9 +180,9 @@ function createEventCardInDOM(data) {
     card.setAttribute('data-booths', data.booths);
     card.setAttribute('data-status', data.status || 'active');
 
-    card.onclick = function() { viewEventDetails(this); };
+    card.onclick = function() { viewEventDetails(this); };// 绑定点击卡片查看详情的事件
 
-    const statusHtml = data.status === 'deleted' ? '<span class="status-deleted-text">Deleted</span>' : 'Active';
+    const statusHtml = data.status === 'deleted' ? '<span class="status-deleted-text">Deleted</span>' : 'Active';// 判断状态文本显示
 
     card.innerHTML = `
         <h3>${data.title}</h3>
@@ -190,20 +191,20 @@ function createEventCardInDOM(data) {
         <p class="event-status-text">💡 Status: ${statusHtml}</p>
     `;
 
-    eventsContainer.appendChild(card);
+    eventsContainer.appendChild(card);// 将卡片追加到网格容器中
 }
 
 /**
  * 5. 编辑活动资料 (Edit Modal Logic)
  */
 function closeEditModal() {
-    document.getElementById('edit-modal').classList.remove('show-modal');
+    document.getElementById('edit-modal').classList.remove('show-modal');// 移除编辑弹窗的显示类以关闭弹窗
 }
 
 function editEvent() {
     // 🔑 从详情面板读取当前被编辑的 ID，并同步赋值到隐藏域中
-    const currentId = document.getElementById('tab-event-details').getAttribute('data-current-event-id');
-    document.getElementById('edit-event-id').value = currentId;
+    const currentId = document.getElementById('tab-event-details').getAttribute('data-current-event-id');// get ID
+    document.getElementById('edit-event-id').value = currentId;//add id to  list
 
     document.getElementById('edit-input-title').value = document.getElementById('detail-title').innerText;
     document.getElementById('edit-input-venue').value = document.getElementById('detail-venue').innerText;
@@ -213,14 +214,14 @@ function editEvent() {
     document.getElementById('edit-input-price').value = document.getElementById('detail-price').innerText;
     document.getElementById('edit-input-booths').value = parseInt(document.getElementById('detail-booths').innerText) || 0;
 
-    document.getElementById('edit-modal').classList.add('show-modal');
+    document.getElementById('edit-modal').classList.add('show-modal');//打开弹窗
 }
 
 function saveEventChanges(event) {
-    event.preventDefault();
+    event.preventDefault();// 阻止表单默认提交行为
 
     // 🔑 读取隐藏域主键 ID，通过 ID 实施精准操作而不再仅仅靠 Title 匹配
-    const currentId = document.getElementById('edit-event-id').value;
+    const currentId = document.getElementById('edit-event-id').value;//get
     const currentTitle = document.getElementById('edit-input-title').value;
     const newVenue = document.getElementById('edit-input-venue').value;
     const newDate = document.getElementById('edit-input-date').value;
@@ -229,7 +230,7 @@ function saveEventChanges(event) {
     const newPrice = document.getElementById('edit-input-price').value;
     const newBooths = document.getElementById('edit-input-booths').value;
 
-    document.getElementById('detail-venue').innerText = newVenue;
+    document.getElementById('detail-venue').innerText = newVenue;//update
     document.getElementById('detail-date').innerText = newDate;
     document.getElementById('detail-time').innerText = newTime;
     document.getElementById('detail-desc').innerText = newDesc;
@@ -242,10 +243,10 @@ function saveEventChanges(event) {
         if (card.getAttribute('data-id') === currentId || card.querySelector('h3').innerText === currentTitle) {
             const infoParagraphs = card.querySelectorAll('.booth-info');
             if (infoParagraphs.length >= 2) {
-                infoParagraphs[0].innerText = `📅 Date: ${newDate}`;
-                infoParagraphs[1].innerText = `🎪 Total Booths: ${newBooths}`; 
+                infoParagraphs[0].innerText = `📅 Date: ${newDate}`;//update
+                infoParagraphs[1].innerText = `🎪 Total Booths: ${newBooths}`; //update
             }
-            card.setAttribute('data-venue', newVenue);
+            card.setAttribute('data-venue', newVenue);//update
             card.setAttribute('data-date', newDate);
             card.setAttribute('data-time', newTime);
             card.setAttribute('data-desc', newDesc);
@@ -254,17 +255,17 @@ function saveEventChanges(event) {
         }
     });
 
-    const savedDataStr = localStorage.getItem('saved_event_' + currentId) || localStorage.getItem('saved_event_' + currentTitle);
-    let eventData = savedDataStr ? JSON.parse(savedDataStr) : { id: currentId, title: currentTitle, status: 'active', isCustom: false };
+    const savedDataStr = localStorage.getItem('saved_event_' + currentId) || localStorage.getItem('saved_event_' + currentTitle);// 获取本地存储的数据
+    let eventData = savedDataStr ? JSON.parse(savedDataStr) : { id: currentId, title: currentTitle, status: 'active', isCustom: false };//find from database
 
-    eventData.venue = newVenue; eventData.date = newDate; eventData.time = newTime;
+    eventData.venue = newVenue; eventData.date = newDate; eventData.time = newTime;//update details
     eventData.desc = newDesc; eventData.price = newPrice; eventData.booths = newBooths;
 
     // 同步写回两份缓存保证向下兼容
-    if (currentId) localStorage.setItem('saved_event_' + currentId, JSON.stringify(eventData));
+    if (currentId) localStorage.setItem('saved_event_' + currentId, JSON.stringify(eventData));//save details
     localStorage.setItem('saved_event_' + currentTitle, JSON.stringify(eventData));
     
-    alert("Event changes saved successfully!");
+    alert("Event changes saved successfully!");//提示成功
     closeEditModal(); 
 }
 
@@ -272,34 +273,34 @@ function saveEventChanges(event) {
  * 6. 将活动状态设为已删除 (Delete Event)
  */
 function deleteEvent() {
-    const currentId = document.getElementById('tab-event-details').getAttribute('data-current-event-id');
-    const currentEventName = document.getElementById('detail-title').innerText;
+    const currentId = document.getElementById('tab-event-details').getAttribute('data-current-event-id');// 获取当前事件 ID
+    const currentEventName = document.getElementById('detail-title').innerText;// 获取当前事件标题
     
-    if (confirm(`Are you sure you want to change the status of "${currentEventName}" to Deleted?`)) {
-        const allCards = document.querySelectorAll('#tab-events .booth-card');
+    if (confirm(`Are you sure you want to change the status of "${currentEventName}" to Deleted?`)) {// 弹出确认删除提示框
+        const allCards = document.querySelectorAll('#tab-events .booth-card');// 获取所有事件卡片
         allCards.forEach(card => {
             if (card.getAttribute('data-id') === currentId || card.querySelector('h3').innerText === currentEventName) {
-                const statusParagraph = card.querySelector('.event-status-text');
+                const statusParagraph = card.querySelector('.event-status-text');// 获取状态文本元素
                 if (statusParagraph) {
-                    statusParagraph.innerHTML = '💡 Status: <span class="status-deleted-text">Deleted</span>';
+                    statusParagraph.innerHTML = '💡 Status: <span class="status-deleted-text">Deleted</span>';// 更新状态为已删除
                 }
-                card.setAttribute('data-status', 'deleted');
+                card.setAttribute('data-status', 'deleted');// 设置卡片状态属性为 deleted
 
-                const savedData = localStorage.getItem('saved_event_' + currentId) || localStorage.getItem('saved_event_' + currentEventName);
+                const savedData = localStorage.getItem('saved_event_' + currentId) || localStorage.getItem('saved_event_' + currentEventName);// 获取本地存储数据
                 let eventData = savedData ? JSON.parse(savedData) : {
                     id: currentId, title: currentEventName, venue: card.getAttribute('data-venue'),
                     date: card.getAttribute('data-date'), time: card.getAttribute('data-time'),
                     desc: card.getAttribute('data-desc'), price: card.getAttribute('data-price'),
                     booths: card.getAttribute('data-booths'), isCustom: false
-                };
-                eventData.status = 'deleted';
+                };// 解析或构建事件数据对象
+                eventData.status = 'deleted';// 将状态标记为 deleted
                 
-                if (currentId) localStorage.setItem('saved_event_' + currentId, JSON.stringify(eventData));
-                localStorage.setItem('saved_event_' + currentEventName, JSON.stringify(eventData));
+                if (currentId) localStorage.setItem('saved_event_' + currentId, JSON.stringify(eventData));// 按 ID 更新本地存储
+                localStorage.setItem('saved_event_' + currentEventName, JSON.stringify(eventData)); // 按标题更新本地存储
             }
         });
-        alert(`"${currentEventName}" status has been set to Deleted.`);
-        switchTab('events');
+        alert(`"${currentEventName}" status has been set to Deleted.`);//弹出alert
+        switchTab('events');//回到event
     }
 }
 
@@ -307,33 +308,33 @@ function deleteEvent() {
  * 7. 右上角：筛选器与搜索功能 (Filter & Search)
  */
 function handleFilterChange() {
-    const filterValue = document.getElementById('global-filter').value;
-    const cards = document.querySelectorAll('.booth-card');
+    const filterValue = document.getElementById('global-filter').value;//get筛选值
+    const cards = document.querySelectorAll('.booth-card');//获取全部card
 
     cards.forEach(card => {
-        const cardStatus = card.getAttribute('data-status') || 'active';
+        const cardStatus = card.getAttribute('data-status') || 'active';//获取status
         if (cardStatus === 'deleted') {
-            card.style.display = (filterValue === 'all') ? 'block' : 'none'; 
+            card.style.display = (filterValue === 'all') ? 'block' : 'none'; //delete的不会出现
             return;
         }
         if (filterValue === 'all' || cardStatus === filterValue) {
-            card.style.display = 'block';
+            card.style.display = 'block';//筛选合适filter的
         } else {
-            card.style.display = 'none';
+            card.style.display = 'none';//不符合的不显示
         }
     });
 }
 
 function handleSearch() {
-    const searchText = document.getElementById('global-search').value.toLowerCase();
-    const cards = document.querySelectorAll('.booth-card');
+    const searchText = document.getElementById('global-search').value.toLowerCase();// 获取搜索框输入的文本并转为小写
+    const cards = document.querySelectorAll('.booth-card');//显示寻找结果
 
     cards.forEach(card => {
         const titleText = card.querySelector('h3').innerText.toLowerCase();
         if (titleText.includes(searchText)) {
-            card.style.display = 'block';
+            card.style.display = 'block';//筛选符合的
         } else {
-            card.style.display = 'none';
+            card.style.display = 'none';//不符合的不显示
         }
     });
 }
@@ -342,35 +343,35 @@ function handleSearch() {
  * 8. 审批操作 (Approve / Deny Application)
  */
 function actionApprove(button) {
-    const card = button.closest('.booth-card');
-    const titleText = card.querySelector('h3').innerText;
-    card.setAttribute('data-status', 'confirmed');
+    const card = button.closest('.booth-card');// 获取当前按钮所在的最近卡片元素
+    const titleText = card.querySelector('h3').innerText;// 获取卡片标题
+    card.setAttribute('data-status', 'confirmed');// 将卡片状态属性设为 confirmed
     
-    const badge = card.querySelector('.status-badge');
+    const badge = card.querySelector('.status-badge');// 获取状态徽章元素
     if (badge) {
-        badge.innerText = 'Confirmed';
-        badge.className = 'status-badge incoming'; 
+        badge.innerText = 'Confirmed';// 修改徽章文本为 Confirmed
+        badge.className = 'status-badge incoming'; // 修改徽章类名 
     }
     
-    localStorage.setItem('app_status_' + titleText, 'confirmed');
-    alert("Application approved successfully!");
+    localStorage.setItem('app_status_' + titleText, 'confirmed');// 将审批状态存入本地存储
+    alert("Application approved successfully!");// 弹出审批通过提示
 }
 
 /**
  * 9. 数据恢复逻辑 (Restore Data on Page Load)
  */
 function restoreSavedEvents() {
-    const allCards = document.querySelectorAll('#tab-events .booth-card');
+    const allCards = document.querySelectorAll('#tab-events .booth-card');//get card
     allCards.forEach(card => {
-        const titleText = card.querySelector('h3').innerText;
+        const titleText = card.querySelector('h3').innerText;//get card title
         // 先为既有的静态 HTML 卡片补充生成虚拟 ID 以供点击联动
-        const virtualId = 'ev_' + titleText.replace(/\s+/g, '_');
-        card.setAttribute('data-id', virtualId);
+        const virtualId = 'ev_' + titleText.replace(/\s+/g, '_');//buid 虚拟id
+        card.setAttribute('data-id', virtualId);//绑定
 
-        const savedData = localStorage.getItem('saved_event_' + virtualId) || localStorage.getItem('saved_event_' + titleText);
+        const savedData = localStorage.getItem('saved_event_' + virtualId) || localStorage.getItem('saved_event_' + titleText);//read data from storage
         
         if (savedData) {
-            const data = JSON.parse(savedData);
+            const data = JSON.parse(savedData);//show data
             card.setAttribute('data-venue', data.venue);
             card.setAttribute('data-date', data.date);
             card.setAttribute('data-time', data.time);
@@ -380,15 +381,15 @@ function restoreSavedEvents() {
 
             const infoParagraphs = card.querySelectorAll('.booth-info');
             if (infoParagraphs.length >= 2) {
-                infoParagraphs[0].innerText = `📅 Date: ${data.date}`;
-                infoParagraphs[1].innerText = `🎪 Total Booths: ${data.booths}`;
+                infoParagraphs[0].innerText = `📅 Date: ${data.date}`;//update date
+                infoParagraphs[1].innerText = `🎪 Total Booths: ${data.booths}`;//update booth
             }
 
             if (data.status === 'deleted') {
-                card.setAttribute('data-status', 'deleted');
+                card.setAttribute('data-status', 'deleted');//show as deleted
                 const statusParagraph = card.querySelector('.event-status-text');
                 if (statusParagraph) {
-                    statusParagraph.innerHTML = '💡 Status: <span class="status-deleted-text">Deleted</span>';
+                    statusParagraph.innerHTML = '💡 Status: <span class="status-deleted-text">Deleted</span>';// 更新为已删除状态显示
                 }
             }
         }
@@ -397,8 +398,8 @@ function restoreSavedEvents() {
     // 读取通过前端新创建的自定义活动 ID 列表并渲染
     const customIds = JSON.parse(localStorage.getItem('custom_event_ids') || '[]');
     customIds.forEach(id => {
-        const savedData = localStorage.getItem('saved_event_' + id);
-        if (savedData) { createEventCardInDOM(JSON.parse(savedData)); }
+        const savedData = localStorage.getItem('saved_event_' + id);//read data
+        if (savedData) { createEventCardInDOM(JSON.parse(savedData)); }//DOM
     });
 
     // 向上兼容：如果原本存在旧标题列表但也需要载入的情况
@@ -415,7 +416,7 @@ function restoreSavedEvents() {
 }
 
 function restoreSavedApplications() {
-    const allAppCards = document.querySelectorAll('#tab-application .booth-card');
+    const allAppCards = document.querySelectorAll('#tab-application .booth-card');//show all application
     allAppCards.forEach(card => {
         const titleText = card.querySelector('h3').innerText;
         const savedStatus = localStorage.getItem('app_status_' + titleText);
@@ -423,6 +424,7 @@ function restoreSavedApplications() {
         if (savedStatus) {
             card.setAttribute('data-status', savedStatus);
             const badge = card.querySelector('.status-badge');
+            //show status
             if (badge) {
                 if (savedStatus === 'confirmed') {
                     badge.innerText = 'Confirmed';
@@ -440,14 +442,14 @@ function restoreSavedApplications() {
  * 10. 用户注销登录 (Logout)
  */
 function logout() {
-    if (confirm("Are you sure you want to log out?")) {
+    if (confirm("Are you sure you want to log out?")) {//alert
         // 请求后端的注销逻辑（销毁 Session）
-        fetch('../logout.php', { method: 'POST' })
+        fetch('../logout.php', { method: 'POST' })//send to backend
         .then(() => {
             // 清理本地状态
-            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("isLoggedIn");//remove login
             // 跳转回登录页
-            window.location.href = "../index.html";
+            window.location.href = "../index.html";//back to login page
         })
         .catch(err => {
             // 如果后端请求失败，也要强制跳转
@@ -463,19 +465,19 @@ function logout() {
 
 // 1. 页面加载时/切换标签时读取所有用户消息 (强制挂载到 window 全局对象)
 window.restoreUserMessages = function() {
-    console.log("🚀 restoreUserMessages 开始运行了！");
+    console.log("🚀 restoreUserMessages 开始运行了！");//retrieve data
 
-    fetch('../message.php?action=admin_get_all')
+    fetch('../message.php?action=admin_get_all')//get all message send by user
     .then(res => {
-        console.log("📡 收到 PHP 响应状态:", res.status);
+        console.log("📡 收到 PHP 响应状态:", res.status);//show status
         return res.json();
     })
     .then(data => {
-        console.log("📦 解析出来的 JSON 数据:", data);
+        console.log("📦 解析出来的 JSON 数据:", data);//show data
         
-        const gridContainer = document.getElementById('admin-messages-grid');
+        const gridContainer = document.getElementById('admin-messages-grid');//get container (html)
         if (!gridContainer) {
-            console.error("❌ 找不到 HTML 容器: admin-messages-grid");
+            console.error("❌cannot find HTML container: admin-messages-grid");
             return;
         }
 
@@ -535,13 +537,13 @@ window.restoreUserMessages = function() {
 
 // 2. 管理员点击“Reply”按钮提交回复到数据库 (强制挂载到 window 全局对象)
 window.submitAdminReply = function(messageId) {
-    const replyInput = document.getElementById(`reply-input-${messageId}`);
+    const replyInput = document.getElementById(`reply-input-${messageId}`);//get reply for that message
     if (!replyInput) return;
     
-    const replyContent = replyInput.value.trim();
+    const replyContent = replyInput.value.trim();//remove 收尾空格
 
     if (!replyContent) {
-        alert('Please enter a reply text first!');
+        alert('Please enter a reply text first!');//check if it is empty
         return;
     }
 
@@ -554,12 +556,12 @@ window.submitAdminReply = function(messageId) {
     .then(data => {
         alert(data.message);
         if (data.success) {
-            replyInput.value = '';
+            replyInput.value = '';//clear 输入框
             window.restoreUserMessages(); // 回复成功后重新刷新列表
         }
     })
     .catch(err => {
-        alert('Failed to send reply: ' + err.message);
+        alert('Failed to send reply: ' + err.message);//alert
     });
 };
 
@@ -640,24 +642,24 @@ window.submitAdminReply = function(messageId) {
 (function() {
     function fetchAndRenderEvents() {
         const eventsGrid = document.getElementById('events-grid');
-        if (!eventsGrid) return; 
+        if (!eventsGrid) return; //return back if cant find
 
-        fetch('../get_events.php')
+        fetch('../get_events.php')//get event details
             .then(response => {
                 if (!response.ok) throw new Error('网络响应异常，状态码: ' + response.status);
                 return response.json();
             })
             .then(res => {
-                eventsGrid.innerHTML = ''; 
+                eventsGrid.innerHTML = ''; //clear container
 
                 if (!res.success) {
                     eventsGrid.innerHTML = `<div style="color:red; padding:20px;">数据加载失败: ${res.message}</div>`;
                     return;
                 }
 
-                const eventsList = res.data;
+                const eventsList = res.data;//get data list
                 if (!eventsList || eventsList.length === 0) {
-                    eventsGrid.innerHTML = `<div style="color:#718096; padding:20px; text-align:center; width:100%;">暂无活动数据。</div>`;
+                    eventsGrid.innerHTML = `<div style="color:#718096; padding:20px; text-align:center; width:100%;">No event at this momment.</div>`;//show that no data available
                     return;
                 }
 
@@ -680,8 +682,8 @@ window.submitAdminReply = function(messageId) {
                                 
                                 <!-- 操作按钮容器 -->
                                 <div style="display:flex; gap:8px;">
-                                    <button class="btn-edit" data-id="${event.event_id}" style="padding:6px 12px; background:#4a5568; color:#fff; border:none; border-radius:6px; font-size:12px; cursor:pointer; font-weight:500;">编辑</button>
-                                    <button class="btn-delete" data-id="${event.event_id}" style="padding:6px 12px; background:#e53e3e; color:#fff; border:none; border-radius:6px; font-size:12px; cursor:pointer; font-weight:500;">删除</button>
+                                    <button class="btn-edit" data-id="${event.event_id}" style="padding:6px 12px; background:#4a5568; color:#fff; border:none; border-radius:6px; font-size:12px; cursor:pointer; font-weight:500;">Edit</button>
+                                    <button class="btn-delete" data-id="${event.event_id}" style="padding:6px 12px; background:#e53e3e; color:#fff; border:none; border-radius:6px; font-size:12px; cursor:pointer; font-weight:500;">Delete</button>
                                 </div>
                             </div>
                         </div>
@@ -706,7 +708,7 @@ window.submitAdminReply = function(messageId) {
             })
             .catch(error => {
                 console.error('获取活动数据失败:', error);
-                eventsGrid.innerHTML = `<div style="color:red; padding:20px;">数据加载失败: ${error.message}</div>`;
+                eventsGrid.innerHTML = `<div style="color:red; padding:20px;">Fail to get data: ${error.message}</div>`;
             });
     }
 
@@ -724,7 +726,7 @@ window.submitAdminReply = function(messageId) {
 
     // 2. 删除事件的逻辑
     function deleteEvent(id) {
-        if (confirm(`确定要删除 ID 为 #${id} 的活动吗？此操作不可恢复！`)) {
+        if (confirm(`Confirmed to delete the event with ID #${id}? This action cannot be undone!`)) {
             // 发送请求到后端的删除 API（比如你项目里如果有 delete_event.php 的话）
             fetch(`../delete_event.php?id=${id}`, {
                 method: 'GET' // 或者 'POST'，取决于你删除接口怎么写
@@ -732,15 +734,15 @@ window.submitAdminReply = function(messageId) {
             .then(response => response.json())
             .then(res => {
                 if (res.success) {
-                    alert('删除成功！');
+                    alert('Delete successfully!');
                     fetchAndRenderEvents(); // 重新刷新列表
                 } else {
-                    alert('删除失败: ' + res.message);
+                    alert('Delete failed: ' + res.message);
                 }
             })
             .catch(error => {
-                console.error('删除请求出错:', error);
-                alert('删除请求失败，请检查网络或后端接口。');
+                console.error('Fail to delete:', error);
+                alert('Delete request failed. Please check your network or backend API.');
             });
         }
     }
@@ -885,4 +887,3 @@ function handleAction(id, newStatus) {
 // 暴力兜底：只要页面一刷新，别管点没点菜单，先强行执行拉取数据
 console.log("🚀 调试：正在强行绕过点击事件，直接拉取后端数据...");
 loadApplications();
-

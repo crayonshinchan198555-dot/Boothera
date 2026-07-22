@@ -8,7 +8,7 @@ $db   = getenv('DB_NAME');
 $conn = new mysqli($host, $user, $pass, $db);
 
 if ($conn->connect_error) {
-    die("连接失败: " . $conn->connect_error);
+    die("Connection failed: " . $conn->connect_error);
 }
-echo "连接成功！数据库没问题。";
+echo "Connected successfully to the database.";
 ?>

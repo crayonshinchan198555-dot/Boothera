@@ -17,7 +17,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     if ($result && $result->num_rows > 0) {
         $event = $result->fetch_assoc();
     } else {
-        $errorMsg = "找不到该活动的详细信息。";
+        $errorMsg = "Failed to fetch event details.";
     }
 }
 
@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_event'])) {
                   WHERE event_id = $id";
 
     if ($conn->query($updateSql) === TRUE) {
-        $successMsg = "活动信息更新成功！";
+        $successMsg = "Event information updated successfully.";
         // 更新成功后重新读取一次最新数据展示在表单里
         $event['event_name'] = $name;
         $event['venue'] = $venue;
@@ -51,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_event'])) {
         $event['description'] = $desc;
         $event['booth_price'] = $price;
     } else {
-        $errorMsg = "更新失败: " . $conn->error;
+        $errorMsg = "Failed to update event information: " . $conn->error;
     }
 }
 ?>
@@ -61,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_event'])) {
 <head>
     <meta charset="UTF-8">
     <title>Edit Event - BOOTHERA</title>
-    <!-- 这里你可以引入你自己的 CSS，下面写了一点基础样式防崩 -->
+    <!-- 引入CSS，下面写了一点基础样式防崩 -->
     <style>
         body { font-family: Arial, sans-serif; background-color: #f8f9fa; padding: 40px; display: flex; justify-content: center; }
         .edit-form-container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 600px; }
@@ -81,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_event'])) {
 <body>
 
 <div class="edit-form-container">
-    <h2>编辑活动信息</h2>
+    <h2>Edit Event</h2>
 
     <?php if ($successMsg): ?>
         <div class="msg-success"><?php echo $successMsg; ?></div>
@@ -97,44 +97,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_event'])) {
             <input type="hidden" name="event_id" value="<?php echo htmlspecialchars($event['event_id']); ?>">
             
             <div class="form-group">
-                <label>活动名称 (Event Name)</label>
+                <label>Event Name</label>
                 <input type="text" name="event_name" value="<?php echo htmlspecialchars($event['event_name']); ?>" required>
             </div>
             
             <div class="form-group">
-                <label>场地 (Venue)</label>
+                <label>Venue</label>
                 <input type="text" name="venue" value="<?php echo htmlspecialchars($event['venue']); ?>" required>
             </div>
             
             <div style="display:flex; gap:15px;">
                 <div class="form-group" style="flex:1;">
-                    <label>日期 (Date)</label>
+                    <label>Date</label>
                     <input type="date" name="date" value="<?php echo htmlspecialchars($event['date']); ?>" required>
                 </div>
                 <div class="form-group" style="flex:1;">
-                    <label>时间 (Time)</label>
+                    <label>Time</label>
                     <input type="time" name="time" value="<?php echo htmlspecialchars($event['time']); ?>" required>
                 </div>
             </div>
 
             <div class="form-group">
-                <label>展位价格 (Booth Price RM)</label>
+                <label>Booth Price RM</label>
                 <input type="number" step="0.01" name="booth_price" value="<?php echo htmlspecialchars($event['booth_price']); ?>" required>
             </div>
             
             <div class="form-group">
-                <label>活动描述 (Description)</label>
+                <label>Description</label>
                 <textarea name="description" rows="4" required><?php echo htmlspecialchars($event['description']); ?></textarea>
             </div>
 
-            <button type="submit" name="update_event" class="btn-submit">保存修改</button>
+            <button type="submit" name="update_event" class="btn-submit">Save Changes</button>
         </form>
     <?php else: ?>
-        <p>无法加载编辑表单，请返回重试。</p>
+        <p>Failed to load edit form. Please go back and try again.</p>
     <?php endif; ?>
 
-    <!-- 这里假设你的主页是 home.html 或者 admin_event.php，请根据实际情况修改 href -->
-    <a href="adminpages/home.php" class="btn-back">返回管理列表</a>
+    <a href="adminpages/home.php" class="btn-back">Back to Management List</a>
 </div>
 
 </body>

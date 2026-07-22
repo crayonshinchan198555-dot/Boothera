@@ -52,14 +52,14 @@ async function login() {
         const result = await response.json(); // 直接用 .json() 更简洁
         
         if (result.success) {
-            alert("🎉 登录成功！");
+            alert("🎉 Login successful!");
             // 【关键修改】：删除了 localStorage.setItem，不再跨标签页混用数据
             window.location.href = result.redirect; 
         } else {
-            alert("❌ 登录失败: " + result.message);
+            alert("❌ Login failed: " + result.message);
         }
     } catch (error) {
-        alert("网络请求失败: " + error);
+        alert("Network request failed: " + error);
     }
 }
 // 显示/隐藏密码
@@ -101,7 +101,7 @@ function sendCode() {
     localStorage.setItem('tempVerificationCode', code);
 
     // 3. 弹窗提示，直接把码给用户（这就是你的开发版“伪邮件”）
-    alert("🎉 A 6-digit code has been generated for " + email + "!\n\n你的验证码是: " + code + "\n\n(请在下方输入此号码以重置密码)");
+    alert("🎉 A 6-digit code has been generated for " + email + "!\n\nYour code is: " + code + "\n\n(Please enter this number below to reset your password)");
 }
 
 // 提交新密码动作
@@ -136,6 +136,6 @@ function submitNewPassword() {
             alert("❌ " + data.message);
         }
     })
-    .catch(error => alert("网络错误: " + error));
+    .catch(error => alert("Network error: " + error));
 }
 

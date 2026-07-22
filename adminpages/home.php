@@ -12,7 +12,6 @@ if (!$isLoggedIn || !$hasRole) {
 }
 
 // 3. 只有成功通过上面的检查，才会执行下面的页面代码
-// 💡 确保这里没有任何其他的 echo 或 header 跳转
 ?>
 
  
@@ -178,11 +177,8 @@ if (!$isLoggedIn || !$hasRole) {
                 <!-- ------------------------------------------ -->
                 <!-- 选项卡 3：审核申请面板 (Application Tab)    -->
                 <!-- ------------------------------------------ -->
-                <!-- ------------------------------------------ -->
-<!-- 选项卡 3：审核申请面板 (Application Tab)    -->
-<!-- ------------------------------------------ -->
 <div id="tab-application" class="tab-panel">
-    <!-- 如果你想用表格展示图片里数据库的那些字段，可以用这个结构 -->
+    <!-- 结构 -->
     <div class="table-responsive" style="padding: 20px;">
         <table class="admin-table" style="width: 100%; border-collapse: collapse; text-align: left;">
             <thead>
@@ -198,13 +194,13 @@ if (!$isLoggedIn || !$hasRole) {
                 </tr>
             </thead>
             <tbody id="applications-table-body">
-                <!-- 这里留给 home.js 用 fetch 拿回数据后，通过 innerHTML 动态写入 <tr> 行 -->
+                <!-- 留给 home.js 用 fetch 拿回数据后，通过 innerHTML 动态写入 <tr> 行 -->
             </tbody>
         </table>
     </div>
 </div>
 
-<!-- ------------------------------------------ -->
+                <!-- ------------------------------------------ -->
                 <!-- 选项卡 4：发布新活动面板 (Add Event Tab)    -->
                 <!-- ------------------------------------------ -->
                 <div id="tab-add-event" class="tab-panel">
@@ -259,12 +255,9 @@ if (!$isLoggedIn || !$hasRole) {
                                     🚀 Publish Event
                                 </button>
                             </div>
-                            
-                            <!-- 别忘了在表单最下面要有一个文件上传的组件（截图中没看到，如果有的话要加上 name="layout_map"） -->
-                            <!-- 以及一个 type="submit" 的发布按钮 -->
                         </form>
-                    </div> <!-- 👈 闭合 .add-event-container -->
-                </div> <!-- 👈 完美闭合 选项卡 4 (#tab-add-event) -->
+                    </div> <!-- 👈 close .add-event-container -->
+                </div>
 
                 <!-- ------------------------------------------ -->
                 <!-- 选项卡 5：用户留言板面板 (Messages Tab)       -->
@@ -325,8 +318,6 @@ if (!$isLoggedIn || !$hasRole) {
             </section>
         </main>
     </div>
-
-    <!-- 引入外部逻辑脚本 -->
     <script src="/adminpages/home.js"></script>
 </body>
 </html>

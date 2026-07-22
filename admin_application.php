@@ -12,7 +12,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 // ---- 功能 1：获取所有申请数据 (GET) ----
 if ($method === 'GET') {
-    // 💡 修改点 2：把表里的 user_id, event_id, booth_id 全查出来，方便后台表格一一对应
+    // 💡 2：把表里的 user_id, event_id, booth_id 全查出来，方便后台表格一一对应
     $query = "SELECT application_id, user_id, event_id, booth_id, product_category, product_name, status 
               FROM Applications 
               ORDER BY application_id DESC";
@@ -20,7 +20,7 @@ if ($method === 'GET') {
     $result = mysqli_query($conn, $query);
 
     if (!$result) {
-        echo json_encode(["status" => "error", "message" => "数据库查询失败: " . mysqli_error($conn)]);
+        echo json_encode(["status" => "error", "message" => "Failed to fetch applications: " . mysqli_error($conn)]);
         exit;
     }
 

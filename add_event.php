@@ -11,7 +11,7 @@ if (!isset($conn)) {
     exit;
 }
 
-// 2. 接收前端的文本数据（对齐你的前端 name 属性）
+// 2. 接收前端的文本数据（对齐你的前端 html name 属性）
 $event_name  = $_POST['event_name'] ?? '';
 $venue       = $_POST['venue'] ?? '';
 $date        = $_POST['date'] ?? '';
@@ -26,34 +26,7 @@ if (empty($event_name) || empty($venue)) {
     exit;
 }
 
-$layout_map_path = null; 
-
-// 3. 处理图片文件上传逻辑
-if (isset($_FILES['layout_map']) && $_FILES['layout_map']['error'] === UPLOAD_ERR_OK) {
-    $fileTmpPath = $_FILES['layout_map']['tmp_name'];
-    $fileName = $_FILES['layout_map']['name'];
-    
-    $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
-    
-    $uploadFileDir = './uploads/';
-    $dest_path = $uploadFileDir . $newFileName;
-    
-    if (!is_dir($uploadFileDir)) {
-        mkdir($uploadFileDir, 0777, true);
-    }
-    
-    if(move_uploaded_file($fileTmpPath, $dest_path)) {
-        // 这里返回相对于根目录的路径，或者直接返回文件名
-        $layout_map_path = 'uploads/' . $newFileName; 
-    } else {
-        echo json_encode(["success" => false, "message" => "图片保存到服务器失败。"]);
-        exit;
-    }
-}
-
-// 4. 将数据插入到你原有的数据库表（对齐你的真实字段）
-// 如果你的表里没有 layout_map 字段，把下面 SQL 和 bind_param 里对应的部分删掉即可
+// 3. 将数据插入到你原有的数据库表（对齐你的真实字段）
 // 假定当前操作的管理员用户 ID 为 1
 $user_id = 1; 
 
@@ -67,9 +40,9 @@ $stmt = $conn->prepare($sql);
 $stmt->bind_param("sssssdi", $event_name, $venue, $date, $time, $description, $booth_price, $user_id);
 
 if ($stmt->execute()) {
-    echo json_encode(["success" => true, "message" => "活动创建成功"]);
+    echo json_encode(["success" => true, "message" => "Event added successfully."]);
 } else {
-    echo json_encode(["success" => false, "message" => "SQL执行失败: " . $stmt->error]);
+    echo json_encode(["success" => false, "message" => "SQL execution failed: " . $stmt->error]);
 }
 
 $stmt->close();

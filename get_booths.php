@@ -9,7 +9,7 @@ require_once 'db.php';
 $event_id = isset($_GET['event_id']) ? intval($_GET['event_id']) : 0;
 
 if ($event_id <= 0) {
-    echo json_encode(["success" => false, "message" => "无效的活动 ID"]);
+    echo json_encode(["success" => false, "message" => "Invalid event ID"]);
     exit;
 }
 
@@ -32,7 +32,7 @@ if ($stmt = $conn->prepare($sql)) {
     echo json_encode(["success" => true, "data" => $booths]);
     $stmt->close();
 } else {
-    echo json_encode(["success" => false, "message" => "查询失败: " . $conn->error]);
+    echo json_encode(["success" => false, "message" => "Failed to fetch booths: " . $conn->error]);
 }
 
 $conn->close();

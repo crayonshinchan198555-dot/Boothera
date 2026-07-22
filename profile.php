@@ -12,7 +12,7 @@ $uid = $_GET['uid'] ?? $_POST['uid'] ?? $_SESSION['user_id'] ?? null;
 // --- 第二步：再进行所有检查 ---
 // 1. 登录检查
 if (!isset($_SESSION['user_id'])) {
-    echo json_encode(["success" => false, "message" => "未登录！"]);
+    echo json_encode(["success" => false, "message" => "Please login first!"]);
     exit;
 }
 
@@ -20,13 +20,13 @@ if (!isset($_SESSION['user_id'])) {
 // 假设你的 session 中存了 userRole，没有的话请先检查是否存在
 $userRole = $_SESSION['userRole'] ?? ''; 
 if ($uid != $_SESSION['user_id'] && $userRole !== 'admin') {
-    echo json_encode(["success" => false, "message" => "无权访问此资料！"]);
+    echo json_encode(["success" => false, "message" => "You are not authorized to access this resource."]);
     exit;
 }
 
 // 3. 基础有效性检查
 if (!$uid) {
-    echo json_encode(["success" => false, "message" => "未提供有效的用户ID"]);
+    echo json_encode(["success" => false, "message" => "No valid user ID provided."]);
     exit;
 }
 
@@ -55,11 +55,11 @@ if ($method === 'GET') {
                     "data" => $user
                 ]);
             } else {
-                echo json_encode(["success" => false, "message" => "未找到该用户的数据。"]);
+                echo json_encode(["success" => false, "message" => "User data not found."]);
             }
             $stmt->close();
         } else {
-            echo json_encode(["success" => false, "message" => "数据库查询准备失败。"]);
+            echo json_encode(["success" => false, "message" => "Failed to prepare database query."]);
         }
         exit;
     }
@@ -87,19 +87,19 @@ if ($method === 'POST') {
             if ($stmt->execute()) {
                 echo json_encode([
                     "success" => true, 
-                    "message" => "个人资料保存成功！"
+                    "message" => "Profile updated successfully."
                 ]);
             } else {
-                echo json_encode(["success" => false, "message" => "数据库更新执行失败。"]);
+                echo json_encode(["success" => false, "message" => "Failed to update profile in the database."]);
             }
             $stmt->close();
         } else {
-            echo json_encode(["success" => false, "message" => "数据库更新准备失败。"]);
+            echo json_encode(["success" => false, "message" => "Failed to prepare database update query."]);
         }
         exit;
     }
 }
 
-echo json_encode(["success" => false, "message" => "无效的请求。"]);
+echo json_encode(["success" => false, "message" => "Invalid request."]);
 $conn->close();
 ?>

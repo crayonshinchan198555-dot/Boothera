@@ -1,6 +1,6 @@
 <?php
 session_start();
-session_regenerate_id(true); // 这一行会销毁旧 Session 并生成新 ID，防止劫持或缓存冲突
+session_regenerate_id(true); // 消毁旧 Session 并生成新 ID，防止劫持或缓存冲突
 header("Content-Type: application/json; charset=UTF-8");
 require_once 'db.php'; 
 
@@ -47,19 +47,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             echo json_encode([
                 "success" => true, 
-                "message" => "登录成功",
+                "message" => "Login successful.",
                 "redirect" => $redirectUrl
             ]);
         } else {
             // 调试用：如果登录失败，可以在 Response 中看到具体对比情况
             echo json_encode([
                 "success" => false, 
-                "message" => "密码错误",
-                "debug" => "输入验证失败" // 在生产环境中请移除此调试信息
+                "message" => "Invalid password.",
+                "debug" => "Input validation failed" // 在生产环境中请移除此调试信息
             ]);
         }
     } else {
-        echo json_encode(["success" => false, "message" => "用户不存在"]);
+        echo json_encode(["success" => false, "message" => "User not found."]);
     }
     $stmt->close();
 }

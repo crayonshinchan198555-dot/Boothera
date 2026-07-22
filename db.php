@@ -2,7 +2,7 @@
 // db.php - 彻底硬编码测试版
 // 强制 Session 在整个域名下都生效，而不仅仅是当前文件夹
 
-// ⚠️ 直接在此处填入你从 Railway 获取的正确公网信息
+// ⚠️填入从 Railway 获取的正确公网信息
 $host = "hayabusa.proxy.rlwy.net";
 $port = 59703;
 $user = "root";
@@ -11,7 +11,7 @@ $dbname = "railway"; // 这里的数据库名填你 Variables 里看到的那个
 
 // 建立连接
 $conn = mysqli_init();
-// 如果连接依然报错，请尝试注释下面这行 SSL 配置再测试
+// 如果连接报错，SSL 配置再测试
 mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
 
 // 尝试连接

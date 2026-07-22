@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $event_id = isset($_GET['event_id']) ? intval($_GET['event_id']) : 0;
 
     if ($event_id <= 0) {
-        echo json_encode(["success" => false, "message" => "缺少有效的活动 ID！"]);
+        echo json_encode(["success" => false, "message" => "Missing valid event ID!"]);
         exit;
     }
 
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         echo json_encode(["success" => true, "data" => $booths]);
     } catch (PDOException $e) {
-        echo json_encode(["success" => false, "message" => "查询摊位出错: " . $e->getMessage()]);
+        echo json_encode(["success" => false, "message" => "Failed to check booths: " . $e->getMessage()]);
     }
     exit;
 }

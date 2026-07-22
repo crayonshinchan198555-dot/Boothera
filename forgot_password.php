@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $new_password = $_POST['password'] ?? '';
 
     if (empty($email) || empty($new_password)) {
-        echo json_encode(["success" => false, "message" => "参数缺失"]);
+        echo json_encode(["success" => false, "message" => "Parameters are missing."]);
         exit();
     }
 
@@ -18,12 +18,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($stmt->execute()) {
         if ($stmt->affected_rows > 0) {
-            echo json_encode(["success" => true, "message" => "密码重置成功"]);
+            echo json_encode(["success" => true, "message" => "Reset password successfully."]);
         } else {
-            echo json_encode(["success" => false, "message" => "邮箱不存在或密码未修改"]);
+            echo json_encode(["success" => false, "message" => "Email not found or password is the same as before."]);
         }
     } else {
-        echo json_encode(["success" => false, "message" => "数据库错误"]);
+        echo json_encode(["success" => false, "message" => "Database error."]);
     }
 
     $stmt->close();

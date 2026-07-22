@@ -148,7 +148,6 @@ if (!isset($_SESSION['user_id'])) {
                 <!-- ------------------------------------------ -->
                 <!-- 选项卡 4：我的申请面板 (My Applications Tab) -->
                 <!-- ------------------------------------------ -->
-               <!-- 原来的 <p>My Applications</p> 替换为下方的表格 -->
 <div class="tab-panel" id="tab-my-applications">
     <h2>My Applications</h2>
     <table id="application-history-table">
@@ -173,7 +172,6 @@ if (!isset($_SESSION['user_id'])) {
                 <div id="tab-profile" class="tab-panel">
                     <div class="booth-card" style="position: relative;"></div>
                     <!-- 编辑个人资料的触发按钮 -->
-                    <!-- 直接替换你原有的那行图标代码 -->
                     <button type="button" id="edit-btn" onclick="toggleEdit()" style="cursor: pointer; background: transparent; border: none; font-size: 20px;">
                         ✏️
                     </button>
@@ -241,7 +239,7 @@ if (!isset($_SESSION['user_id'])) {
                                 <button type="submit" class="btn-submit-event" style="width:100%; margin-top:20px;">Send Message</button>
                             </form>
                         </div>
-                        <!-- 现有的 Message Admin 卡片下方，追加这个历史记录卡片 -->
+                        <!-- 追加这个历史记录卡片 -->
                         <div class="booth-card" style="margin-top: 20px; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
                             <h3 style="margin-top: 0; color: #4F6D7A; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;">
                                 ✉️ Message History & Replies

@@ -6,7 +6,7 @@ require_once 'db.php'; // 引入数据库连接
 
 // 检查是否传入了 id 参数
 if (!isset($_GET['id']) || empty($_GET['id'])) {
-    echo json_encode(["success" => false, "message" => "缺少必要的活动 ID。"]);
+    echo json_encode(["success" => false, "message" => "Lack valid ID."]);
     exit;
 }
 
@@ -17,12 +17,12 @@ $sql = "DELETE FROM Events WHERE event_id = $id";
 
 if ($conn->query($sql) === TRUE) {
     if ($conn->affected_rows > 0) {
-        echo json_encode(["success" => true, "message" => "活动删除成功！"]);
+        echo json_encode(["success" => true, "message" => "Event deleted successfully."]);
     } else {
-        echo json_encode(["success" => false, "message" => "找不到对应的活动，可能已被删除。"]);
+        echo json_encode(["success" => false, "message" => "No corresponding event found, or it may have already been deleted."]);
     }
 } else {
-    echo json_encode(["success" => false, "message" => "数据库删除失败: " . $conn->error]);
+    echo json_encode(["success" => false, "message" => "Database deletion failed: " . $conn->error]);
 }
 
 $conn->close();
